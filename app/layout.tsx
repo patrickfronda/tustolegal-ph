@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CampaignIQ — Election Analytics Dashboard",
-  description: "Real-time polling, sentiment, and voter analytics for election campaigns",
+  title: "TustoLegal PH — Legal Assistance for Every Filipino",
+  description:
+    "Free legal guidance and advice rooted in Philippine law. Get answers on family law, labor rights, criminal defense, property, and more.",
 };
 
 export default function RootLayout({
@@ -24,10 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="fil"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-white text-gray-900">{children}</body>
     </html>
   );
 }
