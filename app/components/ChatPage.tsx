@@ -430,7 +430,7 @@ export default function ChatPage() {
             {isEmpty ? (
               <div className="flex flex-col min-h-full">
                 {/* Hero */}
-                <div className="bg-gradient-to-br from-[#0e1f44] via-[#1e3a7b] to-[#0e1f44] flex flex-col items-center justify-center py-12 px-6 text-center" style={{ minHeight: "45vh" }}>
+                <div className="bg-gradient-to-br from-[#0e1f44] via-[#1e3a7b] to-[#0e1f44] flex flex-col items-center justify-center py-12 px-6 text-center" style={{ minHeight: "55vh" }}>
                   <div className="relative mb-5">
                     <div className="absolute inset-0 rounded-full bg-[#fcd116]/20 blur-xl scale-150" />
                     <div className="relative w-20 h-20 rounded-full bg-[#fcd116]/10 border border-[#fcd116]/30 flex items-center justify-center shadow-2xl">
@@ -446,12 +446,33 @@ export default function ChatPage() {
                   <p className="text-blue-200 text-sm sm:text-base leading-relaxed mb-6 max-w-md mx-auto">
                     Get instant AI-powered legal guidance based on Philippine law. Ask anything — free, confidential, and available 24/7.
                   </p>
-                  <div className="flex flex-wrap justify-center gap-2 text-xs">
+                  <div className="flex flex-wrap justify-center gap-2 text-xs mb-8">
                     {[{ icon: "⚡", label: "Instant" }, { icon: "🔒", label: "Confidential" }, { icon: "📚", label: "PH Law" }, { icon: "👨‍⚖️", label: "Lawyer Referrals" }].map((b) => (
                       <span key={b.label} className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-white font-medium backdrop-blur-sm">
                         <span>{b.icon}</span><span>{b.label}</span>
                       </span>
                     ))}
+                  </div>
+
+                  {/* Big hero chat input */}
+                  <div className="w-full max-w-2xl mx-auto px-2">
+                    <form onSubmit={handleSubmit} className="relative">
+                      <textarea
+                        ref={textareaRef}
+                        value={input}
+                        onChange={(e) => { setInput(e.target.value); autoResize(); }}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Itanong mo kay Torny..."
+                        rows={1}
+                        disabled={isStreaming}
+                        className="w-full resize-none bg-white text-gray-800 rounded-2xl pl-6 pr-16 py-5 text-base shadow-2xl focus:outline-none focus:ring-4 focus:ring-[#fcd116]/40 placeholder:text-gray-400 disabled:opacity-60 transition-all"
+                      />
+                      <button type="submit" disabled={isStreaming || !input.trim()}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-[#fcd116] text-[#1e3a7b] rounded-xl flex items-center justify-center hover:bg-yellow-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-md">
+                        {isStreaming ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                      </button>
+                    </form>
+                    <p className="text-blue-300/60 text-xs text-center mt-2">Enter para ipadala · Shift+Enter para bagong linya</p>
                   </div>
                 </div>
 
@@ -545,7 +566,7 @@ export default function ChatPage() {
                 value={input}
                 onChange={(e) => { setInput(e.target.value); autoResize(); }}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask your legal question in English or Filipino..."
+                placeholder="Itanong mo kay Torny..."
                 rows={1}
                 disabled={isStreaming}
                 className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400 transition-colors"
