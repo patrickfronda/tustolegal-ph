@@ -240,7 +240,7 @@ function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose
             <span className="text-xs font-bold text-white">Are you a lawyer?</span>
           </div>
           <p className="text-xs text-blue-300 mb-2">List your services and get referred to clients.</p>
-          <a href="mailto:lawyers@tustolegal.ph" className="block text-center bg-[#fcd116] text-[#1e3a7b] text-xs font-bold px-3 py-2 rounded-lg hover:bg-yellow-300 transition-colors">
+          <a href="mailto:lawyers@torny.ai" className="block text-center bg-[#fcd116] text-[#1e3a7b] text-xs font-bold px-3 py-2 rounded-lg hover:bg-yellow-300 transition-colors">
             List Your Services
           </a>
         </div>
@@ -345,7 +345,7 @@ export default function ChatPage() {
           <Scale className="w-5 h-5 text-[#1e3a7b]" />
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="font-bold text-base leading-tight">TustoLegal <span className="text-[#fcd116]">PH</span></h1>
+          <h1 className="font-bold text-base leading-tight">Torny<span className="text-[#fcd116]">.ai</span></h1>
           <p className="text-blue-300 text-xs">Free Legal Advice · Philippine Law Expert</p>
         </div>
         <div className="flex items-center gap-2">

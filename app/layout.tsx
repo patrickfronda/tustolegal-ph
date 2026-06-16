@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TustoLegal PH — Legal Assistance for Every Filipino",
+  title: "Torny.ai — Legal Assistance for Every Filipino",
   description:
     "Free legal guidance and advice rooted in Philippine law. Get answers on family law, labor rights, criminal defense, property, and more.",
 };
