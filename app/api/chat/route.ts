@@ -92,8 +92,20 @@ Alam mo ang lahat ng aspeto ng batas ng Pilipinas, kabilang ang:
 
 export const dynamic = "force-dynamic";
 
+const LANGUAGE_ADDITIONS: Record<string, string> = {
+  English: "\n\nIMPORTANT: Respond ONLY in English for this conversation.",
+  Bisaya: "\n\nIMPORTANTE: Saguton sa Bisaya/Cebuano LAMANG ang tanan nga mga tubag.",
+  Ilocano: "\n\nIMPORTANTE: Sagutin ti Ilocano LAENG ti amin a sungbat.",
+};
+
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, language } = await req.json();
+
+  const languageAddition =
+    language && language !== "Filipino"
+      ? (LANGUAGE_ADDITIONS[language as string] ?? "")
+      : "";
+  const systemPrompt = SYSTEM_PROMPT + languageAddition;
 
   const encoder = new TextEncoder();
 
@@ -104,7 +116,7 @@ export async function POST(req: Request) {
           model: "claude-opus-4-8",
           max_tokens: 8192,
           thinking: { type: "adaptive" },
-          system: SYSTEM_PROMPT,
+          system: systemPrompt,
           messages,
         });
 
