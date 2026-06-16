@@ -263,6 +263,50 @@ function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose
   );
 }
 
+const FREE_QUESTION_LIMIT = 5;
+
+/* ── Pro limit modal ── */
+function ProModal({ questionCount, onContinue }: { questionCount: number; onContinue: () => void }) {
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 msg-enter">
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-[#fcd116]/20 flex items-center justify-center">
+            <Scale className="w-8 h-8 text-[#1e3a7b]" />
+          </div>
+        </div>
+        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">
+          You've used {questionCount} questions!
+        </h2>
+        <p className="text-center text-gray-500 text-sm mb-4">
+          In the future, continuing beyond {FREE_QUESTION_LIMIT} questions will require a Pro plan.
+        </p>
+
+        <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/20 rounded-2xl p-4 mb-5">
+          <p className="text-xs font-bold text-[#1e3a7b] uppercase tracking-wide mb-2">Coming soon — Pro Plan</p>
+          <div className="space-y-1.5 text-sm text-gray-600">
+            <p>✅ Unlimited questions per session</p>
+            <p>✅ Lawyer suggestions for your case</p>
+            <p>✅ Priority support</p>
+          </div>
+          <p className="text-lg font-extrabold text-[#1e3a7b] mt-3">₱500 <span className="text-xs font-normal text-gray-400">/ session</span></p>
+        </div>
+
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4 text-center">
+          <p className="text-sm font-bold text-green-700">🎉 Good news — it's FREE for now!</p>
+          <p className="text-xs text-green-600 mt-0.5">We're still in beta. Enjoy unlimited access while it lasts.</p>
+        </div>
+
+        <button onClick={onContinue}
+          className="w-full bg-[#1e3a7b] text-white font-bold py-3 rounded-2xl hover:bg-[#162d60] transition-colors text-sm">
+          Continue for Free →
+        </button>
+        <p className="text-center text-xs text-gray-400 mt-2">No credit card needed</p>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main ── */
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -271,6 +315,8 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [language, setLanguage] = useState<Language>("English");
+  const [questionCount, setQuestionCount] = useState(0);
+  const [showProModal, setShowProModal] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -287,6 +333,11 @@ export default function ChatPage() {
     if (!text.trim() || isStreaming) return;
     setError(null);
     setSidebarOpen(false);
+    const newCount = questionCount + 1;
+    setQuestionCount(newCount);
+    if (newCount === FREE_QUESTION_LIMIT) {
+      setShowProModal(true);
+    }
     const userMsg: Message = { role: "user", content: text.trim() };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
@@ -333,6 +384,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+      {showProModal && <ProModal questionCount={questionCount} onContinue={() => setShowProModal(false)} />}
       {/* Flag stripe */}
       <div className="h-[3px] bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126] flex-shrink-0" />
 
@@ -352,9 +404,14 @@ export default function ChatPage() {
           <div className="hidden sm:flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" />Online
           </div>
+          {questionCount > 0 && (
+            <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
+              {questionCount}/{FREE_QUESTION_LIMIT} free
+            </div>
+          )}
           <LanguageSelector language={language} onChange={setLanguage} />
           {!isEmpty && (
-            <button onClick={() => setMessages([])} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
+            <button onClick={() => { setMessages([]); setQuestionCount(0); }} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
               <Plus className="w-3.5 h-3.5" /><span className="hidden sm:inline">New</span>
             </button>
           )}
@@ -467,7 +524,6 @@ export default function ChatPage() {
                     )}
                   </div>
                 ))}
-                {/* Show lawyer suggestions after the last AI response when not streaming */}
                 {lastIsAssistant && !isStreaming && messages[messages.length - 1].content.length > 50 && (
                   <LawyerSuggestions messages={messages} />
                 )}
