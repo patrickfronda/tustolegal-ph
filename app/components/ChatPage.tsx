@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, FormEvent } from "react";
 import {
   Scale, Send, Loader2, ChevronRight, AlertCircle,
   Phone, Copy, Check, Plus, MessageSquare, X, Menu, Globe,
-  Briefcase, MapPin, Star, ExternalLink, UserPlus,
+  Briefcase, MapPin, Star, ExternalLink, UserPlus, Home,
 } from "lucide-react";
 import { suggestLawyers, type Lawyer } from "@/app/data/lawyers";
 
@@ -379,6 +379,8 @@ export default function ChatPage() {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
   }
 
+  function goHome() { setMessages([]); setQuestionCount(0); setInput(""); }
+
   const isEmpty = messages.length === 0;
   const lastIsAssistant = messages.length > 0 && messages[messages.length - 1].role === "assistant";
 
@@ -393,12 +395,17 @@ export default function ChatPage() {
         <button onClick={() => setSidebarOpen((v) => !v)} className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 transition-colors">
           <Menu className="w-5 h-5" />
         </button>
-        <div className="w-9 h-9 rounded-full bg-[#fcd116] flex items-center justify-center flex-shrink-0 shadow-md">
-          <Scale className="w-5 h-5 text-[#1e3a7b]" />
-        </div>
-        <div className="flex-1 min-w-0">
+        <button onClick={goHome} className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-[#fcd116] flex items-center justify-center shadow-md">
+            <Scale className="w-5 h-5 text-[#1e3a7b]" />
+          </div>
+          <div className="text-left hidden sm:block">
+            <p className="font-bold text-base leading-tight">Torny<span className="text-[#fcd116]">.ai</span></p>
+            <p className="text-blue-300 text-xs">Free Legal Advice · Philippine Law Expert</p>
+          </div>
+        </button>
+        <div className="flex-1 sm:hidden min-w-0">
           <h1 className="font-bold text-base leading-tight">Torny<span className="text-[#fcd116]">.ai</span></h1>
-          <p className="text-blue-300 text-xs">Free Legal Advice · Philippine Law Expert</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
@@ -411,8 +418,8 @@ export default function ChatPage() {
           )}
           <LanguageSelector language={language} onChange={setLanguage} />
           {!isEmpty && (
-            <button onClick={() => { setMessages([]); setQuestionCount(0); }} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
-              <Plus className="w-3.5 h-3.5" /><span className="hidden sm:inline">New</span>
+            <button onClick={goHome} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
+              <Home className="w-3.5 h-3.5" /><span className="hidden sm:inline">Home</span>
             </button>
           )}
         </div>

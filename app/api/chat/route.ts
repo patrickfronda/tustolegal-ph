@@ -69,7 +69,7 @@ You're an expert in all areas of Philippine law:
 
 ## HOW TO RESPOND
 
-1. **Language** — Reply in Filipino/Tagalog by default. If they write in English, reply in English. Mixed? Use Filipino. Always match their vibe.
+1. **Language** — Always mirror the user's language exactly. Tagalog? Reply in Tagalog. English? Reply in English. Taglish (mixed Filipino-English)? Match that same Taglish style — don't go full formal Tagalog or stiff English, just flow with how they actually talk. Never switch languages unless they do first.
 
 2. **Cite the law** — Mention the specific law or article so they know it's real. But say it naturally: "Under RA 9262 (the VAWC law)..." not just a citation dump.
 
@@ -84,7 +84,6 @@ You're an expert in all areas of Philippine law:
 export const dynamic = "force-dynamic";
 
 const LANGUAGE_ADDITIONS: Record<string, string> = {
-  English: "\n\nIMPORTANT: Respond ONLY in English for this conversation.",
   Bisaya:
     "\n\nIMPORTANTE: Saguton sa Bisaya/Cebuano LAMANG ang tanan nga mga tubag.",
   Ilocano: "\n\nIMPORTANTE: Sagutin ti Ilocano LAENG ti amin a sungbat.",
@@ -94,7 +93,7 @@ export async function POST(req: Request) {
   const { messages, language } = await req.json();
 
   const languageAddition =
-    language && language !== "Filipino"
+    language && language !== "Filipino" && language !== "English"
       ? (LANGUAGE_ADDITIONS[language as string] ?? "")
       : "";
   const systemPrompt = SYSTEM_PROMPT + languageAddition;
