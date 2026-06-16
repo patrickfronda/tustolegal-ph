@@ -12,10 +12,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://torny.ai";
+
 export const metadata: Metadata = {
   title: "Torny.ai — Legal Assistance for Every Filipino",
   description:
     "Free legal guidance and advice rooted in Philippine law. Get answers on family law, labor rights, criminal defense, property, and more.",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "Torny.ai — Libreng Legal na Gabay para sa Bawat Pilipino",
+    description:
+      "Huwag nang malito sa iyong legal na kalagayan. Torny.ai ay nagbibigay ng libreng gabay batay sa mga batas ng Pilipinas — pamilya, trabaho, krimen, ari-arian, at higit pa.",
+    url: siteUrl,
+    siteName: "Torny.ai",
+    locale: "fil_PH",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Torny.ai — Libreng Legal na Gabay para sa Bawat Pilipino",
+    description:
+      "Free legal guidance rooted in Philippine law. Family, labor, criminal, property — ask Torny for free.",
+  },
 };
 
 export default function RootLayout({
