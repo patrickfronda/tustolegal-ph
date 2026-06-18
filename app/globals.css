@@ -36,3 +36,17 @@ html {
 .msg-enter {
   animation: fadeSlideUp 0.2s ease-out both;
 }
+
+/*
+ * Prevent iOS Safari from auto-zooming when an input/textarea is focused.
+ * Mobile browsers zoom whenever the focused field's font-size is below 16px,
+ * so on small screens we force every field to 16px. The focus ring still
+ * highlights the box; the viewport just stays put.
+ */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
