@@ -7,6 +7,7 @@ import {
 
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
+const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCACAAEgDASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBAUBAwgC/8QAOhAAAQMDAgMFBQUHBQAAAAAAAQACAwQFERIhBjFRBxMiQWEUMnGRoRWBorHBIyRCU2KS0UNSsuHx/8QAGAEBAAMBAAAAAAAAAAAAAAAAAAECAwT/xAAjEQACAQMEAQUAAAAAAAAAAAAAAQIDESESMUFRBBMyM0Jh/9oADAMBAAIRAxEAPwCzkREAWnvnEttsbQ2rlL53DwwRjU8/4HqVxxTe22K0Pqg3XK46I2+vU+gVITVdTcKx809JpYXudqc4e7n03ASpStNutdRbYq1sI0VBLXgf3DoSPLOCMH5rFSrwi9OT5yY18k2oN2aSfB2FJTQR0sDYomhsbAAGjoFkIiysLREQBfOaNk0T43jLXtLT8Rt+a+kQFVW8v91kqIm5ikzueo6j4j6rQ2i4vpa0xuJMjnYB65XoK82m3y2qrbOzsZYn4/AhfT/ABFqxnW92xxSSlqRW/h2nJrW3Gv/AOXJRO6VMLqS6UrXAxOBY0eh/VYthqIq6BksbgQelNDVMdVRsm05D24J+BUxjkBGDuFvzR2+Tivq5tqLiKNzX0LJB/ERy+LT1WE7Gth+i7lYIiIAvBxJQut15klLGCKbMvXUTgfVn4r3r5kijljdHI0OY4YcDyIKCnqjxQ63XJ8DWubBI7xRhvI+Y+BXDwa2aSrqqp7tEMbMMkI2BO59Pl81OuL7DJbqnv2M/q3k5b+E+Xfn9FEeHZnzQ1VNC5zJXxlr89N9/otPJdLb8g8vCMqVjfTNL1WZUl4TjCDyuQ1jZGPa4atLSFIIFZOLeHqiGO3w1LXaSx8sJ17EkaBhxHX0yDsVriVWJRm1tPE/FP/GyraeaMkGUvdq5uOfIZ5LS3IFxqw7JwXZOD0GVeq0raa6ppqiGGlEji1waw+EOMDLh5nO3y81TWNhsNruMbqepYHSO72V7vFk+nkMclZYnSEJxabJW3CTPV1RUO6tLMfAYXBxHar1KaAqHsezZZ4j1aVhX07Ytgtt4ioZZj3b5GxgYxqcB6c9/wCyyKyvbb4paioiLC7S3UAT71p87nGFjVFFSSWqM7bIzYdHLnnnK2aO7WqK2v7inJLy0A4eSGRnOfjjOyjNj4/tE9Sy1VdLDNJJ3YAAC6Rr9Wdp+I2V0bJUvq6CeOqkfHG5wa2Rmhz2g7Z9vf6LjlKjkpz0ZdkG4cjdP/kPTZK0NvCX1WLWcGVFa2tZdJKUFxEEsMYa+MbEeI8t+h3GVeIp2qhq3rSRJq/bRERWlgiIgCqTiHh9tuvr5W0xdG4gSgDYO6/I9VbaCjuFFDW08g0SxNe092Og6g+fMKRxexfLNPKvEFU0LWFwAznl8guhpaVlHTxxscXhjQMnqVmIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgP/Z";
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -178,7 +179,7 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
+            <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
           </div>
         </div>
 
@@ -387,7 +388,7 @@ export default function ChatPage() {
         </button>
         <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
+          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">
@@ -451,7 +452,7 @@ export default function ChatPage() {
                 <div className="relative inline-block mb-6">
                   <div className="w-20 h-20 rounded-full overflow-hidden bg-[#1e3a7b] shadow-lg">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
+                    <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-400 border-2 border-white flex items-center justify-center">
                     <span className="text-white text-xs font-bold">AI</span>
@@ -524,7 +525,7 @@ export default function ChatPage() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
+                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
                         </div>
                         <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                           <TypingDots />
@@ -540,7 +541,7 @@ export default function ChatPage() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
+                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
