@@ -9,8 +9,9 @@ import MobileNav from "@/app/components/MobileNav";
 const SKILL_SUGGESTIONS = [
   "Customer Service", "Microsoft Office", "Communication", "Sales", "Accounting",
   "JavaScript", "Python", "Java", "React", "Node.js", "SQL", "Excel", "Finance",
-  "Marketing", "Project Management", "English Proficiency", "Data Analysis",
+  "Marketing", "Project Management", "English Proficiency", "Arabic", "Data Analysis",
   "Nursing", "Engineering", "Legal Research", "HR", "Operations", "Banking",
+  "Aviation", "Hospitality", "Oil & Gas", "Logistics", "ACCA", "CPA", "Cybersecurity",
 ];
 
 interface UserProfile {
@@ -43,7 +44,10 @@ function ProfileContent() {
   const photoRef = useRef<HTMLInputElement>(null);
   const cvRef = useRef<HTMLInputElement>(null);
 
-  const cities = ["Metro Manila", "Cebu City", "Davao City", "Quezon City", "Makati", "Pasig", "Taguig", "Mandaluyong", "Pasay", "Caloocan", "Other"];
+  const cities = [
+    "Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain",
+    "Riyadh", "Jeddah", "Dammam", "Doha", "Kuwait City", "Muscat", "Manama", "Beirut", "Amman", "Cairo", "Other",
+  ];
 
   useEffect(() => {
     fetch("/api/auth/me").then((r) => {
@@ -195,7 +199,7 @@ function ProfileContent() {
           <h2 className="text-sm font-semibold text-slate-700 mb-4">Personal Information</h2>
           <div className="space-y-3">
             <Field label="Full Name" value={user.name} onChange={(v) => setUser((u) => u ? { ...u, name: v } : u)} />
-            <Field label="Phone" value={user.phone || ""} onChange={(v) => setUser((u) => u ? { ...u, phone: v } : u)} type="tel" placeholder="+63 9XX XXX XXXX" />
+            <Field label="Phone" value={user.phone || ""} onChange={(v) => setUser((u) => u ? { ...u, phone: v } : u)} type="tel" placeholder="+971 5X XXX XXXX" />
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">City</label>
               <select

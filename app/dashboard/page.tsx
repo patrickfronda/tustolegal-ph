@@ -45,7 +45,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <Briefcase className="w-5 h-5 text-white" />
-            <span className="text-white font-semibold text-sm">TustoJobs PH</span>
+            <span className="text-white font-semibold text-sm">TustoJobs ME</span>
           </div>
           <button onClick={logout} className="text-white/70 hover:text-white">
             <LogOut className="w-5 h-5" />

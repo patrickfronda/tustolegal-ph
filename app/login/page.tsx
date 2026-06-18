@@ -39,7 +39,7 @@ export default function LoginPage() {
       <div className="bg-blue-700 px-6 pt-10 pb-10">
         <div className="flex items-center gap-2 mb-6">
           <Briefcase className="w-5 h-5 text-white" />
-          <span className="text-white font-semibold">TustoJobs PH</span>
+          <span className="text-white font-semibold">TustoJobs ME</span>
         </div>
         <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
         <p className="text-blue-200 text-sm mt-1">Sign in to your account</p>

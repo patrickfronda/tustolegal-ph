@@ -19,8 +19,8 @@ export async function sendApplicationEmail(
   applicant: User,
   company: Company
 ): Promise<{ success: boolean; error?: string }> {
-  const fromName = "TustoJobs PH";
-  const fromEmail = process.env.SMTP_USER || "noreply@tustojobs.ph";
+  const fromName = "TustoJobs ME";
+  const fromEmail = process.env.SMTP_USER || "noreply@tustojobs.me";
 
   const subject = `Job Application – ${applicant.name} | ${applicant.desiredPosition || "Open Position"}`;
 
@@ -54,7 +54,7 @@ ${applicant.email}
 ${applicant.phone || ""}
 
 ──────────────────────────────────
-This application was submitted via TustoJobs PH — the smart job matching platform for Filipino professionals.
+This application was submitted via TustoJobs ME — the smart job matching platform for Filipino professionals.
 `;
 
   const attachments: Array<{ filename: string; path: string }> = [];

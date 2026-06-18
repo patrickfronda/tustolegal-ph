@@ -5,10 +5,10 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: "TustoJobs PH — Smart Job Matching for Filipino Professionals",
-  description: "Upload your CV, tell us your skills, and we'll match you with the right Philippine companies and send your application automatically.",
+  title: "TustoJobs ME — Smart Job Matching for UAE & Middle East",
+  description: "Upload your CV, tell us your skills, and we'll match you with top UAE and Middle East employers and send your applications automatically.",
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "TustoJobs PH" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "TustoJobs ME" },
 };
 
 export const viewport: Viewport = {

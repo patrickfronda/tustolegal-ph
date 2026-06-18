@@ -8,8 +8,9 @@ import { Briefcase, Eye, EyeOff, Plus, X, ArrowLeft } from "lucide-react";
 const SKILL_SUGGESTIONS = [
   "Customer Service", "Microsoft Office", "Communication", "Sales", "Accounting",
   "JavaScript", "Python", "Java", "React", "Node.js", "SQL", "Excel", "Finance",
-  "Marketing", "Project Management", "English Proficiency", "Data Analysis",
+  "Marketing", "Project Management", "English Proficiency", "Arabic", "Data Analysis",
   "Nursing", "Engineering", "Legal Research", "HR", "Operations", "Banking",
+  "Aviation", "Hospitality", "Oil & Gas", "Logistics", "ACCA", "CPA", "Cybersecurity",
 ];
 
 export default function RegisterPage() {
@@ -60,7 +61,10 @@ export default function RegisterPage() {
     }
   }
 
-  const cities = ["Metro Manila", "Cebu City", "Davao City", "Quezon City", "Makati", "Pasig", "Taguig", "Mandaluyong", "Pasay", "Caloocan", "Other"];
+  const cities = [
+    "Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain",
+    "Riyadh", "Jeddah", "Dammam", "Doha", "Kuwait City", "Muscat", "Manama", "Beirut", "Amman", "Cairo", "Other",
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -74,7 +78,7 @@ export default function RegisterPage() {
           )}
           <div className="flex items-center gap-2">
             <Briefcase className="w-5 h-5 text-white" />
-            <span className="text-white font-semibold">TustoJobs PH</span>
+            <span className="text-white font-semibold">TustoJobs ME</span>
           </div>
         </div>
         <h1 className="text-2xl font-bold text-white">Create Account</h1>
@@ -94,8 +98,8 @@ export default function RegisterPage() {
 
         {step === 1 && (
           <div className="flex flex-col gap-4">
-            <Field label="Full Name *" value={form.name} onChange={(v) => set("name", v)} placeholder="Juan dela Cruz" />
-            <Field label="Email Address *" value={form.email} onChange={(v) => set("email", v)} placeholder="juan@email.com" type="email" />
+            <Field label="Full Name *" value={form.name} onChange={(v) => set("name", v)} placeholder="Ahmed Al Mansouri" />
+            <Field label="Email Address *" value={form.email} onChange={(v) => set("email", v)} placeholder="ahmed@email.com" type="email" />
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Password *</label>
               <div className="relative">
@@ -111,7 +115,7 @@ export default function RegisterPage() {
                 </button>
               </div>
             </div>
-            <Field label="Phone Number" value={form.phone} onChange={(v) => set("phone", v)} placeholder="+63 9XX XXX XXXX" type="tel" />
+            <Field label="Phone Number" value={form.phone} onChange={(v) => set("phone", v)} placeholder="+971 5X XXX XXXX" type="tel" />
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">City / Location</label>
               <select
