@@ -21,115 +21,192 @@ export interface LawyerAppData {
   submittedAt: string;
 }
 
+/*
+ * Talks to a Vercel KV / Upstash Redis store over its REST API using fetch.
+ * No npm dependency required, so it works with the Upstash Redis integration
+ * that Vercel now provisions (the old @vercel/kv package is deprecated).
+ *
+ * Reads connection info from the env vars set by the Vercel integration:
+ *   KV_REST_API_URL / KV_REST_API_TOKEN  (Vercel KV naming)
+ *   UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN  (Upstash naming)
+ *
+ * Every helper degrades gracefully (returns empty data) when no store is
+ * configured, so the app still builds and runs without analytics persistence.
+ */
+
+const REST_URL = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL ?? "";
+const REST_TOKEN = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN ?? "";
+
 function today() {
   return new Date().toISOString().split("T")[0];
 }
 
-async function kv() {
-  const { kv: client } = await import("@vercel/kv");
-  return client;
-}
-
-export async function trackVisit(country: string, city: string): Promise<void> {
+async function cmd<T = unknown>(args: (string | number)[]): Promise<T | null> {
+  if (!REST_URL || !REST_TOKEN) return null;
   try {
-    const c = await kv();
-    const d = today();
-    await Promise.all([
-      c.incr("visits:total"),
-      c.incr(`visits:${d}`),
-      c.hincrby("locations:countries", country || "Unknown", 1),
-      c.hincrby("locations:cities", city || "Unknown", 1),
-    ]);
-  } catch { /* silent if KV not configured */ }
-}
-
-export async function trackQuestion(sessionId: string, country: string, city: string): Promise<void> {
-  try {
-    const c = await kv();
-    const d = today();
-    await c.incr("questions:total");
-    await c.incr(`questions:${d}`);
-
-    const existing = await c.get<SessionData>(`session:${sessionId}`);
-    if (existing) {
-      await c.set(`session:${sessionId}`, { ...existing, questions: existing.questions + 1 }, { ex: 86400 });
-    } else {
-      const session: SessionData = {
-        id: sessionId,
-        questions: 1,
-        country: country || "Unknown",
-        city: city || "Unknown",
-        startTime: new Date().toISOString(),
-      };
-      await c.set(`session:${sessionId}`, session, { ex: 86400 });
-      await c.lpush("sessions:recent", sessionId);
-      await c.ltrim("sessions:recent", 0, 49);
-    }
-  } catch { /* silent */ }
-}
-
-export async function getAnalytics() {
-  try {
-    const c = await kv();
-    const d = today();
-    const [totalVisits, todayVisits, totalQuestions, todayQuestions, countries, cities, sessionIds] =
-      await Promise.all([
-        c.get<number>("visits:total"),
-        c.get<number>(`visits:${d}`),
-        c.get<number>("questions:total"),
-        c.get<number>(`questions:${d}`),
-        c.hgetall("locations:countries"),
-        c.hgetall("locations:cities"),
-        c.lrange("sessions:recent", 0, 19),
-      ]);
-
-    const recentSessions = sessionIds && sessionIds.length > 0
-      ? (await Promise.all((sessionIds as string[]).map((id) => c.get<SessionData>(`session:${id}`)))).filter(Boolean) as SessionData[]
-      : [];
-
-    return {
-      totalVisits: (totalVisits as number) ?? 0,
-      todayVisits: (todayVisits as number) ?? 0,
-      totalQuestions: (totalQuestions as number) ?? 0,
-      todayQuestions: (todayQuestions as number) ?? 0,
-      countries: ((countries ?? {}) as Record<string, number>),
-      cities: ((cities ?? {}) as Record<string, number>),
-      recentSessions,
-    };
+    const res = await fetch(REST_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${REST_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(args),
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return (data?.result ?? null) as T | null;
   } catch {
-    return { totalVisits: 0, todayVisits: 0, totalQuestions: 0, todayQuestions: 0, countries: {}, cities: {}, recentSessions: [] };
+    return null;
   }
 }
 
+async function pipeline(commands: (string | number)[][]): Promise<unknown[]> {
+  if (!REST_URL || !REST_TOKEN) return [];
+  try {
+    const res = await fetch(`${REST_URL}/pipeline`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${REST_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(commands),
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data.map((d) => d?.result ?? null) : [];
+  } catch {
+    return [];
+  }
+}
+
+function toNumber(v: unknown): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function flatArrayToObject(arr: unknown): Record<string, number> {
+  // Upstash returns HGETALL as a flat [field, value, field, value, ...] array.
+  if (!Array.isArray(arr)) {
+    if (arr && typeof arr === "object") {
+      const o: Record<string, number> = {};
+      for (const [k, v] of Object.entries(arr as Record<string, unknown>)) o[k] = toNumber(v);
+      return o;
+    }
+    return {};
+  }
+  const o: Record<string, number> = {};
+  for (let i = 0; i < arr.length; i += 2) {
+    o[String(arr[i])] = toNumber(arr[i + 1]);
+  }
+  return o;
+}
+
+function parseJSON<T>(v: unknown): T | null {
+  if (v == null) return null;
+  if (typeof v === "object") return v as T;
+  try {
+    return JSON.parse(String(v)) as T;
+  } catch {
+    return null;
+  }
+}
+
+export async function trackVisit(country: string, city: string): Promise<void> {
+  const d = today();
+  await pipeline([
+    ["INCR", "visits:total"],
+    ["INCR", `visits:${d}`],
+    ["HINCRBY", "locations:countries", country || "Unknown", 1],
+    ["HINCRBY", "locations:cities", city || "Unknown", 1],
+  ]);
+}
+
+export async function trackQuestion(sessionId: string, country: string, city: string): Promise<void> {
+  const d = today();
+  await pipeline([
+    ["INCR", "questions:total"],
+    ["INCR", `questions:${d}`],
+  ]);
+
+  const existing = parseJSON<SessionData>(await cmd(["GET", `session:${sessionId}`]));
+  if (existing) {
+    const updated: SessionData = { ...existing, questions: existing.questions + 1 };
+    await cmd(["SET", `session:${sessionId}`, JSON.stringify(updated), "EX", 86400]);
+  } else {
+    const session: SessionData = {
+      id: sessionId,
+      questions: 1,
+      country: country || "Unknown",
+      city: city || "Unknown",
+      startTime: new Date().toISOString(),
+    };
+    await cmd(["SET", `session:${sessionId}`, JSON.stringify(session), "EX", 86400]);
+    await cmd(["LPUSH", "sessions:recent", sessionId]);
+    await cmd(["LTRIM", "sessions:recent", 0, 49]);
+  }
+}
+
+export async function getAnalytics() {
+  const d = today();
+  const [totalVisits, todayVisits, totalQuestions, todayQuestions, countries, cities, sessionIds] =
+    await pipeline([
+      ["GET", "visits:total"],
+      ["GET", `visits:${d}`],
+      ["GET", "questions:total"],
+      ["GET", `questions:${d}`],
+      ["HGETALL", "locations:countries"],
+      ["HGETALL", "locations:cities"],
+      ["LRANGE", "sessions:recent", 0, 19],
+    ]);
+
+  let recentSessions: SessionData[] = [];
+  if (Array.isArray(sessionIds) && sessionIds.length > 0) {
+    const sessionCmds = (sessionIds as string[]).map((id) => ["GET", `session:${id}`]);
+    const results = await pipeline(sessionCmds);
+    recentSessions = results
+      .map((r) => parseJSON<SessionData>(r))
+      .filter(Boolean) as SessionData[];
+  }
+
+  return {
+    totalVisits: toNumber(totalVisits),
+    todayVisits: toNumber(todayVisits),
+    totalQuestions: toNumber(totalQuestions),
+    todayQuestions: toNumber(todayQuestions),
+    countries: flatArrayToObject(countries),
+    cities: flatArrayToObject(cities),
+    recentSessions,
+  };
+}
+
 export async function submitApplication(data: Omit<LawyerAppData, "id" | "status" | "submittedAt">): Promise<string> {
-  const c = await kv();
   const id = `app_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
   const app: LawyerAppData = { ...data, id, status: "pending", submittedAt: new Date().toISOString() };
-  await c.set(`lawyer:app:${id}`, app);
-  await c.sadd("lawyers:pending", id);
+  await cmd(["SET", `lawyer:app:${id}`, JSON.stringify(app)]);
+  await cmd(["SADD", "lawyers:pending", id]);
   return id;
 }
 
 async function getApplicationsByStatus(status: "pending" | "approved" | "rejected"): Promise<LawyerAppData[]> {
-  try {
-    const c = await kv();
-    const ids = await c.smembers(`lawyers:${status}`);
-    if (!ids || ids.length === 0) return [];
-    const apps = await Promise.all((ids as string[]).map((id) => c.get<LawyerAppData>(`lawyer:app:${id}`)));
-    return apps.filter(Boolean) as LawyerAppData[];
-  } catch { return []; }
+  const ids = await cmd<string[]>(["SMEMBERS", `lawyers:${status}`]);
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const results = await pipeline(ids.map((id) => ["GET", `lawyer:app:${id}`]));
+  return results
+    .map((r) => parseJSON<LawyerAppData>(r))
+    .filter(Boolean) as LawyerAppData[];
 }
 
 export const getApplications = getApplicationsByStatus;
 
 export async function updateApplication(id: string, status: "approved" | "rejected"): Promise<void> {
-  const c = await kv();
-  const app = await c.get<LawyerAppData>(`lawyer:app:${id}`);
+  const app = parseJSON<LawyerAppData>(await cmd(["GET", `lawyer:app:${id}`]));
   if (!app) return;
   const oldStatus = app.status;
-  await c.set(`lawyer:app:${id}`, { ...app, status });
-  await c.srem(`lawyers:${oldStatus}`, id);
-  await c.sadd(`lawyers:${status}`, id);
+  await cmd(["SET", `lawyer:app:${id}`, JSON.stringify({ ...app, status })]);
+  await cmd(["SREM", `lawyers:${oldStatus}`, id]);
+  await cmd(["SADD", `lawyers:${status}`, id]);
 }
 
 export async function getApprovedLawyers(): Promise<LawyerAppData[]> {
