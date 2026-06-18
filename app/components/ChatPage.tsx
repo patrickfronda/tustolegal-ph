@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import TornyAvatar from "@/app/components/TornyAvatar";
 
-const FREE_LIMIT = 5;
+const QUESTION_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
 
 const NAME_PARTS = {
@@ -42,7 +42,7 @@ const SUGGESTED_EN = [
   "How do I file for annulment in the Philippines?",
   "What are my rights when arrested by the police?",
   "How do I file an illegal dismissal complaint?",
-  "How can I get a free lawyer from PAO?",
+  "How can I get a lawyer from PAO?",
   "How do I file a VAWC complaint?",
   "What is small claims court and how do I use it?",
 ];
@@ -136,7 +136,7 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
         <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#fcd116]"><TornyAvatar /></div></div>
-        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 free questions</h2>
+        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 questions</h2>
         <p className="text-center text-gray-500 text-sm mb-5">Upgrade for unlimited questions for <strong>24 hours</strong>.</p>
         <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-5">
           <div className="flex items-center justify-between mb-3"><span className="text-sm font-bold text-gray-700">TustoLegal Pro Session</span><span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span></div>
@@ -224,7 +224,7 @@ export default function ChatPage() {
     setError(null);
     setSidebarOpen(false);
     const newCount = questionCount + 1;
-    if (newCount > FREE_LIMIT && !accessToken) { setShowPayModal(true); return; }
+    if (newCount > QUESTION_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
     const sid = sessionStorage.getItem("torny_session_id") ?? "";
     fetch("/api/analytics/track", {
@@ -300,7 +300,7 @@ export default function ChatPage() {
           {accessToken ? (
             <div className="hidden sm:flex items-center gap-1.5 bg-[#fcd116]/20 rounded-full px-3 py-1 text-xs text-[#fcd116] font-semibold">✓ Pro</div>
           ) : questionCount > 0 && (
-            <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">{questionCount}/{FREE_LIMIT}</div>
+            <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">{questionCount}/{QUESTION_LIMIT}</div>
           )}
           {!isEmpty && (
             <button onClick={() => setMessages([])} title={isFil ? "Bagong usapan" : "New chat"} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
