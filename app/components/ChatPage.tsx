@@ -5,10 +5,10 @@ import {
   Send, Loader2, ChevronRight, AlertCircle,
   Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard, Home,
 } from "lucide-react";
+import TornyAvatar from "@/app/components/TornyAvatar";
 
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
-const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCABAAEADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABQYABAcCAwj/xAAwEAACAQQABQMEAQIHAAAAAAABAgMABAURBhIhMVETIkEyYXGBsaHRFBUWI0JSwf/EABgBAAMBAQAAAAAAAAAAAAAAAAABBAMC/8QAHBEAAwADAQEBAAAAAAAAAAAAAAECAxExIRJB/9oADAMBAAIRAxEAPwDSKlSgXFeeXB40uhU3MvtiB+PLH8UAe+a4hx+FQf4qXcrfTCnV2/VLNzxvePGZLe0ihT49Ulm/eqQZbqe9u3mYs0jnZdurNXV1OiRiNy0j/Oz0H6BpDQwNxzmVk368RH/X0hqmTAcdw306W2QjW3kY6WRT7CfBB7fxWUswY+32/g16wNttHuKaEz6FqUM4duTd4Kyldw8hhXmO9nevmidAErF+Mcg95mrh+c8u9KCewHxW0ViWSxbycTnH9SDMYl+w3/brQ3pDS29FLHYy4yDBIlbTHv5prtuAdxgzS6J7jZNE1FzjyYMLjlkEfteeZuVd+B5opi7++mVkyEEUbjsYz0NSVkb92VrGl4kAv9CY5U00kxbzzaoVkuCxDG8lpcOSATysO/7pxymTWwh5zFJMT2VB1oRb8QWuRcwcskE5GxHKNb/B+aU1fUdOI40JeJyt1ibqGW2cqyfUN9GHyGHyK22zuUvLOG5j+iVA4+2xWG5KMpmZUQdnPT89a2XhqF4OHrGOQEMIwdH79R/SrE9rZE1p6CZIAJPQCs6zywyZw3dkrepL7jKG16agBToeTzA7+1aHKvPE6D/kpFKhsA7yF+h9JowNdtkf2FY5bctL8KMOOaTb6CcoqQWjzlkgtlcQo7jmaV9bO2O9KB86OzQ/D5iU2KXUSM/+76Lw83Q7GwRvt2/FMN6ltkMYbHIRyRjmDbRCw5vIIBryxWKtLQwLChS3gLOGlGjI5Gt68AfzWO5+fTX5r684BrnKT3MLztHJEVLKIk0ze0bYk67AA9hXETS39tBIZeYPtoZGAdeZe670GVh/HmrOVw8OQM8JnWAyTerE5OlJI0y78/P7q3bWEOJw0Vr6iu6uZeh6s+taFNOdedBq/rT4BcVjJM3n4bhkjWNpQsqq3VSo2eh66PbfmtaAAGgNCs09A2l+Sg1KscYDAddgdf6mtJTZReb6tDdUTW/F+E+TG5Sp/p1VO6sI5izrtZCD2PQn71cqV05T8ZnNOXtCoHYu0Llo3B0fIrq6jCwCORfWVfpfm0wq5xU1ta4uW9dQLhBqMg6LHwftSlacXQyRcs0bI47gjdR3hqfVwujMr70LW0baZPTRYD1YSHm5q8ktonulS2hRGY69i6ofaZyHJ5KK0iZoxI3LzlfaKe8fi4LEbXbynu7f+eK6jFTe34hXnlc6CrHAP/mBubvlAVthQd82u36pjqVKpmVPCO7d9P/Z";
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -135,7 +135,7 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
-        <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]"><img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" /></div></div>
+        <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#fcd116]"><TornyAvatar /></div></div>
         <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 free questions</h2>
         <p className="text-center text-gray-500 text-sm mb-5">Upgrade for unlimited questions for <strong>24 hours</strong>.</p>
         <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-5">
@@ -282,8 +282,7 @@ export default function ChatPage() {
         <button onClick={() => setSidebarOpen((v) => !v)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"><Menu className="w-5 h-5" /></button>
         <Link href="/home" className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-blue-300 hover:text-white" title="Home"><Home className="w-5 h-5" /></Link>
         <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+          <TornyAvatar />
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">Torny <span className="text-[#fcd116]">AI</span></h1>
@@ -322,9 +321,8 @@ export default function ChatPage() {
             {isEmpty ? (
               <div className="max-w-2xl mx-auto px-4 py-10 text-center">
                 <div className="relative inline-block mb-6">
-                  <div className="w-20 h-20 rounded-full overflow-hidden bg-[#1e3a7b] shadow-lg">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-[#fcd116] shadow-lg">
+                    <TornyAvatar />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-400 border-2 border-white flex items-center justify-center">
                     <span className="text-white text-xs font-bold">AI</span>
@@ -368,9 +366,8 @@ export default function ChatPage() {
                   <div key={i}>
                     {msg.role === "assistant" && msg.content === "" && isStreaming ? (
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#fcd116] mt-1 shadow-sm">
+                          <TornyAvatar />
                         </div>
                         <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"><TypingDots /></div>
                       </div>
@@ -385,9 +382,8 @@ export default function ChatPage() {
                       </div>
                     ) : (
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#fcd116] mt-1 shadow-sm">
+                          <TornyAvatar />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
@@ -402,30 +398,25 @@ export default function ChatPage() {
                     )}
                   </div>
                 ))}
+                {error && (
+                  <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-2xl px-4 py-3 text-sm">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />{error}
+                  </div>
+                )}
                 <div ref={bottomRef} />
               </div>
             )}
           </div>
 
-          {error && (
-            <div className="mx-4 mb-2 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-2.5 text-sm">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />{error}
-            </div>
-          )}
-
           {!isEmpty && (
-            <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
+            <div className="flex-shrink-0 border-t border-gray-200 bg-white px-4 py-3">
               <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex flex-col sm:flex-row sm:items-end gap-2">
-                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
-                <button type="submit" disabled={isStreaming || !input.trim()} className="w-full sm:w-11 h-11 flex-shrink-0 bg-[#1e3a7b] text-white rounded-2xl sm:rounded-full flex items-center justify-center gap-2 hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask a follow-up question..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400" />
+                <button type="submit" disabled={isStreaming || !input.trim()} className="w-full sm:w-11 h-11 flex-shrink-0 bg-[#1e3a7b] text-white rounded-2xl sm:rounded-full flex items-center justify-center gap-2 hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                   {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                   <span className="sm:hidden font-semibold text-sm">{isFil ? "Ipadala" : "Send"}</span>
                 </button>
               </form>
-              <p className="text-center text-xs text-gray-400 mt-2 max-w-3xl mx-auto">
-                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
-                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Shift+Enter</kbd> {isFil ? "bagong linya" : "new line"}
-              </p>
             </div>
           )}
         </div>

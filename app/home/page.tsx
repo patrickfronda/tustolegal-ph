@@ -2,8 +2,7 @@
 import Link from "next/link";
 import { ArrowRight, MessageSquare, Search, CheckCircle, Scale, Phone, MapPin, Clock } from "lucide-react";
 import { LAWYERS } from "@/app/data/lawyers";
-
-const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCABAAEADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABQYABAcCAwj/xAAwEAACAQQABQMEAQIHAAAAAAABAgMABAURBhIhMVETIkEyYXGBsaHRFBUWI0JSwf/EABgBAAMBAQAAAAAAAAAAAAAAAAABBAMC/8QAHBEAAwADAQEBAAAAAAAAAAAAAAECAxExIRJB/9oADAMBAAIRAxEAPwDSKlSgXFeeXB40uhU3MvtiB+PLH8UAe+a4hx+FQf4qXcrfTCnV2/VLNzxvePGZLe0ihT49Ulm/eqQZbqe9u3mYs0jnZdurNXV1OiRiNy0j/Oz0H6BpDQwNxzmVk368RH/X0hqmTAcdw306W2QjW3kY6WRT7CfBB7fxWUswY+32/g16wNttHuKaEz6FqUM4duTd4Kyldw8hhXmO9nevmidAErF+Mcg95mrh+c8u9KCewHxW0ViWSxbycTnH9SDMYl+w3/brQ3pDS29FLHYy4yDBIlbTHv5prtuAdxgzS6J7jZNE1FzjyYMLjlkEfteeZuVd+B5opi7++mVkyEEUbjsYz0NSVkb92VrGl4kAv9CY5U00kxbzzaoVkuCxDG8lpcOSATysO/7pxymTWwh5zFJMT2VB1oRb8QWuRcwcskE5GxHKNb/B+aU1fUdOI40JeJyt1ibqGW2cqyfUN9GHyGHyK22zuUvLOG5j+iVA4+2xWG5KMpmZUQdnPT89a2XhqF4OHrGOQEMIwdH79R/SrE9rZE1p6CZIAJPQCs6zywyZw3dkrepL7jKG16agBToeTzA7+1aHKvPE6D/kpFKhsA7yF+h9JowNdtkf2FY5bctL8KMOOaTb6CcoqQWjzlkgtlcQo7jmaV9bO2O9KB86OzQ/D5iU2KXUSM/+76Lw83Q7GwRvt2/FMN6ltkMYbHIRyRjmDbRCw5vIIBryxWKtLQwLChS3gLOGlGjI5Gt68AfzWO5+fTX5r684BrnKT3MLztHJEVLKIk0ze0bYk67AA9hXETS39tBIZeYPtoZGAdeZe670GVh/HmrOVw8OQM8JnWAyTerE5OlJI0y78/P7q3bWEOJw0Vr6iu6uZeh6s+taFNOdedBq/rT4BcVjJM3n4bhkjWNpQsqq3VSo2eh66PbfmtaAAGgNCs09A2l+Sg1KscYDAddgdf6mtJTZReb6tDdUTW/F+E+TG5Sp/p1VO6sI5izrtZCD2PQn71cqV05T8ZnNOXtCoHYu0Llo3B0fIrq6jCwCORfWVfpfm0wq5xU1ta4uW9dQLhBqMg6LHwftSlacXQyRcs0bI47gjdR3hqfVwujMr70LW0baZPTRYD1YSHm5q8ktonulS2hRGY69i6ofaZyHJ5KK0iZoxI3LzlfaKe8fi4LEbXbynu7f+eK6jFTe34hXnlc6CrHAP/mBubvlAVthQd82u36pjqVKpmVPCO7d9P/Z";
+import TornyAvatar from "@/app/components/TornyAvatar";
 
 const STEPS = [
   { icon: MessageSquare, title: "Ask Your Question", desc: "Type your legal concern in English or Filipino — Torny AI understands both." },
@@ -21,8 +20,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <Link href="/home" className="flex items-center gap-2 font-bold text-lg">
             <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+              <TornyAvatar />
             </div>
             Torny <span className="text-[#fcd116]">AI</span>
           </Link>
@@ -65,9 +63,8 @@ export default function HomePage() {
           </div>
           <div className="flex-shrink-0">
             <div className="relative">
-              <div className="w-48 h-48 rounded-full overflow-hidden bg-white/10 shadow-2xl border-4 border-[#fcd116]/30">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={TORNY_SRC} alt="Torny AI" className="w-full h-full object-cover" />
+              <div className="w-48 h-48 rounded-full overflow-hidden bg-[#fcd116] shadow-2xl border-4 border-[#fcd116]/30">
+                <TornyAvatar />
               </div>
               <div className="absolute -bottom-2 -right-2 bg-green-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
                 Online 24/7
@@ -155,8 +152,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 font-bold text-white">
             <div className="w-8 h-8 rounded-full overflow-hidden bg-[#fcd116]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+              <TornyAvatar />
             </div>
             Torny AI
           </div>
