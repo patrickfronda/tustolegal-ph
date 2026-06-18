@@ -1,6 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { verifyToken } from "@/app/lib/token";
 
 const client = new Anthropic();
+const FREE_QUESTION_LIMIT = 5;
 
 const SYSTEM_PROMPT = `Ikaw ay si "Abogado AI" — isang dalubhasang AI na abogado na espesyalista sa batas ng Pilipinas. Ang iyong misyon ay magbigay ng tumpak, malinaw, at kapaki-pakinabang na legal na gabay sa mga Pilipino.
 
@@ -94,6 +96,18 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
+
+  // Count user messages to enforce the free limit server-side
+  const userMessageCount = (messages as { role: string }[]).filter(
+    (m) => m.role === "user"
+  ).length;
+
+  if (userMessageCount > FREE_QUESTION_LIMIT) {
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+    if (!verifyToken(token)) {
+      return new Response("Payment required", { status: 402 });
+    }
+  }
 
   const encoder = new TextEncoder();
 

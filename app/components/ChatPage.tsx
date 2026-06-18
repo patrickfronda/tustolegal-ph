@@ -2,8 +2,11 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import {
   Scale, Send, Loader2, ChevronRight, AlertCircle,
-  Phone, Copy, Check, Plus, MessageSquare, X, Menu,
+  Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard,
 } from "lucide-react";
+
+const FREE_LIMIT = 5;
+const ACCESS_TOKEN_KEY = "tustolegal_access";
 
 type Role = "user" | "assistant";
 interface Message { role: Role; content: string }
@@ -132,6 +135,87 @@ function TypingDots() {
   );
 }
 
+/* ── Payment modal ── */
+function PaymentModal({ onClose }: { onClose: () => void }) {
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  async function handlePay() {
+    setLoading(true);
+    setErr("");
+    try {
+      const res = await fetch("/api/payment/create", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setErr("Hindi ma-create ang payment. Subukan ulit.");
+        setLoading(false);
+      }
+    } catch {
+      setErr("May problema sa koneksyon. Subukan ulit.");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-[#fcd116]/20 flex items-center justify-center">
+            <Scale className="w-8 h-8 text-[#1e3a7b]" />
+          </div>
+        </div>
+
+        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">
+          Naabot mo na ang 5 libreng tanong
+        </h2>
+        <p className="text-center text-gray-500 text-sm mb-5">
+          Mag-bayad ng isang beses para sa walang limitasyong tanong sa loob ng <strong>24 na oras</strong>.
+        </p>
+
+        <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-bold text-gray-700">TustoLegal Pro Session</span>
+            <span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span>
+          </div>
+          <div className="space-y-1.5 text-sm text-gray-600">
+            <p>✅ Walang limitasyong tanong (24 hrs)</p>
+            <p>✅ Mabilis na AI legal na tugon</p>
+            <p>✅ Nakabatay sa batas ng Pilipinas</p>
+          </div>
+        </div>
+
+        {err && (
+          <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-3 py-2 text-xs mb-3">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />{err}
+          </div>
+        )}
+
+        <button
+          onClick={handlePay}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2"
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <CreditCard className="w-4 h-4" />
+          )}
+          {loading ? "Inihahanda..." : "Bayad gamit ang GCash — ₱99"}
+        </button>
+
+        <button
+          onClick={onClose}
+          className="w-full text-center text-xs text-gray-400 hover:text-gray-600 py-2 transition-colors"
+        >
+          Bumalik at gamitin ang 5 libreng tanong
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ── Sidebar ── */
 function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose?: () => void }) {
   return (
@@ -178,8 +262,17 @@ export default function ChatPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [showPayModal, setShowPayModal] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load stored payment token on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(ACCESS_TOKEN_KEY);
+    if (stored) setAccessToken(stored);
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -197,6 +290,15 @@ export default function ChatPage() {
     setError(null);
     setSidebarOpen(false);
 
+    const newCount = questionCount + 1;
+
+    // Gate at free limit — show payment modal if no valid token
+    if (newCount > FREE_LIMIT && !accessToken) {
+      setShowPayModal(true);
+      return;
+    }
+
+    setQuestionCount(newCount);
     const userMsg: Message = { role: "user", content: text.trim() };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
@@ -205,12 +307,24 @@ export default function ChatPage() {
     setIsStreaming(true);
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ messages: newMessages }),
       });
+      if (res.status === 402) {
+        // Token expired or invalid — clear it and show payment modal
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+        setAccessToken(null);
+        setMessages((prev) => prev.slice(0, -1));
+        setShowPayModal(true);
+        setIsStreaming(false);
+        return;
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       if (!res.body) throw new Error("No body");
 
@@ -246,6 +360,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+      {showPayModal && <PaymentModal onClose={() => setShowPayModal(false)} />}
       {/* ── Header ── */}
       <header className="bg-[#0e1f44] text-white px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0 z-10">
         <button
@@ -268,6 +383,15 @@ export default function ChatPage() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
             Online
           </div>
+          {accessToken ? (
+            <div className="hidden sm:flex items-center gap-1.5 bg-[#fcd116]/20 rounded-full px-3 py-1 text-xs text-[#fcd116] font-semibold">
+              ✓ Pro
+            </div>
+          ) : questionCount > 0 && (
+            <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
+              {questionCount}/{FREE_LIMIT} libre
+            </div>
+          )}
           {!isEmpty && (
             <button
               onClick={() => setMessages([])}
