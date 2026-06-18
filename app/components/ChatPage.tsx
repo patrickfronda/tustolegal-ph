@@ -7,7 +7,7 @@ import {
 
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
-const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCACAAEgDASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBAUBAwgC/8QAOhAAAQMDAgMFBQUHBQAAAAAAAQACAwQFERIhBjFRBxMiQWEUMnGRoRWBorHBIyRCU2KS0UNSsuHx/8QAGAEBAAMBAAAAAAAAAAAAAAAAAAECAwT/xAAjEQACAQMEAQUAAAAAAAAAAAAAAQIDESESMUFRBBMyM0Jh/9oADAMBAAIRAxEAPwCzkREAWnvnEttsbQ2rlL53DwwRjU8/4HqVxxTe22K0Pqg3XK46I2+vU+gVITVdTcKx809JpYXudqc4e7n03ASpStNutdRbYq1sI0VBLXgf3DoSPLOCMH5rFSrwi9OT5yY18k2oN2aSfB2FJTQR0sDYomhsbAAGjoFkIiysLREQBfOaNk0T43jLXtLT8Rt+a+kQFVW8v91kqIm5ikzueo6j4j6rQ2i4vpa0xuJMjnYB65XoK82m3y2qrbOzsZYn4/AhfT/ABFqxnW92xxSSlqRW/h2nJrW3Gv/AOXJRO6VMLqS6UrXAxOBY0eh/VYthqIq6BksbgQelNDVMdVRsm05D24J+BUxjkBGDuFvzR2+Tivq5tqLiKNzX0LJB/ERy+LT1WE7Gth+i7lYIiIAvBxJQut15klLGCKbMvXUTgfVn4r3r5kijljdHI0OY4YcDyIKCnqjxQ63XJ8DWubBI7xRhvI+Y+BXDwa2aSrqqp7tEMbMMkI2BO59Pl81OuL7DJbqnv2M/q3k5b+E+Xfn9FEeHZnzQ1VNC5zJXxlr89N9/otPJdLb8g8vCMqVjfTNL1WZUl4TjCDyuQ1jZGPa4atLSFIIFZOLeHqiGO3w1LXaSx8sJ17EkaBhxHX0yDsVriVWJRm1tPE/FP/GyraeaMkGUvdq5uOfIZ5LS3IFxqw7JwXZOD0GVeq0raa6ppqiGGlEji1waw+EOMDLh5nO3y81TWNhsNruMbqepYHSO72V7vFk+nkMclZYnSEJxabJW3CTPV1RUO6tLMfAYXBxHar1KaAqHsezZZ4j1aVhX07Ytgtt4ioZZj3b5GxgYxqcB6c9/wCyyKyvbb4paioiLC7S3UAT71p87nGFjVFFSSWqM7bIzYdHLnnnK2aO7WqK2v7inJLy0A4eSGRnOfjjOyjNj4/tE9Sy1VdLDNJJ3YAAC6Rr9Wdp+I2V0bJUvq6CeOqkfHG5wa2Rmhz2g7Z9vf6LjlKjkpz0ZdkG4cjdP/kPTZK0NvCX1WLWcGVFa2tZdJKUFxEEsMYa+MbEeI8t+h3GVeIp2qhq3rSRJq/bRERWlgiIgCqTiHh9tuvr5W0xdG4gSgDYO6/I9VbaCjuFFDW08g0SxNe092Og6g+fMKRxexfLNPKvEFU0LWFwAznl8guhpaVlHTxxscXhjQMnqVmIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgP/Z";
+const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCABAACQDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAUGBwQB/8QALhAAAQQBAgMHAgcAAAAAAAAAAQACAwQRBRIGIZETFCIxQVHBcYEVYWNyobHh/8QAFwEBAQEBAAAAAAAAAAAAAAAAAQACA//EABoRAAMBAQEBAAAAAAAAAAAAAAABAiERMQP/2gAMAwEAAhEDEQA/ALJIeIuIPwwtr12h9l4zz8mD5KfKZ1SoDrM9pjC5wiGOXk4e35kIb4jUz1iaTWtddIJYzY2D9Lw9MKv0XII9UpteHN7doHasHLaUkl1C4YK7BFKx7yBuIDj9/ZdHDNXbevWXHD3kDYOpPVZmm/TVRxYUaEIWzmCWavYqQMPbSNbNjc1oGS77JmSACScALO7Gout63JOPExziBnyA9B0VxNaKbTwZQ6xTs2Ax5dXBb4nPGQ3oqmlBXji31iHtkwd4Odyz18uO8EDmSqPgq8Za0tN58UZ3tB9AfMdf7QoU+DX0qvSoQhCTJ45oe0tPkRgrObNc0LpjeSC0nII88ZGei0dRfHDNt6rIORdEQT9D/qUyEkhbmTDuT+f0VRwdULWzWzu8bQ0Ejz9T8KNkZKxkbnnlIze3Htkj4Wl6JH2WjU2YxiJp6jKW8wDuQhCyIKR47GO5O/f8KuUvxJpuoavejihg2wRAjtHOGDnGT7qISa7X7GppPpmoB8/KvaTdtKu32jaP4CScQ6JYvUqzawYZK7S3bnGRgDln6JrpRsdwibbiMUrBsIJBzj15JI7EIQgj/9k=";
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -239,7 +239,7 @@ function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose
       <div className="p-4 border-b border-white/10 flex items-center justify-between">
         <span className="text-xs font-bold uppercase tracking-widest text-blue-300">Mga Paksa</span>
         {onClose && (
-          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-white/10">
+          <button onClick={onClose} className="md:hidden p-1 rounded hover:bg-white/10">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -376,13 +376,13 @@ export default function ChatPage() {
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+    <div className={`flex flex-col h-screen ${isEmpty ? "bg-[#0e1f44]" : "bg-gray-50"} overflow-hidden`}>
       {showPayModal && <PaymentModal onClose={() => setShowPayModal(false)} />}
       {/* ── Header ── */}
       <header className="bg-[#0e1f44] text-white px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0 z-10">
         <button
           onClick={() => setSidebarOpen((v) => !v)}
-          className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+          className="md:hidden p-1.5 rounded-lg hover:bg-white/10 transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -428,16 +428,16 @@ export default function ChatPage() {
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 z-20 lg:hidden"
+            className="fixed inset-0 bg-black/40 z-20 md:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
         {/* Sidebar */}
         <div className={`
-          fixed lg:static inset-y-0 left-0 z-30 lg:z-auto
+          fixed md:static inset-y-0 left-0 z-30 md:z-auto
           transform transition-transform duration-200
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           flex-shrink-0
         `}>
           <Sidebar onSelect={sendMessage} onClose={() => setSidebarOpen(false)} />
@@ -459,16 +459,16 @@ export default function ChatPage() {
                   </div>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-                  Kamusta! Ako si <span className="text-[#1e3a7b]">Torny AI</span>.
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+                  Kamusta! Ako si <span className="text-[#fcd116]">Torny AI</span>.
                 </h2>
-                <p className="text-gray-500 text-sm sm:text-base leading-relaxed mb-1 max-w-lg mx-auto">
+                <p className="text-blue-200 text-sm sm:text-base leading-relaxed mb-1 max-w-lg mx-auto">
                   Your 24/7 legal assistant — espesyalista sa batas ng Pilipinas. Tanungin mo ako anumang oras, kumpidensyal at mabilis.
                 </p>
 
                 <div className="flex justify-center gap-3 my-5 text-xs text-gray-400">
                   {["⚡ 24/7 Available", "🔒 Kumpidensyal", "📚 Nakabatay sa PH Law", "💬 Sa Filipino"].map((f) => (
-                    <span key={f} className="bg-gray-100 rounded-full px-3 py-1">{f}</span>
+                    <span key={f} className="bg-white/10 text-blue-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
 
@@ -495,7 +495,7 @@ export default function ChatPage() {
 
                 <div className="h-1 w-24 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126] rounded-full mx-auto mb-8" />
 
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 text-left">
+                <p className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-3 text-left">
                   Mga madalas na tanong
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left mb-8">
@@ -503,18 +503,18 @@ export default function ChatPage() {
                     <button
                       key={q}
                       onClick={() => sendMessage(q)}
-                      className="flex items-start gap-2.5 bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700 hover:border-[#1e3a7b] hover:shadow-md hover:bg-[#1e3a7b]/5 transition-all text-left group"
+                      className="flex items-start gap-2.5 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm text-white hover:border-[#fcd116] hover:shadow-md hover:bg-white/20 transition-all text-left group"
                     >
-                      <MessageSquare className="w-4 h-4 text-[#1e3a7b] flex-shrink-0 mt-0.5" />
+                      <MessageSquare className="w-4 h-4 text-[#fcd116] flex-shrink-0 mt-0.5" />
                       <span className="flex-1 leading-snug">{q}</span>
                     </button>
                   ))}
                 </div>
 
-                <p className="text-xs text-gray-400 leading-relaxed max-w-md mx-auto bg-gray-50 rounded-xl p-3 border border-gray-200">
-                  <strong className="text-gray-600">Disclaimer:</strong> Para sa pangkalahatang kaalaman lamang,
+                <p className="text-xs text-blue-200 leading-relaxed max-w-md mx-auto bg-white/10 rounded-xl p-3 border border-white/20">
+                  <strong className="text-white">Disclaimer:</strong> Para sa pangkalahatang kaalaman lamang,
                   hindi kapalit ng opisyal na legal na representasyon. Para sa personal na legal na tulong,
-                  tawagan ang <strong className="text-gray-600">PAO: 8524-2100</strong>.
+                  tawagan ang <strong className="text-white">PAO: 8524-2100</strong>.
                 </p>
               </div>
             ) : (
