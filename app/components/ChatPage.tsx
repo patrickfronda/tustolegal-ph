@@ -7,7 +7,7 @@ import {
 
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
-const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCABAACQDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAUGBwQB/8QALhAAAQQBAgMHAgcAAAAAAAAAAQACAwQRBRIGIZETFCIxQVHBcYEVYWNyobHh/8QAFwEBAQEBAAAAAAAAAAAAAAAAAQACA//EABoRAAMBAQEBAAAAAAAAAAAAAAABAiERMQP/2gAMAwEAAhEDEQA/ALJIeIuIPwwtr12h9l4zz8mD5KfKZ1SoDrM9pjC5wiGOXk4e35kIb4jUz1iaTWtddIJYzY2D9Lw9MKv0XII9UpteHN7doHasHLaUkl1C4YK7BFKx7yBuIDj9/ZdHDNXbevWXHD3kDYOpPVZmm/TVRxYUaEIWzmCWavYqQMPbSNbNjc1oGS77JmSACScALO7Gout63JOPExziBnyA9B0VxNaKbTwZQ6xTs2Ax5dXBb4nPGQ3oqmlBXji31iHtkwd4Odyz18uO8EDmSqPgq8Za0tN58UZ3tB9AfMdf7QoU+DX0qvSoQhCTJ45oe0tPkRgrObNc0LpjeSC0nII88ZGei0dRfHDNt6rIORdEQT9D/qUyEkhbmTDuT+f0VRwdULWzWzu8bQ0Ejz9T8KNkZKxkbnnlIze3Htkj4Wl6JH2WjU2YxiJp6jKW8wDuQhCyIKR47GO5O/f8KuUvxJpuoavejihg2wRAjtHOGDnGT7qISa7X7GppPpmoB8/KvaTdtKu32jaP4CScQ6JYvUqzawYZK7S3bnGRgDln6JrpRsdwibbiMUrBsIJBzj15JI7EIQgj/9k=";
+const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCABAAEADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABQYABAcCAwj/xAAwEAACAQQABQMEAQIHAAAAAAABAgMABAURBhIhMVETIkEyYXGBsaHRFBUWI0JSwf/EABgBAAMBAQAAAAAAAAAAAAAAAAABBAMC/8QAHBEAAwADAQEBAAAAAAAAAAAAAAECAxExIRJB/9oADAMBAAIRAxEAPwDSKlSgXFeeXB40uhU3MvtiB+PLH8UAe+a4hx+FQf4qXcrfTCnV2/VLNzxvePGZLe0ihT49Ulm/eqQZbqe9u3mYs0jnZdurNXV1OiRiNy0j/Oz0H6BpDQwNxzmVk368RH/X0hqmTAcdw306W2QjW3kY6WRT7CfBB7fxWUswY+32/g16wNttHuKaEz6FqUM4duTd4Kyldw8hhXmO9nevmidAErF+Mcg95mrh+c8u9KCewHxW0ViWSxbycTnH9SDMYl+w3/brQ3pDS29FLHYy4yDBIlbTHv5prtuAdxgzS6J7jZNE1FzjyYMLjlkEfteeZuVd+B5opi7++mVkyEEUbjsYz0NSVkb92VrGl4kAv9CY5U00kxbzzaoVkuCxDG8lpcOSATysO/7pxymTWwh5zFJMT2VB1oRb8QWuRcwcskE5GxHKNb/B+aU1fUdOI40JeJyt1ibqGW2cqyfUN9GHyGHyK22zuUvLOG5j+iVA4+2xWG5KMpmZUQdnPT89a2XhqF4OHrGOQEMIwdH79R/SrE9rZE1p6CZIAJPQCs6zywyZw3dkrepL7jKG16agBToeTzA7+1aHKvPE6D/kpFKhsA7yF+h9JowNdtkf2FY5bctL8KMOOaTb6CcoqQWjzlkgtlcQo7jmaV9bO2O9KB86OzQ/D5iU2KXUSM/+76Lw83Q7GwRvt2/FMN6ltkMYbHIRyRjmDbRCw5vIIBryxWKtLQwLChS3gLOGlGjI5Gt68AfzWO5+fTX5r684BrnKT3MLztHJEVLKIk0ze0bYk67AA9hXETS39tBIZeYPtoZGAdeZe670GVh/HmrOVw8OQM8JnWAyTerE5OlJI0y78/P7q3bWEOJw0Vr6iu6uZeh6s+taFNOdedBq/rT4BcVjJM3n4bhkjWNpQsqq3VSo2eh66PbfmtaAAGgNCs09A2l+Sg1KscYDAddgdf6mtJTZReb6tDdUTW/F+E+TG5Sp/p1VO6sI5izrtZCD2PQn71cqV05T8ZnNOXtCoHYu0Llo3B0fIrq6jCwCORfWVfpfm0wq5xU1ta4uW9dQLhBqMg6LHwftSlacXQyRcs0bI47gjdR3hqfVwujMr70LW0baZPTRYD1YSHm5q8ktonulS2hRGY69i6ofaZyHJ5KK0iZoxI3LzlfaKe8fi4LEbXbynu7f+eK6jFTe34hXnlc6CrHAP/mBubvlAVthQd82u36pjqVKpmVPCO7d9P/Z";
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -27,17 +27,26 @@ type Role = "user" | "assistant";
 interface Message { role: Role; content: string }
 
 const CATEGORIES = [
-  { emoji: "👨‍👩‍👧", label: "Batas sa Pamilya",        prompt: "Ano ang aking mga karapatan sa ilalim ng Family Code ng Pilipinas?" },
-  { emoji: "💼", label: "Batas sa Paggawa",        prompt: "Ano ang aking mga karapatan bilang empleyado sa Pilipinas?" },
-  { emoji: "🔒", label: "Batas Kriminal",           prompt: "Ano ang aking mga karapatan kapag inaresto ng pulis?" },
-  { emoji: "🏠", label: "Batas sa Ari-arian",       prompt: "Paano makuha o mapalit ang land title sa Pilipinas?" },
-  { emoji: "📜", label: "Konstitusyonal na Karapatan", prompt: "Ano ang aking mga karapatang konstitusyonal sa ilalim ng 1987 Constitution?" },
-  { emoji: "⚖️", label: "Batas Sibil",              prompt: "Paano mag-file ng small claims case sa korte?" },
-  { emoji: "✈️", label: "Karapatan ng OFW",         prompt: "Ano ang mga karapatan ng OFW sa ilalim ng batas ng Pilipinas?" },
-  { emoji: "🤝", label: "Katarungang Pambarangay",  prompt: "Paano gumagana ang Katarungang Pambarangay system?" },
+  { emoji: "👨‍👩‍👧", label: "Batas sa Pamilya",        prompt: "What are my rights under the Family Code of the Philippines?" },
+  { emoji: "💼", label: "Batas sa Paggawa",        prompt: "What are my rights as an employee in the Philippines?" },
+  { emoji: "🔒", label: "Batas Kriminal",           prompt: "What are my rights when arrested by the police?" },
+  { emoji: "🏠", label: "Batas sa Ari-arian",       prompt: "How do I get or transfer a land title in the Philippines?" },
+  { emoji: "📜", label: "Konstitusyonal na Karapatan", prompt: "What are my constitutional rights under the 1987 Constitution?" },
+  { emoji: "⚖️", label: "Batas Sibil",              prompt: "How do I file a small claims case in court?" },
+  { emoji: "✈️", label: "Karapatan ng OFW",         prompt: "What are the rights of OFWs under Philippine law?" },
+  { emoji: "🤝", label: "Katarungang Pambarangay",  prompt: "How does the Katarungang Pambarangay system work?" },
 ];
 
-const SUGGESTED = [
+const SUGGESTED_EN = [
+  "How do I file for annulment in the Philippines?",
+  "What are my rights when arrested by the police?",
+  "How do I file an illegal dismissal complaint?",
+  "How can I get a free lawyer from PAO?",
+  "How do I file a VAWC complaint?",
+  "What is small claims court and how do I use it?",
+];
+
+const SUGGESTED_FIL = [
   "Paano mag-file ng annulment sa Pilipinas?",
   "Ano ang aking mga karapatan kapag inaresto ng pulis?",
   "Paano mag-reklamo ng illegal dismissal?",
@@ -128,7 +137,7 @@ function CopyBtn({ text }: { text: string }) {
     <button
       onClick={async () => { await navigator.clipboard.writeText(text); setOk(true); setTimeout(() => setOk(false), 2000); }}
       className="p-1 rounded hover:bg-gray-100 text-gray-300 hover:text-gray-500 transition-colors"
-      title="Kopyahin"
+      title="Copy"
     >
       {ok ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -164,11 +173,11 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setErr("Hindi ma-create ang payment. Subukan ulit.");
+        setErr("Could not create payment. Please try again.");
         setLoading(false);
       }
     } catch {
-      setErr("May problema sa koneksyon. Subukan ulit.");
+      setErr("Connection error. Please try again.");
       setLoading(false);
     }
   }
@@ -184,10 +193,10 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">
-          Naabot mo na ang iyong 5 tanong
+          You have reached your 5 free questions
         </h2>
         <p className="text-center text-gray-500 text-sm mb-5">
-          Mag-upgrade para sa walang limitasyong tanong sa loob ng <strong>24 na oras</strong>.
+          Upgrade for unlimited questions for <strong>24 hours</strong>.
         </p>
 
         <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-5">
@@ -196,9 +205,9 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
             <span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span>
           </div>
           <div className="space-y-1.5 text-sm text-gray-600">
-            <p>✅ Walang limitasyong tanong (24 hrs)</p>
-            <p>✅ Mabilis na AI legal na tugon</p>
-            <p>✅ Nakabatay sa batas ng Pilipinas</p>
+            <p>✅ Unlimited questions (24 hrs)</p>
+            <p>✅ Fast AI legal responses</p>
+            <p>✅ Based on Philippine law</p>
           </div>
         </div>
 
@@ -218,14 +227,14 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
           ) : (
             <CreditCard className="w-4 h-4" />
           )}
-          {loading ? "Inihahanda..." : "Bayad gamit ang GCash — ₱99"}
+          {loading ? "Processing..." : "Pay with GCash — ₱99"}
         </button>
 
         <button
           onClick={onClose}
           className="w-full text-center text-xs text-gray-400 hover:text-gray-600 py-2 transition-colors"
         >
-          Bumalik sa chat
+          Back to chat
         </button>
       </div>
     </div>
@@ -233,13 +242,13 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
 }
 
 /* ── Sidebar ── */
-function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose?: () => void }) {
+function Sidebar({ onSelect, onClose, isFil }: { onSelect: (q: string) => void; onClose?: () => void; isFil: boolean }) {
   return (
     <aside className="flex flex-col h-full bg-[#0e1f44] text-white w-64 flex-shrink-0">
       <div className="p-4 border-b border-white/10 flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-widest text-blue-300">Mga Paksa</span>
+        <span className="text-xs font-bold uppercase tracking-widest text-blue-300">{isFil ? "Mga Paksa" : "Topics"}</span>
         {onClose && (
-          <button onClick={onClose} className="md:hidden p-1 rounded hover:bg-white/10">
+          <button onClick={onClose} className="p-1 rounded hover:bg-white/10">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -264,7 +273,7 @@ function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose
             <span className="text-xs font-bold text-white">PAO Hotline</span>
           </div>
           <p className="text-lg font-bold text-[#fcd116] tracking-wide">8524-2100</p>
-          <p className="text-xs text-blue-300 mt-0.5">PAO Hotline · Lun–Biy</p>
+          <p className="text-xs text-blue-300 mt-0.5">Mon–Fri</p>
         </div>
       </div>
     </aside>
@@ -281,7 +290,9 @@ export default function ChatPage() {
   const [questionCount, setQuestionCount] = useState(0);
   const [showPayModal, setShowPayModal] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [adviserName] = useState(randomAdviserName);
+  const [senderName] = useState(randomAdviserName);
+  const [lang, setLang] = useState<"en" | "fil">("en");
+  const isFil = lang === "fil";
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -331,7 +342,7 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers,
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, lang }),
       });
       if (res.status === 402) {
         // Token expired or invalid — clear it and show payment modal
@@ -361,7 +372,7 @@ export default function ChatPage() {
       }
     } catch {
       setMessages((prev) => prev.slice(0, -1));
-      setError("May problema sa koneksyon. Subukan ulit.");
+      setError(isFil ? "May problema sa koneksyon. Subukan ulit." : "Connection error. Please try again.");
     } finally {
       setIsStreaming(false);
     }
@@ -382,7 +393,7 @@ export default function ChatPage() {
       <header className="bg-[#0e1f44] text-white px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0 z-10">
         <button
           onClick={() => setSidebarOpen((v) => !v)}
-          className="md:hidden p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -397,6 +408,15 @@ export default function ChatPage() {
           <p className="text-blue-300 text-xs">Your 24/7 Legal Assistant · Philippine Law</p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Language toggle */}
+          <button
+            onClick={() => setLang((l) => l === "en" ? "fil" : "en")}
+            className="flex items-center gap-1 bg-white/10 hover:bg-white/20 rounded-full px-3 py-1 text-xs font-bold transition-colors"
+          >
+            <span className={isFil ? "text-white" : "text-blue-400"}>FIL</span>
+            <span className="text-blue-400/50 mx-0.5">|</span>
+            <span className={!isFil ? "text-white" : "text-blue-400"}>EN</span>
+          </button>
           <div className="hidden sm:flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
             Online
@@ -407,17 +427,17 @@ export default function ChatPage() {
             </div>
           ) : questionCount > 0 && (
             <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
-              {questionCount}/{FREE_LIMIT} questions
+              {questionCount}/{FREE_LIMIT}
             </div>
           )}
           {!isEmpty && (
             <button
               onClick={() => setMessages([])}
-              title="Bagong usapan"
+              title={isFil ? "Bagong usapan" : "New chat"}
               className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Bago</span>
+              <span className="hidden sm:inline">{isFil ? "Bago" : "New"}</span>
             </button>
           )}
         </div>
@@ -425,22 +445,22 @@ export default function ChatPage() {
 
       {/* ── Body ── */}
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Mobile sidebar overlay */}
+        {/* Sidebar overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 z-20 md:hidden"
+            className="fixed inset-0 bg-black/40 z-20"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
-        {/* Sidebar */}
+        {/* Sidebar drawer */}
         <div className={`
-          fixed md:static inset-y-0 left-0 z-30 md:z-auto
+          fixed inset-y-0 left-0 z-30
           transform transition-transform duration-200
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           flex-shrink-0
         `}>
-          <Sidebar onSelect={sendMessage} onClose={() => setSidebarOpen(false)} />
+          <Sidebar onSelect={sendMessage} onClose={() => setSidebarOpen(false)} isFil={isFil} />
         </div>
 
         {/* Chat area */}
@@ -460,14 +480,16 @@ export default function ChatPage() {
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
-                  Kamusta! Ako si <span className="text-[#fcd116]">Torny AI</span>.
+                  {isFil ? <>Kamusta! Ako si <span className="text-[#fcd116]">Torny AI</span>.</> : <>Hi! I&apos;m <span className="text-[#fcd116]">Torny AI</span>.</>}
                 </h2>
                 <p className="text-blue-200 text-sm sm:text-base leading-relaxed mb-1 max-w-lg mx-auto">
-                  Your 24/7 legal assistant — espesyalista sa batas ng Pilipinas. Tanungin mo ako anumang oras, kumpidensyal at mabilis.
+                  {isFil
+                    ? "Your 24/7 legal assistant — espesyalista sa batas ng Pilipinas. Tanungin mo ako anumang oras, kumpidensyal at mabilis."
+                    : "Your 24/7 AI legal assistant specialized in Philippine law. Ask me anything — fast, confidential, always available."}
                 </p>
 
-                <div className="flex justify-center gap-3 my-5 text-xs text-gray-400">
-                  {["⚡ 24/7 Available", "🔒 Kumpidensyal", "📚 Nakabatay sa PH Law", "💬 Sa Filipino"].map((f) => (
+                <div className="flex flex-wrap justify-center gap-2 my-5 text-xs">
+                  {["⚡ 24/7 Available", "🔒 Confidential", "📚 Philippine Law", isFil ? "💬 Sa Filipino" : "💬 In English"].map((f) => (
                     <span key={f} className="bg-white/10 text-blue-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
@@ -479,7 +501,7 @@ export default function ChatPage() {
                     value={input}
                     onChange={(e) => { setInput(e.target.value); autoResize(); }}
                     onKeyDown={handleKeyDown}
-                    placeholder="Itanong ang iyong legal na katanungan..."
+                    placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."}
                     rows={1}
                     disabled={isStreaming}
                     className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm"
@@ -496,10 +518,10 @@ export default function ChatPage() {
                 <div className="h-1 w-24 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126] rounded-full mx-auto mb-8" />
 
                 <p className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-3 text-left">
-                  Mga madalas na tanong
+                  {isFil ? "Mga madalas na tanong" : "Frequently asked questions"}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left mb-8">
-                  {SUGGESTED.map((q) => (
+                  {(isFil ? SUGGESTED_FIL : SUGGESTED_EN).map((q) => (
                     <button
                       key={q}
                       onClick={() => sendMessage(q)}
@@ -512,9 +534,7 @@ export default function ChatPage() {
                 </div>
 
                 <p className="text-xs text-blue-200 leading-relaxed max-w-md mx-auto bg-white/10 rounded-xl p-3 border border-white/20">
-                  <strong className="text-white">Disclaimer:</strong> Para sa pangkalahatang kaalaman lamang,
-                  hindi kapalit ng opisyal na legal na representasyon. Para sa personal na legal na tulong,
-                  tawagan ang <strong className="text-white">PAO: 8524-2100</strong>.
+                  <strong className="text-white">Disclaimer:</strong> For general information only, not a substitute for official legal representation. For personal legal assistance, call <strong className="text-white">PAO: 8524-2100</strong>.
                 </p>
               </div>
             ) : (
@@ -533,8 +553,11 @@ export default function ChatPage() {
                       </div>
                     ) : msg.role === "user" ? (
                       <div className="flex justify-end">
-                        <div className="max-w-[80%] sm:max-w-[70%] bg-[#1e3a7b] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
-                          <p className="text-sm leading-relaxed">{msg.content}</p>
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-xs font-semibold text-gray-400 mr-1">{senderName}</span>
+                          <div className="max-w-[80%] sm:max-w-[70%] bg-[#1e3a7b] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
+                            <p className="text-sm leading-relaxed">{msg.content}</p>
+                          </div>
                         </div>
                       </div>
                     ) : (
@@ -545,7 +568,7 @@ export default function ChatPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
-                            <span className="text-xs font-bold text-[#1e3a7b]">{adviserName}</span>
+                            <span className="text-xs font-bold text-[#1e3a7b]">Torny</span>
                             <CopyBtn text={msg.content} />
                           </div>
                           <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm space-y-1">
@@ -578,7 +601,7 @@ export default function ChatPage() {
                   value={input}
                   onChange={(e) => { setInput(e.target.value); autoResize(); }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Itanong ang iyong legal na katanungan sa Filipino o English..."
+                  placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."}
                   rows={1}
                   disabled={isStreaming}
                   className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400"
@@ -592,8 +615,8 @@ export default function ChatPage() {
                 </button>
               </form>
               <p className="text-center text-xs text-gray-400 mt-2 max-w-3xl mx-auto">
-                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> ipadala ·{" "}
-                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Shift+Enter</kbd> bagong linya
+                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
+                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Shift+Enter</kbd> {isFil ? "bagong linya" : "new line"}
               </p>
             </div>
           )}
