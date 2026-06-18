@@ -1,23 +1,25 @@
 "use client";
 import { useState, useRef, useEffect, FormEvent } from "react";
 import {
-  Scale, Send, Loader2, ChevronRight, AlertCircle,
+  Send, Loader2, ChevronRight, AlertCircle,
   Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard,
 } from "lucide-react";
 
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
 
-const ADVISER_NAMES = [
-  "Atty. Maria Santos", "Atty. Jose Reyes", "Atty. Ana Cruz",
-  "Atty. Carlo Mendoza", "Atty. Liza Bautista", "Atty. Ramon dela Cruz",
-  "Atty. Grace Villanueva", "Atty. Miguel Torres", "Atty. Sofia Ramos",
-  "Atty. Paolo Aquino", "Atty. Donna Flores", "Atty. Kevin Navarro",
-  "Atty. Carla Ocampo", "Atty. James Castillo", "Atty. Nina Pascual",
-];
+const NAME_PARTS = {
+  adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
+  fruits:     ["Mango", "Lemon", "Berry", "Melon", "Peach", "Guava", "Apple", "Grape", "Papaya", "Kiwi"],
+  animals:    ["Bunny", "Panda", "Otter", "Puppy", "Koala", "Duckling", "Hamster", "Penguin", "Fox", "Lamb"],
+};
 
 function randomAdviserName() {
-  return ADVISER_NAMES[Math.floor(Math.random() * ADVISER_NAMES.length)];
+  const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+  const style = Math.floor(Math.random() * 3);
+  if (style === 0) return `${pick(NAME_PARTS.adjectives)} ${pick(NAME_PARTS.animals)}`;
+  if (style === 1) return `${pick(NAME_PARTS.fruits)} ${pick(NAME_PARTS.animals)}`;
+  return `${pick(NAME_PARTS.adjectives)} ${pick(NAME_PARTS.fruits)}`;
 }
 
 type Role = "user" | "assistant";
@@ -174,8 +176,9 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full bg-[#fcd116]/20 flex items-center justify-center">
-            <Scale className="w-8 h-8 text-[#1e3a7b]" />
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
           </div>
         </div>
 
@@ -382,8 +385,9 @@ export default function ChatPage() {
         >
           <Menu className="w-5 h-5" />
         </button>
-        <div className="w-9 h-9 rounded-full bg-[#fcd116] flex items-center justify-center flex-shrink-0">
-          <Scale className="w-5 h-5 text-[#1e3a7b]" />
+        <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">
@@ -445,8 +449,9 @@ export default function ChatPage() {
               /* Welcome screen */
               <div className="max-w-2xl mx-auto px-4 py-10 text-center">
                 <div className="relative inline-block mb-6">
-                  <div className="w-20 h-20 rounded-full bg-[#1e3a7b] flex items-center justify-center shadow-lg">
-                    <Scale className="w-10 h-10 text-[#fcd116]" />
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-[#1e3a7b] shadow-lg">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-400 border-2 border-white flex items-center justify-center">
                     <span className="text-white text-xs font-bold">AI</span>
@@ -517,8 +522,9 @@ export default function ChatPage() {
                   <div key={i} className="msg-enter">
                     {msg.role === "assistant" && msg.content === "" && isStreaming ? (
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1e3a7b] flex items-center justify-center mt-1 shadow-sm">
-                          <Scale className="w-4 h-4 text-[#fcd116]" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
                         </div>
                         <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                           <TypingDots />
@@ -532,8 +538,9 @@ export default function ChatPage() {
                       </div>
                     ) : (
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1e3a7b] flex items-center justify-center mt-1 shadow-sm">
-                          <Scale className="w-4 h-4 text-[#fcd116]" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/torny.png" alt="Torny" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display="none"; }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
