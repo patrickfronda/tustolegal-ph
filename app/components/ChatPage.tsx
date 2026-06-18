@@ -26,7 +26,7 @@ const SUGGESTED = [
   "Paano mag-file ng annulment sa Pilipinas?",
   "Ano ang aking mga karapatan kapag inaresto ng pulis?",
   "Paano mag-reklamo ng illegal dismissal?",
-  "Paano makakakuha ng libreng abogado sa PAO?",
+  "Paano makakakuha ng abogado sa PAO?",
   "Paano mag-file ng VAWC complaint?",
   "Ano ang small claims court at paano ito gamitin?",
 ];
@@ -168,10 +168,10 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">
-          Naabot mo na ang 5 libreng tanong
+          Naabot mo na ang iyong 5 tanong
         </h2>
         <p className="text-center text-gray-500 text-sm mb-5">
-          Mag-bayad ng isang beses para sa walang limitasyong tanong sa loob ng <strong>24 na oras</strong>.
+          Mag-upgrade para sa walang limitasyong tanong sa loob ng <strong>24 na oras</strong>.
         </p>
 
         <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-5">
@@ -209,7 +209,7 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
           onClick={onClose}
           className="w-full text-center text-xs text-gray-400 hover:text-gray-600 py-2 transition-colors"
         >
-          Bumalik at gamitin ang 5 libreng tanong
+          Bumalik sa chat
         </button>
       </div>
     </div>
@@ -248,7 +248,7 @@ function Sidebar({ onSelect, onClose }: { onSelect: (q: string) => void; onClose
             <span className="text-xs font-bold text-white">PAO Hotline</span>
           </div>
           <p className="text-lg font-bold text-[#fcd116] tracking-wide">8524-2100</p>
-          <p className="text-xs text-blue-300 mt-0.5">Libreng abogado · Lun–Biy</p>
+          <p className="text-xs text-blue-300 mt-0.5">PAO Hotline · Lun–Biy</p>
         </div>
       </div>
     </aside>
@@ -374,9 +374,9 @@ export default function ChatPage() {
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">
-            TustoLegal <span className="text-[#fcd116]">PH</span>
+            Torny <span className="text-[#fcd116]">AI</span>
           </h1>
-          <p className="text-blue-300 text-xs">AI Abogado · Eksperto sa Batas ng Pilipinas</p>
+          <p className="text-blue-300 text-xs">Your 24/7 Legal Assistant · Philippine Law</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
@@ -389,7 +389,7 @@ export default function ChatPage() {
             </div>
           ) : questionCount > 0 && (
             <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">
-              {questionCount}/{FREE_LIMIT} libre
+              {questionCount}/{FREE_LIMIT} questions
             </div>
           )}
           {!isEmpty && (
@@ -441,15 +441,14 @@ export default function ChatPage() {
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-                  Kamusta! Ako si <span className="text-[#1e3a7b]">Abogado AI</span>.
+                  Kamusta! Ako si <span className="text-[#1e3a7b]">Torny AI</span>.
                 </h2>
                 <p className="text-gray-500 text-sm sm:text-base leading-relaxed mb-1 max-w-lg mx-auto">
-                  Espesyalista ako sa batas ng Pilipinas. Tanungin mo ako tungkol sa iyong legal na
-                  sitwasyon — agad, libre, at kumpidensyal.
+                  Your 24/7 legal assistant — espesyalista sa batas ng Pilipinas. Tanungin mo ako anumang oras, kumpidensyal at mabilis.
                 </p>
 
                 <div className="flex justify-center gap-3 my-5 text-xs text-gray-400">
-                  {["⚡ Instant", "🔒 Kumpidensyal", "📚 Nakabatay sa PH Law", "💬 Sa Filipino"].map((f) => (
+                  {["⚡ 24/7 Available", "🔒 Kumpidensyal", "📚 Nakabatay sa PH Law", "💬 Sa Filipino"].map((f) => (
                     <span key={f} className="bg-gray-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
@@ -495,7 +494,7 @@ export default function ChatPage() {
 
                 <p className="text-xs text-gray-400 leading-relaxed max-w-md mx-auto bg-gray-50 rounded-xl p-3 border border-gray-200">
                   <strong className="text-gray-600">Disclaimer:</strong> Para sa pangkalahatang kaalaman lamang,
-                  hindi kapalit ng opisyal na legal na representasyon. Para sa libreng abogado,
+                  hindi kapalit ng opisyal na legal na representasyon. Para sa personal na legal na tulong,
                   tawagan ang <strong className="text-gray-600">PAO: 8524-2100</strong>.
                 </p>
               </div>
@@ -525,7 +524,7 @@ export default function ChatPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
-                            <span className="text-xs font-bold text-[#1e3a7b]">Abogado AI</span>
+                            <span className="text-xs font-bold text-[#1e3a7b]">Torny AI</span>
                             <CopyBtn text={msg.content} />
                           </div>
                           <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm space-y-1">
