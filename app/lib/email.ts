@@ -54,20 +54,27 @@ ${applicant.email}
 ${applicant.phone || ""}
 
 ──────────────────────────────────
-This application was submitted via TustoJobs ME — the smart job matching platform for Filipino professionals.
+This application was submitted via TustoJobs ME — the smart job matching platform for UAE & Middle East professionals.
 `;
 
   const attachments: Array<{ filename: string; path: string }> = [];
 
+  function resolveFilePath(storedPath: string): string {
+    if (storedPath.startsWith("/_vercel_upload/")) {
+      return storedPath.replace("/_vercel_upload/", "/tmp/tustojobs-uploads/");
+    }
+    return path.join(process.cwd(), "public", storedPath);
+  }
+
   if (applicant.cvPath) {
-    const fullPath = path.join(process.cwd(), "public", applicant.cvPath);
+    const fullPath = resolveFilePath(applicant.cvPath);
     if (fs.existsSync(fullPath)) {
       attachments.push({ filename: `CV_${applicant.name.replace(/\s+/g, "_")}.pdf`, path: fullPath });
     }
   }
 
   if (applicant.photoPath) {
-    const fullPath = path.join(process.cwd(), "public", applicant.photoPath);
+    const fullPath = resolveFilePath(applicant.photoPath);
     if (fs.existsSync(fullPath)) {
       const ext = path.extname(applicant.photoPath);
       attachments.push({ filename: `Photo_${applicant.name.replace(/\s+/g, "_")}${ext}`, path: fullPath });
