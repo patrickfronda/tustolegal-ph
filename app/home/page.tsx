@@ -44,17 +44,17 @@ export default function HomePage() {
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm text-blue-200 mb-6">
               <span className="w-2 h-2 rounded-full bg-[#fcd116] animate-pulse" />
-              Free AI Legal Guidance · Philippine Law
+              AI Legal Guidance · Philippine Law
             </div>
             <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-6">
               Your Rights,<br /><span className="text-[#fcd116]">Explained Simply</span>
             </h1>
             <p className="text-blue-100 text-lg leading-relaxed mb-8 max-w-lg">
-              Torny AI gives you instant, accurate legal guidance based on Philippine law — covering family, labor, criminal, property, and more. Free, confidential, 24/7.
+              Torny AI gives you instant, accurate legal guidance based on Philippine law — covering family, labor, criminal, property, and more. Confidential, 24/7.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/" className="flex items-center justify-center gap-2 bg-[#fcd116] text-[#0e1f44] px-6 py-3.5 rounded-full font-bold text-base hover:bg-yellow-300 transition shadow-lg">
-                Ask Torny AI Free <ArrowRight className="w-5 h-5" />
+                Ask Torny AI <ArrowRight className="w-5 h-5" />
               </Link>
               <Link href="/lawyers" className="flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-full font-semibold text-base hover:bg-white/20 transition">
                 Find a Lawyer
