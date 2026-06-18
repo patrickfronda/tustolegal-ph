@@ -1,33 +1,27 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: "CampaignIQ — Election Analytics Dashboard",
-  description: "Real-time polling, sentiment, and voter analytics for election campaigns",
+  title: "TustoJobs PH — Smart Job Matching for Filipino Professionals",
+  description: "Upload your CV, tell us your skills, and we'll match you with the right Philippine companies and send your application automatically.",
+  manifest: "/manifest.json",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "TustoJobs PH" },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#1d4ed8",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={geist.variable}>
+      <body className="bg-slate-50 font-sans antialiased">{children}</body>
     </html>
   );
 }
