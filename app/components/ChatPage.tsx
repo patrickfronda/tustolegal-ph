@@ -8,6 +8,18 @@ import {
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
 
+const ADVISER_NAMES = [
+  "Atty. Maria Santos", "Atty. Jose Reyes", "Atty. Ana Cruz",
+  "Atty. Carlo Mendoza", "Atty. Liza Bautista", "Atty. Ramon dela Cruz",
+  "Atty. Grace Villanueva", "Atty. Miguel Torres", "Atty. Sofia Ramos",
+  "Atty. Paolo Aquino", "Atty. Donna Flores", "Atty. Kevin Navarro",
+  "Atty. Carla Ocampo", "Atty. James Castillo", "Atty. Nina Pascual",
+];
+
+function randomAdviserName() {
+  return ADVISER_NAMES[Math.floor(Math.random() * ADVISER_NAMES.length)];
+}
+
 type Role = "user" | "assistant";
 interface Message { role: Role; content: string }
 
@@ -265,6 +277,7 @@ export default function ChatPage() {
   const [questionCount, setQuestionCount] = useState(0);
   const [showPayModal, setShowPayModal] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [adviserName] = useState(randomAdviserName);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -524,7 +537,7 @@ export default function ChatPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
-                            <span className="text-xs font-bold text-[#1e3a7b]">Torny AI</span>
+                            <span className="text-xs font-bold text-[#1e3a7b]">{adviserName}</span>
                             <CopyBtn text={msg.content} />
                           </div>
                           <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm space-y-1">
