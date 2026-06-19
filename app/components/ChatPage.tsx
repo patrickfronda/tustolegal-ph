@@ -5,7 +5,7 @@ import {
   Send, Loader2, ChevronRight, AlertCircle,
   Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard, Home, Download,
 } from "lucide-react";
-import { TORNY_SRC } from "@/app/lib/torny-src";
+import { TORNY_SRC, TORNY_STYLE } from "@/app/lib/torny-src";
 
 const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
@@ -149,7 +149,7 @@ function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+            <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
           </div>
         </div>
         <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Before we start 👋</h2>
@@ -232,7 +232,7 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
         <div className="flex justify-center mb-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]"><img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" /></div>
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]"><img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} /></div>
         </div>
 
         {qr ? (
@@ -538,7 +538,7 @@ export default function ChatPage() {
         <Link href="/home" className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-blue-300 hover:text-white" title="Home"><Home className="w-5 h-5" /></Link>
         <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">Torny <span className="text-[#fcd116]">AI</span></h1>
@@ -579,7 +579,7 @@ export default function ChatPage() {
                 <div className="relative inline-block mb-6">
                   <div className="w-20 h-20 rounded-full overflow-hidden bg-[#1e3a7b] shadow-lg">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+                    <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-400 border-2 border-white flex items-center justify-center">
                     <span className="text-white text-xs font-bold">AI</span>
@@ -624,7 +624,7 @@ export default function ChatPage() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
                         </div>
                         <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"><TypingDots /></div>
                       </div>
@@ -641,7 +641,7 @@ export default function ChatPage() {
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">

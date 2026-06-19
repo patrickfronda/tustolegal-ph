@@ -3,7 +3,7 @@ import {
   ChevronLeft, Plus, BadgeCheck, MapPin, Search, Wallet,
   Sparkles, Globe2, Languages, Clock, ArrowRight, Phone,
 } from "lucide-react";
-import { TORNY_SRC } from "@/app/lib/torny-src";
+import { TORNY_SRC, TORNY_STYLE } from "@/app/lib/torny-src";
 
 export const metadata = {
   title: "List Your Services on Torny AI — Invitation for Lawyers",
@@ -154,7 +154,7 @@ export default function LawyerInvitePage() {
         <div className="max-w-2xl mx-auto px-4">
           <div className="w-16 h-16 rounded-full overflow-hidden bg-[#fcd116] mx-auto mb-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={TORNY_SRC} alt="Torny AI" className="w-full h-full object-cover" />
+            <img src={TORNY_SRC} alt="Torny AI" className="w-full h-full object-cover" style={TORNY_STYLE} />
           </div>
           <h2 className="text-2xl font-extrabold mb-3">Ready to reach more clients?</h2>
           <p className="text-blue-200 mb-6">Join our nationwide directory of IBP-accredited lawyers. Free to list, no commissions, good exposure in your region.</p>
@@ -170,7 +170,7 @@ export default function LawyerInvitePage() {
           <div className="flex items-center gap-2 font-bold text-white">
             <div className="w-8 h-8 rounded-full overflow-hidden bg-[#fcd116]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
             </div>
             Torny AI
           </div>
