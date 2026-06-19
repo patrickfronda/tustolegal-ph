@@ -156,12 +156,12 @@ function ThinkingBubble() {
     return () => clearInterval(t);
   }, []);
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-2">
       <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
       </div>
-      <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+      <div className="flex-1 bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-3 shadow-sm">
         <TypingDots />
         <p className="text-[11px] text-gray-400 italic mt-1">{THINKING_PHRASES[phraseIdx]}</p>
       </div>
@@ -670,17 +670,17 @@ export default function ChatPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex gap-3">
+                      <div className="flex gap-2">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 ml-1">
+                          <div className="flex items-center gap-2 mb-1 ml-0.5">
                             <span className="text-xs font-bold text-[#1e3a7b]">Torny</span>
                             <CopyBtn text={msg.content} />
                           </div>
-                          <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm space-y-1">
+                          <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-3 shadow-sm space-y-1">
                             <MarkdownBody text={msg.content} />
                           </div>
                         </div>
