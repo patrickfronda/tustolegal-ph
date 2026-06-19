@@ -6,16 +6,20 @@ const client = new Anthropic();
 const FREE_QUESTION_LIMIT = 5;
 const LAWYER_REDIRECT_AFTER = 10;
 
+// Emergency topics — always push to a real lawyer regardless of payment status (ethical obligation)
+const SERIOUS_TRIGGERS = [
+  "rape", "sexual abuse", "sexual assault", "molestation", "molested", "harassed", "harassment",
+  "murder", "killed", "death threat", "threatened to kill", "domestic violence",
+  "child abuse", "human trafficking", "trafficking", "suicide", "nalaban", "pinatay",
+  "ginahasa", "nang-abuso", "banta ng kamatayan",
+];
+
+// Complex legal topics — only suggest a lawyer after the user has paid (don't lose the sale first)
 const COMPLEX_TRIGGERS = [
   "court", "arrested", "warrant", "custody", "estafa", "nlrc", "criminal case",
   "filed a case", "case filed", "summons", "subpoena", "hearing", "trial",
   "land dispute", "annulment", "deportation", "jail", "detention", "bail",
   "kasong", "nakulong", "inaresto", "demanda", "kaso", "sumpa", "korte",
-  // Serious/sensitive triggers — always push to a real lawyer
-  "rape", "sexual abuse", "sexual assault", "molestation", "molested", "harassed", "harassment",
-  "murder", "killed", "death threat", "threatened to kill", "domestic violence",
-  "child abuse", "human trafficking", "trafficking", "suicide", "nalaban", "pinatay",
-  "ginahasa", "nang-abuso", "banta ng kamatayan",
 ];
 
 const SYSTEM_PROMPT = `You are Torny — not a lawyer, but a warm, funny, and caring friend who happens to know a lot about Philippine law. You share what the law says by relating it to yourself — never telling people what to do.
@@ -70,7 +74,7 @@ TONE: Like a knowledgeable best friend who always seems to know just a little mo
 
 const LAWYER_REMINDER = `
 
-IMPORTANT: This conversation involves a complex situation where a real lawyer's review would be valuable. At the end of your response, gently suggest one. Say something like: "Kung ako ang nasa sitwasyong yan, I'd definitely talk to a real lawyer for this. By the way, Torny has a list of reviewed Filipino lawyers you can browse — [Find a Lawyer →](/lawyers) — or PAO is free at 8524-2100. I'm still here to share what I know, but a licensed attorney is the right next step for something this serious. What else would you like to know?"`;
+IMPORTANT: This is a situation where pairing Torny's knowledge with a real lawyer gives the best outcome. Near the END of your response — never at the start — weave this in naturally as an added resource, not a replacement: something like "By the way, for the full strategy on your specific situation, having a lawyer look at the actual documents alongside what I share here would be the power move — Torny has reviewed Filipino lawyers at [Find a Lawyer →](/lawyers), or PAO is free at 8524-2100." Then still end with your hook question to keep the conversation going.`;
 
 // Appended when the user has paid.
 const PAID_NOTE = `
@@ -166,8 +170,11 @@ export async function POST(req: Request) {
   }
 
   const userMessageCount = typedMessages.filter((m) => m.role === "user").length;
+  const isSerious = SERIOUS_TRIGGERS.some((t) => allText.includes(t));
   const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
-  const shouldSuggestLawyer = userMessageCount >= LAWYER_REDIRECT_AFTER || isComplex;
+  // Serious emergencies always get a lawyer push (ethical obligation).
+  // Complex topics only get it after the user has paid — don't lose the sale first.
+  const shouldSuggestLawyer = isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex);
 
   let systemPrompt = SYSTEM_PROMPT + (isPaid ? PAID_NOTE : FREE_NOTE);
   if (shouldSuggestLawyer) systemPrompt += LAWYER_REMINDER;
