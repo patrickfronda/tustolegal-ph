@@ -126,6 +126,8 @@ function TypingDots() {
 function PaymentModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+
   async function handlePay() {
     setLoading(true); setErr("");
     try {
@@ -134,18 +136,36 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
       if (data.url) { window.location.href = data.url; } else { setErr("Could not create payment. Please try again."); setLoading(false); }
     } catch { setErr("Connection error. Please try again."); setLoading(false); }
   }
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
         <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#fcd116]"><TornyAvatar /></div></div>
         <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 questions</h2>
-        <p className="text-center text-gray-500 text-sm mb-5">Upgrade for unlimited questions for <strong>24 hours</strong>.</p>
-        <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-5">
+        <p className="text-center text-gray-500 text-sm mb-4">Upgrade for unlimited questions for <strong>24 hours</strong>.</p>
+
+        <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-4">
           <div className="flex items-center justify-between mb-3"><span className="text-sm font-bold text-gray-700">TustoLegal Pro Session</span><span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span></div>
-          <div className="space-y-1.5 text-sm text-gray-600"><p>✅ Unlimited questions (24 hrs)</p><p>✅ Fast AI legal responses</p><p>✅ Based on Philippine law</p></div>
+          <div className="space-y-1.5 text-sm text-gray-600">
+            <p>✅ Unlimited questions (24 hrs)</p>
+            <p>✅ Fast AI legal responses</p>
+            <p>✅ Based on Philippine law</p>
+          </div>
         </div>
+
+        <div className="flex gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 text-xs text-amber-800 mb-4">
+          <span className="flex-shrink-0 mt-0.5">⚠️</span>
+          <span><strong>Important:</strong> If you close this browser tab or window, your conversation history will be lost. Your 24-hour access will still be active, but you will need to start a new chat session.</span>
+        </div>
+
+        <label className="flex items-start gap-2.5 cursor-pointer mb-4">
+          <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#1e3a7b] flex-shrink-0" />
+          <span className="text-xs text-gray-600">I understand that closing this tab will end my current conversation.</span>
+        </label>
+
         {err && <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-3 py-2 text-xs mb-3"><AlertCircle className="w-4 h-4 flex-shrink-0" />{err}</div>}
-        <button onClick={handlePay} disabled={loading} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2">
+
+        <button onClick={handlePay} disabled={loading || !confirmed} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed mb-2">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
           {loading ? "Processing..." : "Pay with GCash — ₱99"}
         </button>
@@ -202,7 +222,6 @@ export default function ChatPage() {
     const stored = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (stored) setAccessToken(stored);
 
-    // Get or create persistent user ID
     let uid = localStorage.getItem(USER_ID_KEY);
     if (!uid) {
       uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -210,7 +229,6 @@ export default function ChatPage() {
     }
     setUserId(uid);
 
-    // Restore question count with 24h expiry
     try {
       const raw = localStorage.getItem(SESSION_KEY);
       if (raw) {
@@ -224,7 +242,6 @@ export default function ChatPage() {
       }
     } catch { localStorage.removeItem(SESSION_KEY); }
 
-    // Track visit
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -249,7 +266,6 @@ export default function ChatPage() {
     if (newCount > QUESTION_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
 
-    // Persist count to localStorage with timestamp
     try {
       const raw = localStorage.getItem(SESSION_KEY);
       const existing = raw ? JSON.parse(raw) : null;
@@ -340,6 +356,13 @@ export default function ChatPage() {
           )}
         </div>
       </header>
+
+      {accessToken && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center gap-2 text-xs text-amber-800">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Reminder:</strong> Keep this tab open. If you close it, your conversation history will be lost. Your 24-hour access remains active but you will need to start a new chat.</span>
+        </div>
+      )}
 
       <div className="flex flex-1 overflow-hidden relative">
         {sidebarOpen && <div className="fixed inset-0 bg-black/40 z-20" onClick={() => setSidebarOpen(false)} />}
