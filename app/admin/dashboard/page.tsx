@@ -236,7 +236,7 @@ export default function AdminDashboard() {
             {analytics.recentSessions.length === 0 && analytics.totalVisits === 0 && (
               <div className="text-center py-12 text-gray-400">
                 <AlertCircle className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p className="text-sm">No analytics data yet. Set up a Redis store to start tracking.</p>
+                <p className="text-sm">No analytics data yet. Set up Vercel KV to start tracking.</p>
               </div>
             )}
           </div>

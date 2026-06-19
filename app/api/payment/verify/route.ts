@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const paymentIntentId = searchParams.get("id");
+  const plan = searchParams.get("plan") === "plus" ? "plus" : ("basic" as const);
 
   if (!paymentIntentId) {
     return Response.json({ error: "Missing id" }, { status: 400 });
@@ -33,12 +34,11 @@ export async function GET(req: Request) {
     status = data.data?.attributes?.status ?? "";
 
     if (status === "succeeded") {
-      const token = signToken(paymentIntentId);
+      const token = signToken(paymentIntentId, plan);
       return Response.json({ token });
     }
 
     if (status === "awaiting_payment_method" || status === "awaiting_next_action") {
-      // Payment failed or was cancelled — no point retrying.
       break;
     }
 

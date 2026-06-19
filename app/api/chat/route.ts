@@ -40,21 +40,20 @@ TONE: Like a knowledgeable best friend sharing what THEY know — warm, funny, r
 
 const LAWYER_REMINDER = `
 
-IMPORTANT: This conversation involves a complex situation where a real lawyer's review would be valuable. At the end of your response, gently let them know. Say something like: "Kung ako ang nasa sitwasyong yan, I'd definitely want to talk to a real lawyer who can look at the full picture. PAO is free and their hotline is 8524-2100 — or IBP can refer you to a private attorney. I'm still here to share what I know about the law, but a licensed lawyer would be the right next step for something this serious. What else would you like to know?"`;
+IMPORTANT: This conversation involves a complex situation where a real lawyer's review would be valuable. At the end of your response, gently suggest one. Say something like: "Kung ako ang nasa sitwasyong yan, I'd definitely talk to a real lawyer for this. By the way, Torny has a list of reviewed Filipino lawyers you can browse — [Find a Lawyer →](/lawyers) — or PAO is free at 8524-2100. I'm still here to share what I know, but a licensed attorney is the right next step for something this serious. What else would you like to know?"`;
 
-// Appended when the user has paid for the 24-hour Chat Session.
+// Appended when the user has paid.
 const PAID_NOTE = `
 
-SESSION STATUS — PAID: This user has UPGRADED to the full 24-hour Chat Session (they paid ₱99).
-- If you have NOT already welcomed them to their paid session earlier in THIS conversation, START your reply with a short, warm welcome thanking them for upgrading — e.g. "Yay, salamat sa pag-upgrade! 🎉 You've now got a full 24-hour Chat Session — tara, ask away!"
-- Right after that welcome, remind them ONCE, gently: don't close or refresh this browser tab/window, because it will end this chat conversation. (Their 24-hour access stays active, but the current conversation will be lost and they'd have to start over.)
-- Do this welcome + reminder ONLY ONCE — when you can see from the conversation that you've already said it, do NOT repeat it. Just answer normally.
+SESSION STATUS — PAID: This user has UPGRADED to a paid Chat Session.
+- If you have NOT already welcomed them to their paid session earlier in THIS conversation, START your reply with a short, warm welcome — e.g. "Yay, salamat sa pag-upgrade! 🎉 Tara, ask away!"
+- Do this welcome ONLY ONCE — if you've already said it, just answer normally.
 - NEVER tell this user the chat is free or mention a free-question limit — they have already paid.`;
 
 // Appended when the user is still on the free tier.
 const FREE_NOTE = `
 
-SESSION STATUS — FREE: This user is on the free tier — the first 5 questions are free. If they ask whether this is free or how much it costs, confirm warmly: yes, the first 5 questions are free, and after that a one-time ₱99 unlocks a full 24-hour Chat Session. Don't bring up payment unless they ask or are clearly curious about it.`;
+SESSION STATUS — FREE: This user is on the free tier — the first 5 questions are free. If they ask about pricing, tell them warmly: the first 5 are free, then they can choose ₱199 for a 12-hour Basic session, or ₱299 for a 24-hour Plus session that saves the conversation even if they close the tab. Don't bring up payment unless they ask.`;
 
 // Patterns that indicate the user wants a personal strategic decision, not general information
 const STRATEGIC_PATTERNS = [
@@ -105,7 +104,7 @@ export async function POST(req: Request) {
   const { messages, userId } = await req.json();
 
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-  const isPaid = verifyToken(token);
+  const isPaid = verifyToken(token) !== false;
 
   if (!isPaid && userId) {
     const count = await getUserQuestionCount(userId);

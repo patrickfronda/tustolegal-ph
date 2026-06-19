@@ -21,7 +21,7 @@ const SECTIONS = [
     p: [
       "Torny AI provides general legal information based on publicly available Philippine laws. It is NOT a law firm and is NOT a licensed attorney. Nothing on the Service constitutes legal advice.",
       "Using the Service does NOT create an attorney-client relationship between you and Torny AI or TORNY INFORMATION TECHNOLOGY SOLUTIONS. Information provided is for general educational purposes only and may not apply to your specific situation.",
-      "For advice about your particular circumstances, always consult a licensed Filipino attorney. For free legal assistance, you may contact the Public Attorney’s Office (PAO) at 8524-2100 or the Integrated Bar of the Philippines (IBP).",
+      "For advice about your particular circumstances, always consult a licensed Filipino attorney. For free legal assistance, you may contact the Public Attorney's Office (PAO) at 8524-2100 or the Integrated Bar of the Philippines (IBP).",
     ],
   },
   {
@@ -40,9 +40,9 @@ const SECTIONS = [
   {
     h: "5. Free Questions and Paid Chat Sessions",
     p: [
-      "The Service offers a limited number of free questions (currently the first 5). After the free questions are used, continued use requires a one-time payment of ₱99, which unlocks a Chat Session for 24 hours from the time of payment.",
+      "The Service offers a limited number of free questions (currently the first 5). After the free questions are used, continued use requires a one-time payment. Two plans are available: a Basic plan (₱199) which unlocks a 12-hour Chat Session, and a Plus plan (₱299) which unlocks a 24-hour Chat Session with conversation history saved in your browser. Pricing is subject to change; the price shown at the time of purchase applies.",
       "Payments are processed by our third-party payment provider, PayMongo, via QR Ph (GCash, Maya, and participating banks). We do not store your full payment details.",
-      "Access is tied to your browser. If you close or refresh your browser tab, your current conversation may be lost, although your 24-hour access remains active for the paid period.",
+      "For the Basic plan, if you close or refresh your browser tab your conversation history will be lost, though your 12-hour access remains active. For the Plus plan, your conversation history is saved in your browser's local storage and can be restored when you return within the 24-hour access window.",
     ],
   },
   {

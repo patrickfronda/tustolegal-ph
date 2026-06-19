@@ -1,163 +1,165 @@
 import Link from "next/link";
-import { ChevronLeft, Phone } from "lucide-react";
-import { TORNY_SRC } from "@/app/lib/torny-src";
 
-export const metadata = {
-  title: "Privacy Policy — Torny AI",
-  description:
-    "How Torny AI, operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS, collects, uses, and protects your information.",
-};
-
-const SECTIONS = [
-  {
-    h: "1. Introduction",
-    p: [
-      "This Privacy Policy explains how Torny AI (“Torny,” “we,” “us,” or “our”), operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS, handles information when you use torny.online (the “Service”). We are committed to protecting your privacy in accordance with the Philippine Data Privacy Act of 2012 (RA 10173).",
-    ],
-  },
-  {
-    h: "2. Information We Collect",
-    p: [
-      "We aim to collect as little personal information as possible. We do NOT require you to create an account, and we do NOT ask for your name or email to use the chat.",
-      "We may process: (a) the messages and questions you send to Torny so we can generate responses; (b) a randomly generated anonymous identifier stored on your device to count free questions and manage your session; (c) basic technical data such as approximate usage and analytics; and (d) payment confirmation data from our payment provider (we do not store full card or wallet details).",
-    ],
-  },
-  {
-    h: "3. How We Use Information",
-    p: [
-      "We use information to: provide and improve the Service; generate AI responses to your questions; enforce free-question limits and unlock paid Chat Sessions; process payments; maintain security; and comply with legal obligations.",
-    ],
-  },
-  {
-    h: "4. AI Processing",
-    p: [
-      "To answer your questions, the content of your messages is sent to our AI provider for processing. Please avoid sharing sensitive personal information (such as full names, government ID numbers, or case details that could identify you) that you do not want processed.",
-    ],
-  },
-  {
-    h: "5. Payments",
-    p: [
-      "Payments are handled by PayMongo via QR Ph (GCash, Maya, and participating banks). Your payment is processed on PayMongo’s systems under their privacy practices. We receive only confirmation of whether a payment succeeded — not your full financial details.",
-    ],
-  },
-  {
-    h: "6. Cookies and Local Storage",
-    p: [
-      "We use your browser’s local storage and similar technologies to remember your session, your anonymous identifier, your free-question count, and whether you have accepted our disclaimer. These are essential to how the Service works.",
-    ],
-  },
-  {
-    h: "7. Sharing of Information",
-    p: [
-      "We do not sell your personal information. We share information only with service providers who help us operate the Service (such as our AI provider, payment processor, and hosting/analytics providers), and where required by law or to protect our rights.",
-    ],
-  },
-  {
-    h: "8. Data Retention",
-    p: [
-      "We retain information only for as long as necessary to provide the Service and for legitimate business or legal purposes. Anonymous session data is short-lived and generally tied to your 24-hour session window.",
-    ],
-  },
-  {
-    h: "9. Your Rights",
-    p: [
-      "Under the Data Privacy Act, you have the right to be informed, to access, to object, to rectify, to erase or block, and to data portability regarding your personal data, as well as the right to lodge a complaint with the National Privacy Commission (NPC). To exercise these rights, contact us through the Service.",
-    ],
-  },
-  {
-    h: "10. Security",
-    p: [
-      "We take reasonable technical and organizational measures to protect your information. However, no method of transmission or storage is completely secure, and we cannot guarantee absolute security.",
-    ],
-  },
-  {
-    h: "11. Children",
-    p: [
-      "The Service is not directed to children under 18. We do not knowingly collect personal information from children.",
-    ],
-  },
-  {
-    h: "12. Changes to This Policy",
-    p: [
-      "We may update this Privacy Policy from time to time. Changes take effect when posted on this page. Please review it periodically.",
-    ],
-  },
-  {
-    h: "13. Contact Us",
-    p: [
-      "Questions about this Privacy Policy or your data? Reach us through the Torny AI website at torny.online.",
-    ],
-  },
-];
+export const metadata = { title: "Privacy Policy — Torny AI" };
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Nav */}
-      <nav className="bg-[#0e1f44] text-white sticky top-0 z-50 shadow-lg">
-        <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <Link href="/home" className="flex items-center gap-2 font-bold text-lg">
-            <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+    <div className="min-h-screen bg-gray-50">
+      <div className="h-1 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126]" />
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <Link href="/" className="text-sm text-[#1e3a7b] hover:underline mb-6 inline-block">← Back to Torny AI</Link>
+        <h1 className="text-3xl font-extrabold text-[#1e3a7b] mb-2">Privacy Policy</h1>
+        <p className="text-gray-500 text-sm mb-10">Effective date: June 19, 2026 · Last updated: June 19, 2026</p>
+
+        <div className="prose prose-sm max-w-none space-y-8 text-gray-700">
+
+          <section>
+            <div className="bg-blue-50 border-l-4 border-[#1e3a7b] p-4 rounded-r-xl text-sm text-[#1e3a7b]">
+              <strong>Summary:</strong> Torny AI does not sell your data. We do not store your conversation history on our servers. Your chats exist only in your browser. We only collect what we need to operate the service and comply with Philippine law.
             </div>
-            Torny <span className="text-[#fcd116]">AI</span>
-          </Link>
-          <Link href="/home" className="flex items-center gap-1 text-sm text-blue-200 hover:text-white transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Back to Home
-          </Link>
-        </div>
-      </nav>
+          </section>
 
-      {/* Header */}
-      <section className="relative bg-gradient-to-br from-[#0e1f44] via-[#1e3a7b] to-[#162d60] text-white">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126]" />
-        <div className="max-w-3xl mx-auto px-4 py-12">
-          <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">Privacy Policy</h1>
-          <p className="text-blue-200 text-sm">Last updated: June 19, 2026</p>
-        </div>
-      </section>
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">1. Who We Are</h2>
+            <p>Torny AI is a Philippine-based AI legal information service. This Privacy Policy explains how we collect, use, and protect your personal information in accordance with the <strong>Data Privacy Act of 2012 (Republic Act No. 10173)</strong> and its Implementing Rules and Regulations.</p>
+          </section>
 
-      {/* Body */}
-      <main className="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
-        <div className="space-y-8">
-          {SECTIONS.map((s) => (
-            <div key={s.h}>
-              <h2 className="text-lg font-bold text-[#0e1f44] mb-2">{s.h}</h2>
-              <div className="space-y-3">
-                {s.p.map((para, i) => (
-                  <p key={i} className="text-gray-600 text-sm leading-relaxed">{para}</p>
-                ))}
-              </div>
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">2. What Information We Collect</h2>
+
+            <h3 className="font-semibold text-gray-800 mt-4 mb-2">2.1 Information You Provide</h3>
+            <ul className="list-disc list-outside ml-5 space-y-1">
+              <li><strong>Chat messages</strong> — the questions you type to Torny AI. These are sent to our AI provider (Anthropic) to generate responses and are <strong>not stored on our servers</strong> after your session ends.</li>
+              <li><strong>Payment information</strong> — processed entirely by PayMongo and GCash. We never see or store your card number, GCash PIN, or banking credentials.</li>
+            </ul>
+
+            <h3 className="font-semibold text-gray-800 mt-4 mb-2">2.2 Information Collected Automatically</h3>
+            <ul className="list-disc list-outside ml-5 space-y-1">
+              <li><strong>Anonymous session ID</strong> — a randomly generated identifier stored in your browser (localStorage) to track your question count and session access. It contains no personal information.</li>
+              <li><strong>Usage analytics</strong> — anonymous visit counts and question counts stored in our database (no personal identifiers attached).</li>
+              <li><strong>IP address and location</strong> — collected by our hosting provider (Vercel) for security and analytics purposes. We see only aggregate country/city data, not individual IP addresses.</li>
+            </ul>
+
+            <h3 className="font-semibold text-gray-800 mt-4 mb-2">2.3 What We Do NOT Collect</h3>
+            <ul className="list-disc list-outside ml-5 space-y-1">
+              <li>Your name, email address, or phone number (unless you contact us directly)</li>
+              <li>Your conversation history — chats are not saved to our servers</li>
+              <li>Sensitive personal information as defined under RA 10173 (health, financial account details, biometrics)</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">3. How We Use Your Information</h2>
+            <ul className="list-disc list-outside ml-5 space-y-1">
+              <li>To provide the Torny AI service and generate responses to your questions</li>
+              <li>To enforce the free question limit and validate paid session access</li>
+              <li>To understand aggregate usage patterns and improve the service</li>
+              <li>To process payments through PayMongo (we receive only a payment confirmation, not your payment details)</li>
+              <li>To comply with Philippine law and respond to lawful requests from authorities</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">4. Third-Party Services</h2>
+            <p>Torny AI uses the following third-party services. Each has its own privacy policy:</p>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="text-left p-2 border border-gray-200 font-semibold">Service</th>
+                    <th className="text-left p-2 border border-gray-200 font-semibold">Purpose</th>
+                    <th className="text-left p-2 border border-gray-200 font-semibold">Data Shared</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="p-2 border border-gray-200">Anthropic (Claude AI)</td>
+                    <td className="p-2 border border-gray-200">AI response generation</td>
+                    <td className="p-2 border border-gray-200">Your chat messages</td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="p-2 border border-gray-200">PayMongo</td>
+                    <td className="p-2 border border-gray-200">Payment processing</td>
+                    <td className="p-2 border border-gray-200">Payment amount only</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2 border border-gray-200">Vercel</td>
+                    <td className="p-2 border border-gray-200">Website hosting</td>
+                    <td className="p-2 border border-gray-200">IP address, request logs</td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="p-2 border border-gray-200">Upstash Redis</td>
+                    <td className="p-2 border border-gray-200">Session and analytics storage</td>
+                    <td className="p-2 border border-gray-200">Anonymous session IDs, counts</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
+          </section>
 
-        <div className="mt-10 pt-6 border-t border-gray-200 flex flex-wrap items-center justify-between gap-3 text-sm">
-          <Link href="/terms" className="text-[#1e3a7b] font-semibold hover:underline">Terms of Service →</Link>
-          <Link href="/" className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] px-5 py-2.5 rounded-full font-bold hover:bg-yellow-300 transition">
-            Chat with Torny AI
-          </Link>
-        </div>
-      </main>
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">5. Data Retention</h2>
+            <ul className="list-disc list-outside ml-5 space-y-1">
+              <li><strong>Chat messages</strong> — not retained on our servers. Once a response is generated, messages are not stored.</li>
+              <li><strong>Session data</strong> (question count, access token) — stored in your browser&apos;s localStorage and expires after 24 hours automatically.</li>
+              <li><strong>Anonymous analytics</strong> — retained for up to 12 months, then deleted.</li>
+              <li><strong>Payment records</strong> — retained by PayMongo per their policy and Philippine financial regulations.</li>
+            </ul>
+          </section>
 
-      {/* Footer */}
-      <footer className="bg-[#070f23] text-blue-300 py-8">
-        <div className="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-bold text-white">
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-[#fcd116]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">6. Your Rights Under RA 10173</h2>
+            <p>As a data subject under the Data Privacy Act of 2012, you have the right to:</p>
+            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
+              <li><strong>Be informed</strong> — know what personal data we collect and how we use it (this policy)</li>
+              <li><strong>Access</strong> — request a copy of any personal data we hold about you</li>
+              <li><strong>Correction</strong> — request correction of inaccurate data</li>
+              <li><strong>Erasure</strong> — request deletion of your personal data</li>
+              <li><strong>Object</strong> — object to processing of your personal data</li>
+              <li><strong>Complain</strong> — lodge a complaint with the <strong>National Privacy Commission (NPC)</strong> at privacy.gov.ph</li>
+            </ul>
+            <p className="mt-3">To exercise any of these rights, contact us at <strong>support@torny.ai</strong>. We will respond within 15 business days.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">7. Security</h2>
+            <p>We implement appropriate technical and organizational measures to protect your information, including:</p>
+            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
+              <li>HTTPS encryption for all data in transit</li>
+              <li>No storage of conversation history on our servers</li>
+              <li>Signed, time-limited access tokens for paid sessions</li>
+              <li>No storage of payment credentials</li>
+            </ul>
+            <p className="mt-3">However, no system is 100% secure. Do not share highly sensitive personal information (e.g., ID numbers, account passwords) in your chat messages.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">8. Children</h2>
+            <p>Torny AI is not intended for users under 18 years of age. We do not knowingly collect personal information from minors. If you believe a minor has used our service, contact us at <strong>support@torny.ai</strong> and we will take appropriate action.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">9. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. The effective date at the top of this page reflects the most recent revision. Continued use of Torny AI after changes are posted constitutes your acceptance of the updated policy.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">10. Contact Us</h2>
+            <p>For privacy-related inquiries or to exercise your rights under RA 10173:</p>
+            <div className="mt-2 bg-gray-100 rounded-xl p-4 text-sm">
+              <p><strong>Torny AI</strong></p>
+              <p>Email: <strong>support@torny.ai</strong></p>
+              <p>For NPC complaints: <a href="https://www.privacy.gov.ph" className="text-[#1e3a7b] underline">privacy.gov.ph</a></p>
             </div>
-            Torny AI
-          </div>
-          <div className="flex items-center gap-1.5 text-sm">
-            <Phone className="w-4 h-4 text-[#fcd116]" />
-            PAO Hotline: <span className="text-[#fcd116] font-bold">8524-2100</span>
-          </div>
-          <p className="text-xs text-blue-400">&copy; {new Date().getFullYear()} TORNY INFORMATION TECHNOLOGY SOLUTIONS.</p>
+          </section>
+
         </div>
-      </footer>
+
+        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4 text-sm text-gray-500">
+          <Link href="/terms" className="text-[#1e3a7b] hover:underline">Terms of Service →</Link>
+          <Link href="/" className="hover:underline">Back to Torny AI →</Link>
+        </div>
+      </div>
     </div>
   );
 }

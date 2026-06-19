@@ -1,12 +1,15 @@
 export const dynamic = "force-dynamic";
 
-const AMOUNT_CENTAVOS = 9900; // ₱99
+const PLANS = {
+  basic: { amount: 19900, label: "12-hour Basic Chat Session" },
+  plus:  { amount: 29900, label: "24-hour Plus Chat Session" },
+};
 
-// QR Ph flow (Payment Intent + Payment Method). Instead of redirecting the user
-// off-site, PayMongo returns a QR code we display on our own page; the customer
-// scans it with GCash / Maya / any bank app, and we poll the intent until it
-// succeeds. No name/email is ever collected.
-export async function POST() {
+export async function POST(req: Request) {
+  const body = await req.json().catch(() => ({}));
+  const plan: "basic" | "plus" = body.plan === "plus" ? "plus" : "basic";
+  const { amount, label } = PLANS[plan];
+
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) {
     return Response.json({ error: "Payment not configured" }, { status: 503 });
@@ -18,18 +21,18 @@ export async function POST() {
     Authorization: `Basic ${auth}`,
   };
 
-  // 1. Create a Payment Intent for ₱99 payable via QR Ph
+  // 1. Create a Payment Intent payable via QR Ph
   const intentRes = await fetch("https://api.paymongo.com/v1/payment_intents", {
     method: "POST",
     headers,
     body: JSON.stringify({
       data: {
         attributes: {
-          amount: AMOUNT_CENTAVOS,
+          amount,
           currency: "PHP",
           payment_method_allowed: ["qrph"],
           capture_type: "automatic",
-          description: "Torny AI — Chat Session (24 hrs)",
+          description: `Torny AI — ${label}`,
           statement_descriptor: "TORNY AI",
         },
       },
@@ -44,7 +47,7 @@ export async function POST() {
   const intent = await intentRes.json();
   const intentId: string = intent.data.id;
 
-  // 2. Create a QR Ph payment method — no billing/personal details collected
+  // 2. Create a QR Ph payment method — no personal details collected
   const methodRes = await fetch("https://api.paymongo.com/v1/payment_methods", {
     method: "POST",
     headers,
@@ -61,7 +64,7 @@ export async function POST() {
   const method = await methodRes.json();
   const methodId: string = method.data.id;
 
-  // 3. Attach the method to the intent — the response carries the QR image
+  // 3. Attach the method to the intent — response carries the QR image
   const attachRes = await fetch(
     `https://api.paymongo.com/v1/payment_intents/${intentId}/attach`,
     {
@@ -87,5 +90,5 @@ export async function POST() {
     return Response.json({ error: "Could not start QR Ph payment" }, { status: 502 });
   }
 
-  return Response.json({ qr: qrImage, intentId });
+  return Response.json({ qr: qrImage, intentId, plan });
 }

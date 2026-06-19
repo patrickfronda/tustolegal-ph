@@ -11,10 +11,10 @@ function SuccessContent() {
   const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
 
   useEffect(() => {
-    const paymentIntentId = params.get("pi");
-    if (!paymentIntentId) { setStatus("error"); return; }
+    const checkoutSessionId = params.get("checkout_session_id");
+    if (!checkoutSessionId) { setStatus("error"); return; }
 
-    fetch(`/api/payment/verify?id=${paymentIntentId}`)
+    fetch(`/api/payment/verify?id=${checkoutSessionId}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.token) {
@@ -47,7 +47,7 @@ function SuccessContent() {
           <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
           <h2 className="text-xl font-extrabold text-gray-900 mb-1">Bayad na! Salamat!</h2>
           <p className="text-sm text-gray-500 mb-4">
-            Aktibo na ang iyong Chat Session sa loob ng <strong>24 na oras</strong>.
+            Maaari ka nang magtanong ng walang limitasyon sa loob ng <strong>24 na oras</strong>.
           </p>
           <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-xs text-green-700">
             Dina-diretso ka pabalik sa chat...

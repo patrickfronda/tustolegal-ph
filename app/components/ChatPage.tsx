@@ -12,7 +12,20 @@ const ACCESS_TOKEN_KEY = "tustolegal_access";
 const USER_ID_KEY = "torny_uid";
 const SESSION_KEY = "torny_qs";
 const DISCLAIMER_KEY = "torny_disclaimer_accepted";
+const MESSAGES_KEY = "torny_messages";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+
+function getPlanFromToken(token: string | null): "basic" | "plus" | null {
+  if (!token) return null;
+  try {
+    const b64 = token.replace(/-/g, "+").replace(/_/g, "/");
+    const decoded = atob(b64);
+    const parts = decoded.split(":");
+    if (parts.length !== 4) return null;
+    const p = parts[2];
+    return p === "basic" || p === "plus" ? p : null;
+  } catch { return null; }
+}
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -61,7 +74,7 @@ const SUGGESTED_FIL = [
 ];
 
 function parseInline(text: string): React.ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**"))
       return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
@@ -69,6 +82,9 @@ function parseInline(text: string): React.ReactNode[] {
       return <em key={i}>{part.slice(1, -1)}</em>;
     if (part.startsWith("`") && part.endsWith("`"))
       return <code key={i} className="bg-blue-50 text-[#1e3a7b] px-1 rounded text-xs font-mono">{part.slice(1, -1)}</code>;
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch)
+      return <Link key={i} href={linkMatch[2]} className="text-[#1e3a7b] underline font-semibold hover:text-blue-800">{linkMatch[1]}</Link>;
     return part;
   });
 }
@@ -157,6 +173,7 @@ function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
 }
 
 function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (token: string) => void }) {
+  const [selectedPlan, setSelectedPlan] = useState<"basic" | "plus" | null>(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -164,16 +181,15 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
   const [waiting, setWaiting] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Stop polling if the modal unmounts.
   useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
 
-  function startPolling(intentId: string) {
+  function startPolling(intentId: string, plan: "basic" | "plus") {
     setWaiting(true);
     let attempts = 0;
     pollRef.current = setInterval(async () => {
       attempts++;
       try {
-        const r = await fetch(`/api/payment/verify?id=${intentId}`);
+        const r = await fetch(`/api/payment/verify?id=${intentId}&plan=${plan}`);
         const d = await r.json();
         if (d.token) {
           if (pollRef.current) clearInterval(pollRef.current);
@@ -181,7 +197,7 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
           return;
         }
       } catch { /* keep waiting */ }
-      if (attempts >= 100) { // ~5 minutes at 3s intervals
+      if (attempts >= 100) {
         if (pollRef.current) clearInterval(pollRef.current);
         setWaiting(false);
         setErr("Hindi pa natanggap ang bayad. Kung nakabayad ka na, sandaling maghintay. Kung hindi, subukan ulit.");
@@ -190,28 +206,38 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
   }
 
   async function handlePay() {
+    if (!selectedPlan) return;
     setLoading(true); setErr("");
     try {
-      const res = await fetch("/api/payment/create", { method: "POST" });
+      const res = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: selectedPlan }),
+      });
       const data = await res.json();
       if (data.qr && data.intentId) {
         setQr(data.qr);
         setLoading(false);
-        startPolling(data.intentId);
+        startPolling(data.intentId, selectedPlan);
       } else {
         setErr("Could not create payment. Please try again."); setLoading(false);
       }
     } catch { setErr("Connection error. Please try again."); setLoading(false); }
   }
 
+  const price = selectedPlan === "plus" ? "₱299" : selectedPlan === "basic" ? "₱199" : "";
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
-        <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" /></div></div>
+        <div className="flex justify-center mb-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]"><img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" /></div>
+        </div>
 
         {qr ? (
           <>
-            <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Scan to Pay — ₱99</h2>
+            <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Scan to Pay — {price}</h2>
             <p className="text-center text-gray-500 text-sm mb-3">
               I-scan ang QR gamit ang <strong>GCash, Maya,</strong> o ang app ng iyong bangko.<br />
               <span className="text-xs text-gray-400">Or i-download at i-upload sa GCash / e-wallet app.</span>
@@ -220,45 +246,68 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qr} alt="QR Ph payment code" className="w-56 h-56 rounded-2xl border border-gray-200" />
             </div>
-            <a
-              href={qr}
-              download="torny-payment-qr.png"
-              className="w-full flex items-center justify-center gap-2 border border-[#1e3a7b] text-[#1e3a7b] font-semibold py-2.5 rounded-2xl hover:bg-[#1e3a7b]/5 transition-colors text-sm mb-3"
-            >
-              <Download className="w-4 h-4" />
-              I-download ang QR Code
+            <a href={qr} download="torny-payment-qr.png" className="w-full flex items-center justify-center gap-2 border border-[#1e3a7b] text-[#1e3a7b] font-semibold py-2.5 rounded-2xl hover:bg-[#1e3a7b]/5 transition-colors text-sm mb-3">
+              <Download className="w-4 h-4" /> I-download ang QR Code
             </a>
             <div className="flex items-center justify-center gap-2 bg-blue-50 border border-blue-200 text-[#1e3a7b] rounded-xl px-3 py-2.5 text-sm mb-3">
               <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
-              <span>Hinihintay ang bayad… huwag isara ang tab na ito.</span>
+              <span>Hinihintay ang bayad…</span>
             </div>
             {err && <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-3 py-2 text-xs mb-3"><AlertCircle className="w-4 h-4 flex-shrink-0" />{err}</div>}
             <button onClick={onClose} className="w-full text-center text-xs text-gray-400 hover:text-gray-600 py-2 transition-colors">Cancel</button>
           </>
         ) : (
           <>
-            <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 free questions</h2>
-            <p className="text-center text-gray-500 text-sm mb-4">Upgrade to a full Chat Session for <strong>24 hours</strong>.</p>
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-xs text-amber-800">
-              <p className="font-semibold mb-1">⚠️ Keep this tab open after paying</p>
-              <p>If you close this browser tab or window, your conversation history will be lost. Your 24-hour access will still be active, but you will need to start a new chat session.</p>
+            <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You&apos;ve used your 5 free questions</h2>
+            <p className="text-center text-gray-500 text-sm mb-4">Choose a plan to keep chatting with Torny.</p>
+
+            <div className="space-y-3 mb-4">
+              {/* Basic plan */}
+              <button
+                onClick={() => setSelectedPlan("basic")}
+                className={`w-full text-left border-2 rounded-2xl p-4 transition-colors ${selectedPlan === "basic" ? "border-[#1e3a7b] bg-[#1e3a7b]/5" : "border-gray-200 hover:border-gray-300"}`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-[#0e1f44]">Basic</span>
+                  <span className="text-lg font-extrabold text-[#1e3a7b]">₱199</span>
+                </div>
+                <p className="text-xs text-gray-500">12-hour session · Conversation resets if you close the tab</p>
+              </button>
+
+              {/* Plus plan */}
+              <button
+                onClick={() => setSelectedPlan("plus")}
+                className={`w-full text-left border-2 rounded-2xl p-4 transition-colors relative ${selectedPlan === "plus" ? "border-[#fcd116] bg-amber-50" : "border-gray-200 hover:border-amber-200"}`}
+              >
+                <div className="absolute -top-2.5 right-4 bg-[#fcd116] text-[#0e1f44] text-xs font-bold px-2.5 py-0.5 rounded-full">Best Value</div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-[#0e1f44]">Plus</span>
+                  <span className="text-lg font-extrabold text-[#1e3a7b]">₱299</span>
+                </div>
+                <p className="text-xs text-gray-500">24-hour session · Conversation saved — continue even after closing the tab</p>
+                <div className="flex gap-1.5 mt-2 flex-wrap">
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">✅ 24 hrs</span>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">✅ History saved</span>
+                </div>
+              </button>
             </div>
-            <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-4">
-              <div className="flex items-center justify-between mb-3"><span className="text-sm font-bold text-gray-700">Torny AI Chat Session</span><span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span></div>
-              <div className="space-y-1.5 text-sm text-gray-600">
-                <p>✅ 24-hour Chat Session</p>
-                <p>✅ Fast AI legal responses</p>
-                <p>✅ Based on Philippine law</p>
+
+            {selectedPlan === "basic" && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-xs text-amber-800">
+                <p className="font-semibold mb-1">⚠️ Keep this tab open after paying</p>
+                <p>Closing this tab will lose your conversation. Your 12-hour access stays active, but you&apos;ll need to start a new chat.</p>
               </div>
-            </div>
+            )}
+
             <label className="flex items-start gap-2.5 mb-4 cursor-pointer">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-gray-300 flex-shrink-0 accent-[#1e3a7b]" />
-              <span className="text-xs text-gray-600">I understand that closing this tab will end my current conversation.</span>
+              <span className="text-xs text-gray-600">I understand the session terms for my selected plan.</span>
             </label>
+
             {err && <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-3 py-2 text-xs mb-3"><AlertCircle className="w-4 h-4 flex-shrink-0" />{err}</div>}
-            <button onClick={handlePay} disabled={loading || !agreed || waiting} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2">
+            <button onClick={handlePay} disabled={loading || !agreed || waiting || !selectedPlan} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-              {loading ? "Processing..." : "Pay with QR Ph — ₱99"}
+              {loading ? "Processing..." : selectedPlan ? `Pay with QR Ph — ${price}` : "Select a plan above"}
             </button>
             <button onClick={onClose} className="w-full text-center text-xs text-gray-400 hover:text-gray-600 py-2 transition-colors">Back to chat</button>
           </>
@@ -307,6 +356,7 @@ export default function ChatPage() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [sessionTs, setSessionTs] = useState<number>(0);
+  const [plan, setPlan] = useState<"basic" | "plus" | null>(null);
   const [senderName] = useState(randomAdviserName);
   const [lang, setLang] = useState<"en" | "fil">("en");
   const isFil = lang === "fil";
@@ -315,7 +365,23 @@ export default function ChatPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem(ACCESS_TOKEN_KEY);
-    if (stored) setAccessToken(stored);
+    if (stored) {
+      setAccessToken(stored);
+      const p = getPlanFromToken(stored);
+      setPlan(p);
+      // Restore saved messages for Plus plan users
+      if (p === "plus") {
+        try {
+          const savedMsgs = localStorage.getItem(MESSAGES_KEY);
+          if (savedMsgs) {
+            const parsed = JSON.parse(savedMsgs) as { role: string; content: string }[];
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setMessages(parsed as Message[]);
+            }
+          }
+        } catch { localStorage.removeItem(MESSAGES_KEY); }
+      }
+    }
 
     // Show disclaimer on first visit
     if (!localStorage.getItem(DISCLAIMER_KEY)) {
@@ -360,6 +426,13 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Persist conversation for Plus plan
+  useEffect(() => {
+    if (plan === "plus" && messages.length > 0) {
+      localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
+    }
+  }, [messages, plan]);
 
   function handleDisclaimerAccept() {
     localStorage.setItem(DISCLAIMER_KEY, "1");
@@ -445,13 +518,19 @@ export default function ChatPage() {
           onSuccess={(token) => {
             localStorage.setItem(ACCESS_TOKEN_KEY, token);
             setAccessToken(token);
+            setPlan(getPlanFromToken(token));
             setShowPayModal(false);
           }}
         />
       )}
-      {accessToken && (
+      {accessToken && plan === "basic" && (
         <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs text-amber-800 text-center flex-shrink-0 z-10">
-          ⚠️ Keep this tab open — closing it will lose your conversation history. Your 24-hour access stays active but you&apos;ll need to start a new chat.
+          ⚠️ Keep this tab open — closing it will lose your conversation. Your 12-hour access stays active but you&apos;ll need to start a new chat.
+        </div>
+      )}
+      {accessToken && plan === "plus" && (
+        <div className="bg-green-50 border-b border-green-200 px-4 py-2 text-xs text-green-800 text-center flex-shrink-0 z-10">
+          ✅ Plus plan — your conversation is saved. You can close and reopen this tab anytime within 24 hours.
         </div>
       )}
       <header className="bg-[#0e1f44] text-white px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0 z-10">
@@ -480,7 +559,7 @@ export default function ChatPage() {
             <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">{questionCount}/{FREE_LIMIT}</div>
           )}
           {!isEmpty && (
-            <button onClick={() => setMessages([])} title={isFil ? "Bagong usapan" : "New chat"} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
+            <button onClick={() => { setMessages([]); localStorage.removeItem(MESSAGES_KEY); }} title={isFil ? "Bagong usapan" : "New chat"} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
               <Plus className="w-3.5 h-3.5" /><span className="hidden sm:inline">{isFil ? "Bago" : "New"}</span>
             </button>
           )}

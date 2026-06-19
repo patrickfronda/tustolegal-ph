@@ -16,7 +16,7 @@ const WHY_TORNY = [
   { icon: BookOpen, title: "Built for Philippine law", desc: "Hindi US law, hindi panggeneral. Family, Labor, Criminal, Property — at cini-cite pa ang aktwal na batas (Family Code, RA 9262)." },
   { icon: Handshake, title: "Knows when to call a pro", desc: "Para sa seryosong usapin, kinokonekta ka niya sa tunay na abogado — PAO at IBP lawyers." },
   { icon: Shield, title: "Confidential & 24/7", desc: "Kahit 3AM, gising si Torny. Pribado, ligtas, at laging available." },
-  { icon: Sparkles, title: "Free to start", desc: "First 5 questions FREE, then ₱99 lang for a full 24-hour Chat Session. Sulit!" },
+  { icon: Sparkles, title: "Free to start", desc: "First 5 questions FREE. Then ₱199 for 12 hrs, or ₱299 for 24 hrs with your conversation saved — kahit isara mo ang tab." },
 ];
 
 export default function HomePage() {
@@ -75,7 +75,7 @@ export default function HomePage() {
               </Link>
             </div>
             <p className="text-blue-200/80 text-xs mt-4 max-w-lg">
-              *Free for your first 5 questions. After that, a one-time ₱99 unlocks a full 24-hour Chat Session.
+              *Free for your first 5 questions. After that: ₱199 for a 12-hour session, or ₱299 for 24 hours with your conversation saved.
             </p>
           </div>
           <div className="flex-shrink-0">

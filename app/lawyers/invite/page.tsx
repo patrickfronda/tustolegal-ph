@@ -34,8 +34,8 @@ const BENEFITS = [
   },
   {
     icon: BadgeCheck,
-    title: "IBP-verified badge",
-    desc: "We highlight your IBP accreditation so clients know they're talking to a legitimate, licensed attorney.",
+    title: "Manually reviewed listing",
+    desc: "Our team reviews every application before it goes live. Clients see a 'Reviewed' badge, so they know your listing has been checked by a real person — not just auto-approved.",
   },
   {
     icon: MapPin,
@@ -56,7 +56,7 @@ const BENEFITS = [
 
 const STEPS = [
   { n: 1, title: "Apply online", desc: "Submit your details at torny.online/lawyers/apply — it takes less than 5 minutes." },
-  { n: 2, title: "We verify you", desc: "Our team reviews and confirms your IBP accreditation, usually within 1–2 business days." },
+  { n: 2, title: "We review your details", desc: "Our team manually reviews your application and IBP roll number, usually within 1–2 business days." },
   { n: 3, title: "Go live", desc: "Your profile appears in our directory — visible to thousands of Filipinos seeking legal help." },
 ];
 
