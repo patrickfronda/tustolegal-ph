@@ -202,8 +202,8 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto px-4">
           <Scale className="w-12 h-12 text-[#fcd116] mx-auto mb-4" />
           <h2 className="text-2xl font-extrabold mb-3">Are You a Lawyer?</h2>
-          <p className="text-blue-200 mb-6">List your legal services and reach thousands of Filipinos who need legal help. Join our growing directory of IBP-accredited lawyers.</p>
-          <Link href="/lawyers/apply" className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] px-6 py-3.5 rounded-full font-bold hover:bg-yellow-300 transition">
+          <p className="text-blue-200 mb-6">List your legal services and reach thousands of Filipinos who need legal help. Nationwide exposure, per region — free listing, no commissions.</p>
+          <Link href="/lawyers/invite" className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] px-6 py-3.5 rounded-full font-bold hover:bg-yellow-300 transition">
             List Your Services <ArrowRight className="w-5 h-5" />
           </Link>
         </div>

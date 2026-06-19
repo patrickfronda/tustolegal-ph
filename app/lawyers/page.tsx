@@ -179,13 +179,21 @@ export default function LawyersPage() {
 
         <div className="bg-[#0e1f44] rounded-2xl p-6 text-center text-white">
           <p className="font-bold text-lg mb-1">Are you a lawyer?</p>
-          <p className="text-blue-300 text-sm mb-4">List your services and reach clients who need your expertise.</p>
-          <Link
-            href="/lawyers/apply"
-            className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] font-bold px-6 py-2.5 rounded-full text-sm hover:bg-yellow-300 transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Apply to List Your Services
-          </Link>
+          <p className="text-blue-300 text-sm mb-4">Nationwide exposure, per region. Free listing, no commissions.</p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <Link
+              href="/lawyers/invite"
+              className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white font-semibold px-6 py-2.5 rounded-full text-sm hover:bg-white/20 transition-colors"
+            >
+              Why list with us?
+            </Link>
+            <Link
+              href="/lawyers/apply"
+              className="inline-flex items-center justify-center gap-2 bg-[#fcd116] text-[#0e1f44] font-bold px-6 py-2.5 rounded-full text-sm hover:bg-yellow-300 transition-colors"
+            >
+              <Plus className="w-4 h-4" /> Apply to List Your Services
+            </Link>
+          </div>
         </div>
       </div>
     </div>
