@@ -112,7 +112,7 @@ export default function HomePage() {
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0e1f44] text-center mb-2">Parang kaibigan mong marunong sa batas 💙</h2>
           <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto">
-            Google makes you dig through 10 links. ChatGPT might give you US law. A lawyer consult costs thousands. Si Torny? Iba siya.
+            Google makes you dig through 10 links. ChatGPT might give you US law. Si Torny? Iba siya.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {WHY_TORNY.map((w) => (
