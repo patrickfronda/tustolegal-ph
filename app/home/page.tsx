@@ -1,5 +1,8 @@
 "use client";
 import Link from "next/link";
+import { ArrowRight, MessageSquare, Search, CheckCircle, Scale, Phone, MapPin, Clock, Smile, Languages, BookOpen, Handshake, Shield, Sparkles } from "lucide-react";
+import { LAWYERS } from "@/app/data/lawyers";
+import { TORNY_SRC, TORNY_STYLE } from "@/app/lib/torny-src";
 
 const JSON_LD = {
   "@context": "https://schema.org",
@@ -56,9 +59,6 @@ const JSON_LD = {
     },
   ],
 };
-import { ArrowRight, MessageSquare, Search, CheckCircle, Scale, Phone, MapPin, Clock, Smile, Languages, BookOpen, Handshake, Shield, Sparkles } from "lucide-react";
-import { LAWYERS } from "@/app/data/lawyers";
-import { TORNY_SRC, TORNY_STYLE } from "@/app/lib/torny-src";
 
 const STEPS = [
   { icon: MessageSquare, title: "Ask Your Question", desc: "Type your legal concern in English or Filipino — Torny AI understands both." },
