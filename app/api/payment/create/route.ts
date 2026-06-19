@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tustolegal.ph";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://torny.online";
 const AMOUNT_CENTAVOS = 9900; // ₱99
 
 // Direct GCash flow (Payment Intent + Payment Method) — sends the user straight
