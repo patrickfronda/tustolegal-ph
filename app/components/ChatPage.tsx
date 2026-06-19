@@ -10,6 +10,7 @@ const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
 const USER_ID_KEY = "torny_uid";
 const SESSION_KEY = "torny_qs";
+const DISCLAIMER_KEY = "torny_disclaimer_accepted";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCABAAEADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABQYABAcCAwj/xAAwEAACAQQABQMEAQIHAAAAAAABAgMABAURBhIhMVETIkEyYXGBsaHRFBUWI0JSwf/EABgBAAMBAQAAAAAAAAAAAAAAAAABBAMC/8QAHBEAAwADAQEBAAAAAAAAAAAAAAECAxExIRJB/9oADAMBAAIRAxEAPwDSKlSgXFeeXB40uhU3MvtiB+PLH8UAe+a4hx+FQf4qXcrfTCnV2/VLNzxvePGZLe0ihT49Ulm/eqQZbqe9u3mYs0jnZdurNXV1OiRiNy0j/Oz0H6BpDQwNxzmVk368RH/X0hqmTAcdw306W2QjW3kY6WRT7CfBB7fxWUswY+32/g16wNttHuKaEz6FqUM4duTd4Kyldw8hhXmO9nevmidAErF+Mcg95mrh+c8u9KCewHxW0ViWSxbycTnH9SDMYl+w3/brQ3pDS29FLHYy4yDBIlbTHv5prtuAdxgzS6J7jZNE1FzjyYMLjlkEfteeZuVd+B5opi7++mVkyEEUbjsYz0NSVkb92VrGl4kAv9CY5U00kxbzzaoVkuCxDG8lpcOSATysO/7pxymTWwh5zFJMT2VB1oRb8QWuRcwcskE5GxHKNb/B+aU1fUdOI40JeJyt1ibqGW2cqyfUN9GHyGHyK22zuUvLOG5j+iVA4+2xWG5KMpmZUQdnPT89a2XhqF4OHrGOQEMIwdH79R/SrE9rZE1p6CZIAJPQCs6zywyZw3dkrepL7jKG16agBToeTzA7+1aHKvPE6D/kpFKhsA7yF+h9JowNdtkf2FY5bctL8KMOOaTb6CcoqQWjzlkgtlcQo7jmaV9bO2O9KB86OzQ/D5iU2KXUSM/+76Lw83Q7GwRvt2/FMN6ltkMYbHIRyRjmDbRCw5vIIBryxWKtLQwLChS3gLOGlGjI5Gt68AfzWO5+fTX5r684BrnKT3MLztHJEVLKIk0ze0bYk67AA9hXETS39tBIZeYPtoZGAdeZe670GVh/HmrOVw8OQM8JnWAyTerE5OlJI0y78/P7q3bWEOJw0Vr6iu6uZeh6s+taFNOdedBq/rT4BcVjJM3n4bhkjWNpQsqq3VSo2eh66PbfmtaAAGgNCs09A2l+Sg1KscYDAddgdf6mtJTZReb6tDdUTW/F+E+TG5Sp/p1VO6sI5izrtZCD2PQn71cqV05T8ZnNOXtCoHYu0Llo3B0fIrq6jCwCORfWVfpfm0wq5xU1ta4uW9dQLhBqMg6LHwftSlacXQyRcs0bI47gjdR3hqfVwujMr70LW0baZPTRYD1YSHm5q8ktonulS2hRGY69i6ofaZyHJ5KK0iZoxI3LzlfaKe8fi4LEbXbynu7f+eK6jFTe34hXnlc6CrHAP/mBubvlAVthQd82u36pjqVKpmVPCO7d9P/Z";
 
@@ -124,6 +125,37 @@ function TypingDots() {
   );
 }
 
+function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+          </div>
+        </div>
+        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Before we start 👋</h2>
+        <p className="text-center text-gray-500 text-sm mb-4">Please read this carefully.</p>
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 space-y-2 text-sm text-gray-700">
+          <p>⚖️ <strong>Torny AI is not a lawyer</strong> and cannot give legal advice.</p>
+          <p>📚 Everything I share is <strong>general legal information</strong> based on Philippine law — not a substitute for professional legal counsel.</p>
+          <p>🔒 For serious cases (criminal, custody, land disputes), please consult a licensed attorney or call <strong>PAO at 8524-2100</strong> for free legal help.</p>
+          <p>✅ By continuing, you confirm you understand these limitations.</p>
+        </div>
+        <label className="flex items-start gap-2.5 mb-5 cursor-pointer">
+          <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-gray-300 flex-shrink-0 accent-[#1e3a7b]" />
+          <span className="text-xs text-gray-600">I understand that Torny AI provides general legal information only, not legal advice, and is not a substitute for a licensed attorney.</span>
+        </label>
+        <button onClick={onAccept} disabled={!checked} className="w-full bg-[#1e3a7b] text-white font-bold py-3.5 rounded-2xl hover:bg-[#162d60] transition-colors text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+          I Understand — Let&apos;s Chat! 🤝
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function PaymentModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -200,6 +232,7 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
   const [showPayModal, setShowPayModal] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [sessionTs, setSessionTs] = useState<number>(0);
@@ -212,6 +245,11 @@ export default function ChatPage() {
   useEffect(() => {
     const stored = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (stored) setAccessToken(stored);
+
+    // Show disclaimer on first visit
+    if (!localStorage.getItem(DISCLAIMER_KEY)) {
+      setShowDisclaimer(true);
+    }
 
     // Get or create persistent user ID
     let uid = localStorage.getItem(USER_ID_KEY);
@@ -251,6 +289,11 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  function handleDisclaimerAccept() {
+    localStorage.setItem(DISCLAIMER_KEY, "1");
+    setShowDisclaimer(false);
+  }
 
   function autoResize() {
     const el = textareaRef.current;
@@ -323,6 +366,7 @@ export default function ChatPage() {
 
   return (
     <div className={`flex flex-col h-screen ${isEmpty ? "bg-[#0e1f44]" : "bg-gray-50"} overflow-hidden`}>
+      {showDisclaimer && <DisclaimerModal onAccept={handleDisclaimerAccept} />}
       {showPayModal && <PaymentModal onClose={() => setShowPayModal(false)} />}
       {accessToken && (
         <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs text-amber-800 text-center flex-shrink-0 z-10">
