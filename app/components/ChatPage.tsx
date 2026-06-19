@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, FormEvent } from "react";
 import Link from "next/link";
 import {
   Send, Loader2, ChevronRight, AlertCircle,
-  Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard, Home,
+  Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard, Home, Download,
 } from "lucide-react";
 import { TORNY_SRC } from "@/app/lib/torny-src";
 
@@ -212,11 +212,22 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
         {qr ? (
           <>
             <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Scan to Pay — ₱99</h2>
-            <p className="text-center text-gray-500 text-sm mb-4">I-scan ang QR gamit ang <strong>GCash, Maya,</strong> o ang app ng iyong bangko.</p>
-            <div className="flex justify-center mb-4">
+            <p className="text-center text-gray-500 text-sm mb-3">
+              I-scan ang QR gamit ang <strong>GCash, Maya,</strong> o ang app ng iyong bangko.<br />
+              <span className="text-xs text-gray-400">Or i-download at i-upload sa GCash / e-wallet app.</span>
+            </p>
+            <div className="flex justify-center mb-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qr} alt="QR Ph payment code" className="w-56 h-56 rounded-2xl border border-gray-200" />
             </div>
+            <a
+              href={qr}
+              download="torny-payment-qr.png"
+              className="w-full flex items-center justify-center gap-2 border border-[#1e3a7b] text-[#1e3a7b] font-semibold py-2.5 rounded-2xl hover:bg-[#1e3a7b]/5 transition-colors text-sm mb-3"
+            >
+              <Download className="w-4 h-4" />
+              I-download ang QR Code
+            </a>
             <div className="flex items-center justify-center gap-2 bg-blue-50 border border-blue-200 text-[#1e3a7b] rounded-xl px-3 py-2.5 text-sm mb-3">
               <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
               <span>Hinihintay ang bayad… huwag isara ang tab na ito.</span>
