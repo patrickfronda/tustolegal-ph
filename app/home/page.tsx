@@ -4,6 +4,62 @@ import { ArrowRight, MessageSquare, Search, CheckCircle, Scale, Phone, MapPin, C
 import { LAWYERS } from "@/app/data/lawyers";
 import { TORNY_SRC, TORNY_STYLE } from "@/app/lib/torny-src";
 
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LegalService",
+      "@id": "https://torny.online/#organization",
+      "name": "Torny AI",
+      "url": "https://torny.online",
+      "description": "AI-powered Philippine legal information service providing free, instant answers about family law, labor law, criminal law, and property law.",
+      "areaServed": { "@type": "Country", "name": "Philippines" },
+      "availableLanguage": ["English", "Filipino"],
+      "priceRange": "Free–₱299",
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I file for annulment in the Philippines?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Annulment in the Philippines is filed in the Regional Trial Court (RTC). Common grounds include psychological incapacity (Art. 36, Family Code), fraud, force, or other grounds under Art. 45. The process typically takes 2–5 years. Consult a licensed attorney or call PAO at 8524-2100 for free legal help." },
+        },
+        {
+          "@type": "Question",
+          "name": "What are my rights when arrested by the police in the Philippines?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Under the Philippine Constitution, you have the right to remain silent, the right to counsel (a lawyer), and the right to be informed of these rights. You cannot be detained without a warrant for more than 36 hours. You have the right to bail for most offenses." },
+        },
+        {
+          "@type": "Question",
+          "name": "How do I file an illegal dismissal complaint in the Philippines?",
+          "acceptedAnswer": { "@type": "Answer", "text": "File an illegal dismissal complaint with the National Labor Relations Commission (NLRC) within 4 years from dismissal. Submit a complaint at the NLRC Regional Arbitration Branch for your area. DOLE and PAO (8524-2100) also provide free assistance." },
+        },
+        {
+          "@type": "Question",
+          "name": "How can I get a free lawyer from PAO in the Philippines?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The Public Attorney's Office (PAO) provides free legal services to indigent Filipinos. Visit the nearest PAO office with proof of indigency. PAO can represent you in court, prepare documents, and give legal advice. Call 8524-2100 (Monday–Friday)." },
+        },
+        {
+          "@type": "Question",
+          "name": "What is VAWC and how do I file a complaint in the Philippines?",
+          "acceptedAnswer": { "@type": "Answer", "text": "VAWC (Republic Act 9262) covers physical, sexual, psychological, and economic abuse against women and children by a partner or husband. File at the Women and Children Protection Desk (WCPD) of your local police station, the barangay office for Barangay Protection Orders, or directly at the Regional Trial Court." },
+        },
+        {
+          "@type": "Question",
+          "name": "What is small claims court in the Philippines and how do I use it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Small claims court handles money claims up to ₱400,000 quickly, without lawyers. File at the Metropolitan Trial Court (MeTC) or Municipal Trial Court (MTC) where the defendant lives or where the contract was made. Both parties represent themselves — no lawyers allowed." },
+        },
+        {
+          "@type": "Question",
+          "name": "What are the rights of OFWs under Philippine law?",
+          "acceptedAnswer": { "@type": "Answer", "text": "OFWs are protected by the Migrant Workers Act (RA 8042 as amended by RA 10022). Rights include standard employment contracts, access to the POEA for disputes, repatriation when needed, and the OWWA welfare fund. DOLE and NLRC handle OFW labor complaints." },
+        },
+      ],
+    },
+  ],
+};
+
 const STEPS = [
   { icon: MessageSquare, title: "Ask Your Question", desc: "Type your legal concern in English or Filipino — Torny AI understands both." },
   { icon: Search, title: "AI Analyzes PH Law", desc: "Torny checks the relevant Philippine laws, codes, and jurisprudence in seconds." },
@@ -24,6 +80,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
       {/* Nav */}
       <nav className="bg-[#0e1f44] text-white sticky top-0 z-50 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
