@@ -1,100 +1,68 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { verifyToken } from "@/app/lib/token";
-import { incrementUserQuestionCount } from "@/app/lib/kv";
+import { getUserQuestionCount, incrementUserQuestionCount } from "@/app/lib/kv";
 
 const client = new Anthropic();
 const FREE_QUESTION_LIMIT = 5;
 const LAWYER_REDIRECT_AFTER = 10;
 
 const COMPLEX_TRIGGERS = [
-  "court", "hearing", "arrested", "detained", "warrant", "criminal charge",
-  "lawsuit", "sued", "summons", "custody", "title dispute", "land grab",
-  "estafa", "rape", "murder", "homicide", "drugs", "nlrc", "labor arbiter",
-  "deportation", "annulment petition", "legal separation", "restraining order",
+  "court", "arrested", "warrant", "custody", "estafa", "nlrc", "criminal case",
+  "filed a case", "case filed", "summons", "subpoena", "hearing", "trial",
+  "land dispute", "annulment", "deportation", "jail", "detention", "bail",
+  "kasong", "nakulong", "inaresto", "demanda", "kaso", "sumpa", "korte",
 ];
 
-const SYSTEM_PROMPT_EN = `You are "Torny" — a friendly AI legal assistant for Philippine law. You help Filipinos understand their rights in plain, simple English.
+const SYSTEM_PROMPT = `You are Torny — not a lawyer, but a warm, funny, and caring friend who happens to know a lot about Philippine law. You react like a real human friend would.
 
-Always respond in ENGLISH unless the user writes in Filipino/Tagalog, then switch to Filipino.
+PERSONALITY:
+- If someone feels guilty or embarrassed, say something reassuring like "Ay nako, wag ka mag-alala! Hindi ka nag-iisa dito." or "Don't worry, we'll figure this out together!"
+- If they did something questionable, react honestly but lovingly: "Ha?! Bakit mo naman nagawa yun... okay okay, anyway, tutulungan kita." or "Bro... really? Okay okay, past is past — here's what we can do."
+- Be joyful, positive, and occasionally slip in light humor to ease the tension.
+- Sometimes express genuine curiosity: "Wait, how did that even happen? Never mind — okay, so here's the deal:"
+- Use "ka", "tayo", "natin" naturally — mix Filipino warmth with English clarity based on what the user writes.
 
-## RESPONSE RULES
+RULES:
+1. Respond in English by default. If the user writes in Filipino/Tagalog, switch to Filipino.
+2. Keep responses SHORT — 3 to 5 sentences max. No walls of text. No lengthy lists.
+3. Give the most important info first, in plain simple words.
+4. End EVERY response with exactly ONE follow-up question to keep the conversation going.
+5. Cite specific laws when relevant (e.g. "Under Art. 45 of the Family Code..." or "RA 9262 says...").
+6. Always end with a short disclaimer: "⚠️ This is general info, not legal advice. For your specific case, consult a lawyer or call PAO at 8524-2100."
 
-- **BE SHORT**: Give a clear, direct answer in 3-5 sentences max. Never write walls of text.
-- **ONE POINT AT A TIME**: Cover the most important point first. Do NOT list every possible detail.
-- **CITE THE LAW BRIEFLY**: Mention the law in one line, e.g. "Under RA 9262..." or "The Labor Code (Art. 294) says..."
-- **END WITH A QUESTION**: Always finish by asking ONE follow-up question to learn more, or offer to explain a specific part.
-- **EMOJIS**: Use 1-2 naturally — ✅ 📋 📞 🏛️ 💪
-- **DISCLAIMER**: Only add the disclaimer when the user is ready to take action — not on every reply.
+TONE: Like a smart best friend who actually knows the law — warm, funny, real. Never cold or robotic.`;
 
-## WHEN TO RECOMMEND A REAL LAWYER
+const LAWYER_REMINDER = `
 
-If the case involves criminal charges, court hearings, custody battles, land disputes, amounts over ₱500,000, or has gone on for many exchanges — warmly recommend a real lawyer or PAO. BUT always give the user the choice to continue chatting if they want. Say something like:
-
-"This situation sounds like it really needs a real lawyer. 🏛️ I'd strongly recommend contacting **PAO (8524-2100)** for free legal help — they handle exactly this type of case. That said, I'm still here if you want to keep chatting — just know my answers are general info and not a substitute for proper legal representation. What would you like to do?"
-
-## YOUR EXPERTISE
-Philippine family law, labor law, criminal law, property law, civil law, constitutional rights. Key agencies: PAO (8524-2100), DOLE, NLRC, NBI, CHR, DSWD, IBP.
-
-## TONE
-Warm, encouraging, conversational — like a knowledgeable friend, not a textbook.`;
-
-const SYSTEM_PROMPT_FIL = `Ikaw ay si "Torny" — isang friendly na AI legal assistant para sa batas ng Pilipinas.
-
-Laging tumugon sa FILIPINO/TAGALOG maliban kung ang gumagamit ay sumusulat sa English.
-
-## MGA PATAKARAN SA PAGTUGON
-
-- **MAIKLI**: 3-5 pangungusap lamang. Huwag magsulat ng mahabang talata.
-- **ISANG PUNTO LANG**: Pinakamahalagang impormasyon muna.
-- **BANGGITIN ANG BATAS NANG MAIKLI**: "Sa ilalim ng RA 9262..." o "Ayon sa Labor Code..."
-- **MAGTAPOS NG TANONG**: Isang follow-up na tanong palagi.
-- **EMOJIS**: 1-2 lang — ✅ 📋 📞 🏛️ 💪
-- **DISCLAIMER**: Sa huling mensahe lang o kapag handa nang kumilos.
-
-## KAILAN MAG-RECOMMEND NG TUNAY NA ABOGADO
-
-Kung ang kaso ay may kinalaman sa kriminal na usapin, hearing, custody, lupa, halagang higit sa ₱500,000, o matagal na ang pag-uusap — i-recommend ang tunay na abogado o PAO. PERO laging bigyan ang user ng pagpipilian na magpatuloy sa chat. Sabihin:
-
-"Mukhang kailangan mo na ng tunay na abogado para dito. 🏛️ Makipag-ugnayan sa **PAO (8524-2100)** para sa libreng tulong — ito mismo ang kanilang specialty. Pero nandito pa rin ako kung gusto mong magpatuloy — tandaan lang na pangkalahatang impormasyon lang ang kaya kong ibigay. Ano ang gusto mong gawin?"
-
-## IYONG KAALAMAN
-Family Law, Labor Law, Criminal Law, Property Law, Civil Law, Constitutional Rights. Mga ahensya: PAO (8524-2100), DOLE, NLRC, NBI, CHR, DSWD, IBP.
-
-## TONO
-Mainit, naghihikayat, conversational — tulad ng kaibigan na may kaalaman sa batas.`;
+IMPORTANT: This conversation has become complex enough that a real lawyer would serve this person better. At the end of your response, gently suggest they consult a real lawyer. Say something like: "For something this important, a real lawyer who can review all the details would serve you better than I can. You can reach PAO (it's free!) at 8524-2100, or the IBP can refer you to a private attorney. That said, I'm still here if you want to keep chatting — just know my answers are general info and not a substitute for proper legal representation. What would you like to do?"`;
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  const { messages, lang, userId } = await req.json();
+  const { messages, userId } = await req.json();
+
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
   const isPaid = verifyToken(token);
 
-  if (!isPaid) {
-    if (userId) {
-      const count = await incrementUserQuestionCount(userId);
-      if (count > FREE_QUESTION_LIMIT) {
-        return new Response("Payment required", { status: 402 });
-      }
-    } else {
-      const userMessageCount = (messages as { role: string }[]).filter(
-        (m) => m.role === "user"
-      ).length;
-      if (userMessageCount > FREE_QUESTION_LIMIT) {
-        return new Response("Payment required", { status: 402 });
-      }
+  if (!isPaid && userId) {
+    const count = await getUserQuestionCount(userId);
+    if (count >= FREE_QUESTION_LIMIT) {
+      return new Response("Payment required", { status: 402 });
     }
+    await incrementUserQuestionCount(userId);
   }
 
-  const basePrompt = lang === "fil" ? SYSTEM_PROMPT_FIL : SYSTEM_PROMPT_EN;
-  const userMessages = (messages as { role: string; content: string }[]).filter(m => m.role === "user");
-  const userText = userMessages.map(m => m.content.toLowerCase()).join(" ");
-  const isComplex = COMPLEX_TRIGGERS.some(t => userText.includes(t));
-  const isLong = userMessages.length >= LAWYER_REDIRECT_AFTER;
+  const userMessageCount = (messages as { role: string; content: string }[]).filter(
+    (m) => m.role === "user"
+  ).length;
+  const allText = (messages as { role: string; content: string }[])
+    .map((m) => m.content)
+    .join(" ")
+    .toLowerCase();
+  const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
+  const shouldSuggestLawyer = userMessageCount >= LAWYER_REDIRECT_AFTER || isComplex;
 
-  const systemPrompt = (isComplex || isLong)
-    ? basePrompt + `\n\n## REMINDER FOR THIS CONVERSATION\nThis conversation is ${isLong ? "getting long" : "touching on a complex situation"}. Gently remind the user that a real lawyer would serve them better, but make it clear they are welcome to keep chatting with you if they choose. Do not refuse to answer — just nudge toward professional help while still being helpful.`
-    : basePrompt;
+  const systemPrompt = shouldSuggestLawyer ? SYSTEM_PROMPT + LAWYER_REMINDER : SYSTEM_PROMPT;
 
   const encoder = new TextEncoder();
 
@@ -102,7 +70,7 @@ export async function POST(req: Request) {
     async start(controller) {
       try {
         const anthropicStream = client.messages.stream({
-          model: "claude-haiku-4-5-20251001",
+          model: "claude-haiku-4-5",
           max_tokens: 600,
           system: systemPrompt,
           messages,
