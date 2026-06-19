@@ -1,137 +1,102 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
-export const alt = "Torny.ai — Libreng Legal na Gabay para sa Bawat Pilipino";
+export const alt = "Torny AI — Your 24/7 Philippine Legal Assistant";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Image() {
+export default async function Image() {
+  const avatarData = await readFile(join(process.cwd(), "public/IMG_0461.jpeg"));
+  const avatarSrc = `data:image/jpeg;base64,${avatarData.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          width: 1200,
+          height: 630,
+          background: "linear-gradient(135deg, #0e1f44 0%, #1e3a7b 60%, #162d60 100%)",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #1e3a7b 0%, #0e2456 100%)",
+          fontFamily: "sans-serif",
           position: "relative",
         }}
       >
-        {/* Top flag stripe */}
+        {/* Philippine flag stripe at top */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 8, display: "flex" }}>
+          <div style={{ flex: 1, background: "#0038a8" }} />
+          <div style={{ flex: 1, background: "#fcd116" }} />
+          <div style={{ flex: 1, background: "#ce1126" }} />
+        </div>
+
+        {/* Content row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 64, padding: "0 80px" }}>
+          {/* Avatar */}
+          <div
+            style={{
+              width: 230,
+              height: 230,
+              borderRadius: "50%",
+              overflow: "hidden",
+              border: "6px solid #fcd116",
+              flexShrink: 0,
+              display: "flex",
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={avatarSrc} alt="Torny" width={230} height={230} style={{ objectFit: "cover" }} />
+          </div>
+
+          {/* Text */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+              <span style={{ color: "white", fontSize: 72, fontWeight: 900, letterSpacing: "-1px" }}>
+                Torny
+              </span>
+              <span style={{ color: "#fcd116", fontSize: 72, fontWeight: 900, letterSpacing: "-1px" }}>
+                AI
+              </span>
+            </div>
+            <p style={{ color: "#bfdbfe", fontSize: 28, margin: 0, lineHeight: 1.4 }}>
+              Your 24/7 Philippine Legal Assistant
+            </p>
+            <p style={{ color: "#93c5fd", fontSize: 21, margin: 0, lineHeight: 1.5, maxWidth: 540 }}>
+              Free legal information on Family, Labor, Criminal &amp; Property law — in English &amp; Filipino.
+            </p>
+            <div style={{ display: "flex", gap: 10, marginTop: 4, flexWrap: "wrap" }}>
+              {["⚡ 24/7 Free*", "🔒 Confidential", "📚 Philippine Law"].map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    color: "#bfdbfe",
+                    padding: "6px 18px",
+                    borderRadius: 999,
+                    fontSize: 17,
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom URL */}
         <div
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 8,
-            background: "linear-gradient(to right, #0038a8, #fcd116, #ce1126)",
-            display: "flex",
-          }}
-        />
-
-        {/* Bottom flag stripe */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 8,
-            background: "linear-gradient(to right, #0038a8, #fcd116, #ce1126)",
-            display: "flex",
-          }}
-        />
-
-        {/* Logo circle */}
-        <div
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            background: "#fcd116",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 28,
-            fontSize: 52,
+            bottom: 28,
+            right: 48,
+            color: "#fcd116",
+            fontSize: 20,
+            fontWeight: 700,
+            letterSpacing: "0.5px",
           }}
         >
-          ⚖️
-        </div>
-
-        {/* Brand name */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: 0,
-            marginBottom: 20,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 96,
-              fontWeight: 900,
-              color: "#ffffff",
-              letterSpacing: "-2px",
-            }}
-          >
-            Torny
-          </span>
-          <span
-            style={{
-              fontSize: 96,
-              fontWeight: 900,
-              color: "#fcd116",
-              letterSpacing: "-2px",
-            }}
-          >
-            .ai
-          </span>
-        </div>
-
-        {/* Tagline */}
-        <div
-          style={{
-            fontSize: 32,
-            color: "#93c5fd",
-            textAlign: "center",
-            maxWidth: 700,
-            lineHeight: 1.4,
-          }}
-        >
-          Libreng Legal na Gabay para sa Bawat Pilipino
-        </div>
-
-        {/* Sub-tagline */}
-        <div
-          style={{
-            fontSize: 22,
-            color: "#60a5fa",
-            marginTop: 16,
-            textAlign: "center",
-          }}
-        >
-          Family · Labor · Criminal · Property · Civil Law
-        </div>
-
-        {/* Badge */}
-        <div
-          style={{
-            marginTop: 40,
-            background: "rgba(252, 209, 22, 0.15)",
-            border: "2px solid rgba(252, 209, 22, 0.4)",
-            borderRadius: 50,
-            padding: "10px 28px",
-            display: "flex",
-          }}
-        >
-          <span style={{ fontSize: 18, color: "#fcd116" }}>
-            🆓 Libre · Batay sa Batas ng Pilipinas
-          </span>
+          torny.online
         </div>
       </div>
     ),
