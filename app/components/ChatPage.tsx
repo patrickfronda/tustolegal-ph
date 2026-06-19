@@ -146,7 +146,7 @@ function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
         </div>
         <label className="flex items-start gap-2.5 mb-5 cursor-pointer">
           <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-gray-300 flex-shrink-0 accent-[#1e3a7b]" />
-          <span className="text-xs text-gray-600">I understand that Torny AI provides general legal information only, not legal advice, and is not a substitute for a licensed attorney.</span>
+          <span className="text-xs text-gray-600">I understand that Torny AI provides general legal information only, not legal advice, and is not a substitute for a licensed attorney. I have read the <a href="/terms" target="_blank" className="text-[#1e3a7b] underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-[#1e3a7b] underline">Privacy Policy</a>.</span>
         </label>
         <button onClick={onAccept} disabled={!checked} className="w-full bg-[#1e3a7b] text-white font-bold py-3.5 rounded-2xl hover:bg-[#162d60] transition-colors text-sm disabled:opacity-40 disabled:cursor-not-allowed">
           I Understand — Let&apos;s Chat! 🤝
@@ -382,7 +382,7 @@ export default function ChatPage() {
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">Torny <span className="text-[#fcd116]">AI</span></h1>
-          <p className="text-blue-300 text-xs">Your 24/7 Legal Assistant · Philippine Law</p>
+          <p className="text-blue-300 text-xs">Your 24/7 Legal Info Guide · Philippine Law</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setLang((l) => l === "en" ? "fil" : "en")} className="flex items-center gap-1 bg-white/10 hover:bg-white/20 rounded-full px-3 py-1 text-xs font-bold transition-colors">
@@ -429,7 +429,7 @@ export default function ChatPage() {
                   {isFil ? <>Kamusta! Ako si <span className="text-[#fcd116]">Torny AI</span>.</> : <>Hi! I&apos;m <span className="text-[#fcd116]">Torny AI</span>.</>}
                 </h2>
                 <p className="text-blue-200 text-sm sm:text-base leading-relaxed mb-1 max-w-lg mx-auto">
-                  {isFil ? "Your 24/7 legal assistant — espesyalista sa batas ng Pilipinas. Tanungin mo ako anumang oras, kumpidensyal at mabilis." : "Your 24/7 AI legal assistant specialized in Philippine law. Ask me anything — fast, confidential, always available."}
+                  {isFil ? "Your 24/7 legal info guide — nagbibigay ng pangkalahatang impormasyon tungkol sa batas ng Pilipinas. Hindi abogado si Torny, pero lagi siyang nandito para tumulong." : "Your 24/7 guide to Philippine legal information. I'm not a lawyer, but I'll help you understand your rights and options — fast, confidential, always available."}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 my-5 text-xs">
                   {["⚡ 24/7 Available", "🔒 Confidential", "📚 Philippine Law", isFil ? "💬 Sa Filipino" : "💬 In English"].map((f) => (

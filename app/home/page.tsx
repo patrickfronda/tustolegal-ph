@@ -52,7 +52,7 @@ export default function HomePage() {
               Your Rights,<br /><span className="text-[#fcd116]">Explained Simply</span>
             </h1>
             <p className="text-blue-100 text-lg leading-relaxed mb-8 max-w-lg">
-              Torny AI gives you instant, accurate legal guidance based on Philippine law — covering family, labor, criminal, property, and more. Free, confidential, 24/7.
+              Torny AI gives you instant, easy-to-understand legal information based on Philippine law — covering family, labor, criminal, property, and more. Confidential, 24/7. Not a substitute for a licensed attorney.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/" className="flex items-center justify-center gap-2 bg-[#fcd116] text-[#0e1f44] px-6 py-3.5 rounded-full font-bold text-base hover:bg-yellow-300 transition shadow-lg">
@@ -164,7 +164,13 @@ export default function HomePage() {
             <Phone className="w-4 h-4 text-[#fcd116]" />
             PAO Hotline: <span className="text-[#fcd116] font-bold">8524-2100</span>
           </div>
-          <p className="text-xs text-blue-400">&copy; {new Date().getFullYear()} TustoLegal PH. For informational purposes only.</p>
+          <div className="flex flex-col items-center sm:items-end gap-1">
+            <p className="text-xs text-blue-400">&copy; {new Date().getFullYear()} Torny AI. For informational purposes only. Not legal advice.</p>
+            <div className="flex gap-3 text-xs text-blue-400">
+              <a href="/terms" className="hover:text-white underline">Terms of Service</a>
+              <a href="/privacy" className="hover:text-white underline">Privacy Policy</a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
