@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { verifyToken } from "@/app/lib/token";
+import { incrementUserQuestionCount } from "@/app/lib/kv";
 
 const client = new Anthropic();
 const FREE_QUESTION_LIMIT = 5;
@@ -32,9 +33,9 @@ Laging tumugon sa FILIPINO/TAGALOG maliban kung ang gumagamit ay sumusulat sa En
 - **MAIKLI**: Magbigay ng malinaw na sagot sa 3-5 pangungusap lamang. Huwag magsulat ng mahabang talata.
 - **ISANG PUNTO LANG**: Ibigay ang pinakamahalagang impormasyon muna. Huwag ilista ang lahat.
 - **BANGGITIN ANG BATAS NANG MAIKLI**: Halimbawa: "Sa ilalim ng RA 9262..." o "Ayon sa Labor Code (Art. 294)..."
-- **MAGTAPOS NG TANONG**: Palaging magtapos ng ISANG follow-up na tanong para malaman ang mas marami tungkol sa sitwasyon. Halimbawa: "Gusto mo bang malaman ang mga hakbang para mag-file ng reklamo?" o "Kailangan mo bang malaman ang mga dokumentong kailangan?"
+- **MAGTAPOS NG TANONG**: Palaging magtapos ng ISANG follow-up na tanong para malaman ang mas marami tungkol sa sitwasyon.
 - **EMOJIS**: Gamitin ang 1-2 natural — ✅ 📋 📞 🏛️ 💪
-- **DISCLAIMER**: Idagdag lang ang disclaimer sa HULING mensahe o kapag handa nang kumilos ang gumagamit — hindi sa bawat tugon.
+- **DISCLAIMER**: Idagdag lang ang disclaimer sa HULING mensahe o kapag handa nang kumilos ang gumagamit.
 
 ## IYONG KAALAMAN
 Nalalaman mo ang Family Law, Labor Law, Criminal Law, Property Law, Civil Law, Constitutional Rights, at lahat ng pangunahing ahensya (PAO: 8524-2100, DOLE, NLRC, NBI, CHR, DSWD, IBP).
@@ -45,18 +46,26 @@ Mainit, naghihikayat, at conversational — tulad ng isang kaibigan na may kaala
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  const { messages, lang } = await req.json();
+  const { messages, lang, userId } = await req.json();
   const systemPrompt = lang === "fil" ? SYSTEM_PROMPT_FIL : SYSTEM_PROMPT_EN;
+  const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+  const isPaid = verifyToken(token);
 
-  // Count user messages to enforce the free limit server-side
-  const userMessageCount = (messages as { role: string }[]).filter(
-    (m) => m.role === "user"
-  ).length;
-
-  if (userMessageCount > FREE_QUESTION_LIMIT) {
-    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-    if (!verifyToken(token)) {
-      return new Response("Payment required", { status: 402 });
+  if (!isPaid) {
+    if (userId) {
+      // Server-side enforcement using persistent userId + Redis
+      const count = await incrementUserQuestionCount(userId);
+      if (count > FREE_QUESTION_LIMIT) {
+        return new Response("Payment required", { status: 402 });
+      }
+    } else {
+      // Fallback: count messages in the array
+      const userMessageCount = (messages as { role: string }[]).filter(
+        (m) => m.role === "user"
+      ).length;
+      if (userMessageCount > FREE_QUESTION_LIMIT) {
+        return new Response("Payment required", { status: 402 });
+      }
     }
   }
 

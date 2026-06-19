@@ -9,6 +9,8 @@ import TornyAvatar from "@/app/components/TornyAvatar";
 
 const QUESTION_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
+const USER_ID_KEY = "torny_uid";
+const SESSION_KEY = "torny_qs";
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -189,6 +191,7 @@ export default function ChatPage() {
   const [questionCount, setQuestionCount] = useState(0);
   const [showPayModal, setShowPayModal] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState("");
   const [senderName] = useState(randomAdviserName);
   const [lang, setLang] = useState<"en" | "fil">("en");
   const isFil = lang === "fil";
@@ -198,15 +201,34 @@ export default function ChatPage() {
   useEffect(() => {
     const stored = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (stored) setAccessToken(stored);
-    let sid = sessionStorage.getItem("torny_session_id");
-    if (!sid) {
-      sid = `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      sessionStorage.setItem("torny_session_id", sid);
+
+    // Get or create persistent user ID
+    let uid = localStorage.getItem(USER_ID_KEY);
+    if (!uid) {
+      uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      localStorage.setItem(USER_ID_KEY, uid);
     }
+    setUserId(uid);
+
+    // Restore question count with 24h expiry
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (raw) {
+        const { count, since } = JSON.parse(raw);
+        if (Date.now() - since < 86400000) {
+          setQuestionCount(count);
+          if (count >= QUESTION_LIMIT && !stored) setShowPayModal(true);
+        } else {
+          localStorage.removeItem(SESSION_KEY);
+        }
+      }
+    } catch { localStorage.removeItem(SESSION_KEY); }
+
+    // Track visit
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "visit", sessionId: sid }),
+      body: JSON.stringify({ type: "visit", sessionId: uid }),
     }).catch(() => {});
   }, []);
 
@@ -226,12 +248,21 @@ export default function ChatPage() {
     const newCount = questionCount + 1;
     if (newCount > QUESTION_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
-    const sid = sessionStorage.getItem("torny_session_id") ?? "";
+
+    // Persist count to localStorage with timestamp
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      const existing = raw ? JSON.parse(raw) : null;
+      const since = existing?.since ?? Date.now();
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ count: newCount, since }));
+    } catch { /* ignore */ }
+
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "question", sessionId: sid }),
+      body: JSON.stringify({ type: "question", sessionId: userId }),
     }).catch(() => {});
+
     const userMsg: Message = { role: "user", content: text.trim() };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
@@ -242,7 +273,7 @@ export default function ChatPage() {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers, body: JSON.stringify({ messages: newMessages, lang }) });
+      const res = await fetch("/api/chat", { method: "POST", headers, body: JSON.stringify({ messages: newMessages, lang, userId }) });
       if (res.status === 402) {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
         setAccessToken(null);
