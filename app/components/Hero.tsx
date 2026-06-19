@@ -38,7 +38,7 @@ export default function Hero() {
 
             <p className="text-blue-100 text-lg leading-relaxed mb-4 max-w-lg">
               Huwag nang malito sa iyong legal na kalagayan.{" "}
-              <strong className="text-white">TustoLegal PH</strong> ay nagbibigay ng libreng gabay
+              <strong className="text-white">Torny.ai</strong> ay nagbibigay ng libreng gabay
               batay sa mga batas ng Pilipinas — mula sa usapin ng pamilya, trabaho, krimen,
               ari-arian, at higit pa.
             </p>

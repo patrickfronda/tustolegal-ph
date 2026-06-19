@@ -12,8 +12,7 @@ export default function Footer() {
                 <Scale className="w-5 h-5 text-[#1e3a7b]" />
               </div>
               <span>
-                Tusto<span className="text-[#fcd116]">Legal</span>{" "}
-                <span className="text-blue-400 text-sm font-normal">PH</span>
+                Torny<span className="text-[#fcd116]">.ai</span>
               </span>
             </div>
             <p className="text-blue-300 text-sm leading-relaxed mb-4">
@@ -86,7 +85,7 @@ export default function Footer() {
                 <Mail className="w-4 h-4 text-[#fcd116] flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold text-white">Email</p>
-                  <p>tulong@tustolegal.ph</p>
+                  <p>tulong@torny.ai</p>
                 </div>
               </li>
               <li className="flex gap-2.5">
@@ -103,7 +102,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-blue-400">
-          <p>© 2026 TustoLegal PH. Lahat ng karapatang nakalaan.</p>
+          <p>© 2026 Torny.ai. Lahat ng karapatang nakalaan.</p>
           <p className="text-center">
             <strong className="text-yellow-400">Disclaimer:</strong> Ang impormasyong narito ay para
             sa pangkalahatang kaalaman lamang at hindi kapalit ng propesyonal na legal na payo.
