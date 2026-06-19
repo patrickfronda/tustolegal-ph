@@ -504,8 +504,8 @@ export default function ChatPage() {
     setIsThinking(true);
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-    // Brief thinking delay so the animation is always visible
-    await new Promise((resolve) => setTimeout(resolve, 700 + Math.random() * 500));
+    // Thinking delay — long enough to feel like real consideration
+    await new Promise((resolve) => setTimeout(resolve, 1800 + Math.random() * 1200));
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
