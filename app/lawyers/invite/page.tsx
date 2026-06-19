@@ -8,7 +8,7 @@ import { TORNY_SRC } from "@/app/lib/torny-src";
 export const metadata = {
   title: "List Your Services on Torny AI — Invitation for Lawyers",
   description:
-    "Filipino lawyers: get nationwide, per-region exposure to clients who need legal help. Free listing, no commissions, no subscription fees. Manually reviewed directory by Torny AI.",
+    "Filipino lawyers: get nationwide, per-region exposure to clients who need legal help. Free listing, no commissions, no subscription fees. IBP-verified directory by Torny AI.",
 };
 
 const BENEFITS = [

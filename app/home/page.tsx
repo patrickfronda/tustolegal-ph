@@ -163,7 +163,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-extrabold text-[#0e1f44] mb-1">Find a Reviewed Lawyer</h2>
+              <h2 className="text-2xl font-extrabold text-[#0e1f44] mb-1">Find a Verified Lawyer</h2>
               <p className="text-gray-500 text-sm">Connect with IBP-accredited lawyers across the Philippines</p>
             </div>
             <Link href="/lawyers" className="text-[#1e3a7b] font-semibold text-sm hover:underline flex items-center gap-1">
