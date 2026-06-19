@@ -1,125 +1,190 @@
 import Link from "next/link";
+import { ChevronLeft, Phone } from "lucide-react";
+import { TORNY_SRC } from "@/app/lib/torny-src";
 
-export const metadata = { title: "Terms of Service — Torny AI" };
+export const metadata = {
+  title: "Terms of Service — Torny AI",
+  description:
+    "The Terms of Service governing your use of Torny AI, a Philippine legal information assistant operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS.",
+};
+
+const SECTIONS = [
+  {
+    h: "1. Acceptance of These Terms",
+    p: [
+      "Welcome to Torny AI (“Torny,” “we,” “us,” or “our”), a service operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS. By accessing or using torny.online (the “Service”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, please do not use the Service.",
+      "These Terms form a binding agreement between you and TORNY INFORMATION TECHNOLOGY SOLUTIONS.",
+    ],
+  },
+  {
+    h: "2. Torny AI Is Not a Lawyer — No Legal Advice",
+    p: [
+      "Torny AI provides general legal information based on publicly available Philippine laws. It is NOT a law firm and is NOT a licensed attorney. Nothing on the Service constitutes legal advice.",
+      "Using the Service does NOT create an attorney-client relationship between you and Torny AI or TORNY INFORMATION TECHNOLOGY SOLUTIONS. Information provided is for general educational purposes only and may not apply to your specific situation.",
+      "For advice about your particular circumstances, always consult a licensed Filipino attorney. For free legal assistance, you may contact the Public Attorney's Office (PAO) at 8524-2100 or the Integrated Bar of the Philippines (IBP).",
+    ],
+  },
+  {
+    h: "3. No Reliance; Accuracy",
+    p: [
+      "While we strive for accuracy, laws change and AI-generated responses may contain errors, omissions, or outdated information. You should not act or refrain from acting based solely on information from the Service.",
+      "We make no warranty that the information is complete, accurate, current, or suitable for any particular purpose.",
+    ],
+  },
+  {
+    h: "4. Eligibility",
+    p: [
+      "You must be at least 18 years old, or have the consent of a parent or guardian, to use the Service. By using Torny AI you represent that you meet this requirement.",
+    ],
+  },
+  {
+    h: "5. Free Questions and Paid Chat Sessions",
+    p: [
+      "The Service offers a limited number of free questions (currently the first 5). After the free questions are used, continued use requires a one-time payment. Two plans are available: a Basic plan (₱199) which unlocks a 12-hour Chat Session, and a Plus plan (₱299) which unlocks a 24-hour Chat Session with conversation history saved in your browser. Pricing is subject to change; the price shown at the time of purchase applies.",
+      "Payments are processed by our third-party payment provider, PayMongo, via QR Ph (GCash, Maya, and participating banks). We do not store your full payment details.",
+      "For the Basic plan, if you close or refresh your browser tab your conversation history will be lost, though your 12-hour access remains active. For the Plus plan, your conversation history is saved in your browser's local storage and can be restored when you return within the 24-hour access window.",
+    ],
+  },
+  {
+    h: "6. Refunds",
+    p: [
+      "Because the Chat Session grants immediate digital access, payments are generally non-refundable once the session has been activated. If you experience a technical problem that prevented you from accessing a paid session, contact us and we will review your request in good faith.",
+    ],
+  },
+  {
+    h: "7. Acceptable Use",
+    p: [
+      "You agree not to misuse the Service. In particular, you will not: (a) use the Service for any unlawful purpose; (b) attempt to gain unauthorized access to our systems; (c) submit content that is abusive, fraudulent, or infringing; (d) use the Service to provide legal advice to third parties as if you were a licensed professional; or (e) scrape, copy, or resell the Service without our written permission.",
+    ],
+  },
+  {
+    h: "8. Lawyer Directory",
+    p: [
+      "The Service may list licensed attorneys for informational purposes. We do not endorse, guarantee, or take responsibility for the services of any listed lawyer. Any engagement you enter into with a lawyer is solely between you and that lawyer.",
+    ],
+  },
+  {
+    h: "9. Intellectual Property",
+    p: [
+      "The Service, including its design, text, logos, and the Torny AI persona, is owned by TORNY INFORMATION TECHNOLOGY SOLUTIONS and protected by applicable intellectual property laws. You may use the Service for your personal, non-commercial use only.",
+    ],
+  },
+  {
+    h: "10. Disclaimer of Warranties",
+    p: [
+      "The Service is provided “as is” and “as available” without warranties of any kind, whether express or implied, including merchantability, fitness for a particular purpose, and non-infringement.",
+    ],
+  },
+  {
+    h: "11. Limitation of Liability",
+    p: [
+      "To the maximum extent permitted by law, TORNY INFORMATION TECHNOLOGY SOLUTIONS shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss arising from your reliance on information obtained through the Service. Our total liability for any claim shall not exceed the amount you paid us in the 30 days preceding the claim.",
+    ],
+  },
+  {
+    h: "12. Privacy",
+    p: [
+      "Your use of the Service is also governed by our Privacy Policy, which explains how we handle your information.",
+    ],
+  },
+  {
+    h: "13. Changes to These Terms",
+    p: [
+      "We may update these Terms from time to time. Changes take effect when posted on this page. Your continued use of the Service after changes are posted constitutes acceptance of the revised Terms.",
+    ],
+  },
+  {
+    h: "14. Governing Law",
+    p: [
+      "These Terms are governed by the laws of the Republic of the Philippines. Any disputes shall be subject to the exclusive jurisdiction of the proper courts of the Philippines.",
+    ],
+  },
+  {
+    h: "15. Contact Us",
+    p: [
+      "Questions about these Terms? Reach us through the Torny AI website at torny.online.",
+    ],
+  },
+];
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="h-1 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126]" />
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <Link href="/" className="text-sm text-[#1e3a7b] hover:underline mb-6 inline-block">← Back to Torny AI</Link>
-        <h1 className="text-3xl font-extrabold text-[#1e3a7b] mb-2">Terms of Service</h1>
-        <p className="text-gray-500 text-sm mb-10">Effective date: June 19, 2026 · Last updated: June 19, 2026</p>
-
-        <div className="prose prose-sm max-w-none space-y-8 text-gray-700">
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">1. About Torny AI</h2>
-            <p>Torny AI (&quot;Torny&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is an AI-powered legal information service operated in the Philippines. Torny AI is accessible at this website and provides users with general information about Philippine law.</p>
-            <p className="mt-2">Torny AI is <strong>not a law firm</strong> and does not provide legal advice. Torny AI is not affiliated with the Integrated Bar of the Philippines (IBP), the Public Attorney&apos;s Office (PAO), or any government agency.</p>
-          </section>
-
-          <section>
-            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
-              <h2 className="text-lg font-bold text-amber-900 mb-2">2. Important Disclaimer — Please Read</h2>
-              <ul className="space-y-2 text-amber-800 text-sm">
-                <li>🚫 <strong>Torny AI is NOT a lawyer and cannot give legal advice.</strong></li>
-                <li>📚 All content provided by Torny AI is <strong>general legal information only</strong> — it explains what the law generally says, not what you should do in your specific situation.</li>
-                <li>⚖️ <strong>Nothing on this platform creates an attorney-client relationship</strong> between you and Torny AI or its operators.</li>
-                <li>🔴 <strong>Do not rely on Torny AI for decisions in active legal cases.</strong> Always consult a licensed Philippine attorney for advice on your specific circumstances.</li>
-                <li>📞 For free legal assistance, contact the <strong>Public Attorney&apos;s Office (PAO) at 8524-2100</strong> (Mon–Fri, business hours).</li>
-              </ul>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Nav */}
+      <nav className="bg-[#0e1f44] text-white sticky top-0 z-50 shadow-lg">
+        <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+          <Link href="/home" className="flex items-center gap-2 font-bold text-lg">
+            <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
             </div>
-          </section>
+            Torny <span className="text-[#fcd116]">AI</span>
+          </Link>
+          <Link href="/home" className="flex items-center gap-1 text-sm text-blue-200 hover:text-white transition-colors">
+            <ChevronLeft className="w-4 h-4" /> Back to Home
+          </Link>
+        </div>
+      </nav>
 
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">3. Acceptance of Terms</h2>
-            <p>By accessing or using Torny AI, you confirm that:</p>
-            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-              <li>You are at least 18 years old, or are accessing the service with parental consent.</li>
-              <li>You have read, understood, and agree to these Terms of Service.</li>
-              <li>You understand that Torny AI provides general legal information, not legal advice.</li>
-              <li>You will not use Torny AI as a substitute for consulting a licensed attorney in serious legal matters.</li>
-            </ul>
-          </section>
+      {/* Header */}
+      <section className="relative bg-gradient-to-br from-[#0e1f44] via-[#1e3a7b] to-[#162d60] text-white">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126]" />
+        <div className="max-w-3xl mx-auto px-4 py-12">
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">Terms of Service</h1>
+          <p className="text-blue-200 text-sm">Last updated: June 19, 2026</p>
+        </div>
+      </section>
 
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">4. The Service</h2>
-            <p>Torny AI provides:</p>
-            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-              <li>General information about Philippine laws, statutes, and legal procedures.</li>
-              <li>Explanations of legal concepts in plain language (Filipino and English).</li>
-              <li>References to relevant laws, agencies, and contact information for legal resources.</li>
-            </ul>
-            <p className="mt-3">Torny AI does <strong>not</strong> provide:</p>
-            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-              <li>Legal advice tailored to your specific situation.</li>
-              <li>Representation in any legal proceeding.</li>
-              <li>Guaranteed accuracy of legal information (laws change; always verify with a licensed attorney).</li>
-            </ul>
-          </section>
+      {/* Intro disclaimer */}
+      <section className="bg-amber-50 border-y border-amber-200 py-4">
+        <div className="max-w-3xl mx-auto px-4 flex items-start gap-3">
+          <span className="text-amber-500 text-lg flex-shrink-0 mt-0.5">⚠️</span>
+          <p className="text-sm text-amber-800 leading-relaxed">
+            <strong>Important:</strong> Torny AI provides <strong>general legal information only</strong> — not legal advice — and does not create an attorney-client relationship. For advice specific to your situation, consult a licensed Filipino attorney or call <strong>PAO at 8524-2100</strong>.
+          </p>
+        </div>
+      </section>
 
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">5. Paid Sessions</h2>
-            <p>Torny AI offers a paid session option at <strong>₱99 per 24-hour session</strong> processed via PayMongo and GCash. By purchasing a session:</p>
-            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-              <li>You are paying for access to an AI-powered legal information tool — not for legal advice from a licensed attorney.</li>
-              <li>Sessions are non-refundable once activated.</li>
-              <li>Conversation history is stored in your browser only. Closing the browser tab ends your session history. Your 24-hour access remains active on the same device.</li>
-              <li>Torny AI reserves the right to refuse service at any time.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">6. Acceptable Use</h2>
-            <p>You agree not to use Torny AI to:</p>
-            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-              <li>Engage in any activity that violates Philippine law or the rights of third parties.</li>
-              <li>Attempt to extract legal advice that you present to others as coming from a licensed attorney.</li>
-              <li>Use the service for any commercial purpose without written consent.</li>
-              <li>Attempt to reverse-engineer, scrape, or abuse the platform.</li>
-              <li>Submit false, fraudulent, or misleading information.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">7. Intellectual Property</h2>
-            <p>All content, branding, and design on Torny AI — including the Torny name, logo, and interface — are owned by or licensed to Torny AI. The underlying Philippine laws and statutes referenced are public domain.</p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">8. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by Philippine law:</p>
-            <ul className="list-disc list-outside ml-5 mt-2 space-y-1">
-              <li>Torny AI is provided &quot;as is&quot; without warranties of any kind.</li>
-              <li>We are not liable for any damages arising from your reliance on information provided by Torny AI.</li>
-              <li>We are not responsible for outcomes in any legal matter where you used Torny AI as a reference.</li>
-              <li>Our total liability to you shall not exceed the amount you paid for your current session (₱99).</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">9. Changes to These Terms</h2>
-            <p>We may update these Terms at any time. Continued use of Torny AI after changes are posted constitutes your acceptance of the updated Terms. The effective date at the top of this page will reflect the latest revision.</p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">10. Governing Law</h2>
-            <p>These Terms are governed by the laws of the Republic of the Philippines. Any disputes arising from the use of Torny AI shall be subject to the jurisdiction of Philippine courts.</p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-bold text-gray-900 mb-3">11. Contact</h2>
-            <p>For questions about these Terms, contact us at: <strong>support@torny.ai</strong></p>
-          </section>
-
+      {/* Body */}
+      <main className="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
+        <div className="space-y-8">
+          {SECTIONS.map((s) => (
+            <div key={s.h}>
+              <h2 className="text-lg font-bold text-[#0e1f44] mb-2">{s.h}</h2>
+              <div className="space-y-3">
+                {s.p.map((para, i) => (
+                  <p key={i} className="text-gray-600 text-sm leading-relaxed">{para}</p>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row gap-4 text-sm text-gray-500">
-          <Link href="/privacy" className="text-[#1e3a7b] hover:underline">Privacy Policy →</Link>
-          <Link href="/" className="hover:underline">Back to Torny AI →</Link>
+        <div className="mt-10 pt-6 border-t border-gray-200 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <Link href="/privacy" className="text-[#1e3a7b] font-semibold hover:underline">Privacy Policy →</Link>
+          <Link href="/" className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] px-5 py-2.5 rounded-full font-bold hover:bg-yellow-300 transition">
+            Chat with Torny AI
+          </Link>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-[#070f23] text-blue-300 py-8">
+        <div className="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 font-bold text-white">
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-[#fcd116]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+            </div>
+            Torny AI
+          </div>
+          <div className="flex items-center gap-1.5 text-sm">
+            <Phone className="w-4 h-4 text-[#fcd116]" />
+            PAO Hotline: <span className="text-[#fcd116] font-bold">8524-2100</span>
+          </div>
+          <p className="text-xs text-blue-400">&copy; {new Date().getFullYear()} TORNY INFORMATION TECHNOLOGY SOLUTIONS.</p>
+        </div>
+      </footer>
     </div>
   );
 }

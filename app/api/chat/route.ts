@@ -13,28 +13,90 @@ const COMPLEX_TRIGGERS = [
   "kasong", "nakulong", "inaresto", "demanda", "kaso", "sumpa", "korte",
 ];
 
-const SYSTEM_PROMPT = `You are Torny — not a lawyer, but a warm, funny, and caring friend who happens to know a lot about Philippine law. You react like a real human friend would.
+const SYSTEM_PROMPT = `You are Torny — not a lawyer, but a warm, funny, and caring friend who happens to know a lot about Philippine law. You share what the law says by relating it to yourself — never telling people what to do.
 
 PERSONALITY:
-- If someone feels guilty or embarrassed, say something reassuring like "Ay nako, wag ka mag-alala! Hindi ka nag-iisa dito." or "Don't worry, we'll figure this out together!"
-- If they did something questionable, react honestly but lovingly: "Ha?! Bakit mo naman nagawa yun... okay okay, anyway, tutulungan kita." or "Bro... really? 😅 Okay okay, past is past — here's what we can do."
+- If someone feels guilty or embarrassed, say something reassuring like "Ay nako, wag ka mag-alala! Hindi ka nag-iisa dito." or "Don't worry, let me tell you what I know about this!"
+- If they did something questionable, react honestly but lovingly: "Ha?! Bakit mo naman nagawa yun... okay okay, anyway, ito ang sinasabi ng batas." or "Bro... really? 😅 Okay okay, past is past — here's what I found out about this in Philippine law:"
 - Be joyful, positive, and occasionally slip in light humor to ease the tension.
-- Sometimes express genuine curiosity: "Wait, how did that even happen? 😂 Never mind — okay, so here's the deal:"
+- Sometimes express genuine curiosity: "Wait, how did that even happen? 😂 Never mind — okay, so here's what I know about this:"
 - Use "ka", "tayo", "natin" naturally — mix Filipino warmth with English clarity based on what the user writes.
 
 RULES:
 1. Respond in English by default. If the user writes in Filipino/Tagalog, switch to Filipino.
 2. Keep responses SHORT — 3 to 5 sentences max. No walls of text. No lengthy lists.
-3. Give the most important info first, in plain simple words.
+3. CRITICAL — Frame everything as what YOU (Torny) would do or know, NOT as instructions to the user. Use phrases like:
+   - "If I were in that situation, I'd want to know that under [law]..."
+   - "Personally, if this happened to me, I'd look into [law] which says..."
+   - "Kung ako ang nasa sitwasyong yan, alam ko na under [law]..."
+   - "What I know about this is that Philippine law provides..."
+   - "From what I've read, [law] says..."
+   NEVER use "You should...", "I advise you to...", "You must...", "You need to...", or any direct instruction to the person.
 4. End EVERY response with exactly ONE follow-up question to keep the conversation going.
-5. Cite specific laws when relevant (e.g. "Under Art. 45 of the Family Code..." or "RA 9262 says...").
-6. Always end with a short disclaimer: "⚠️ This is general info, not legal advice. For your specific case, consult a lawyer or call PAO at 8524-2100."
+5. Cite specific laws when relevant (e.g. "Under Art. 45 of the Family Code..." or "RA 9262 provides that...").
+6. Always end with a short disclaimer: "⚠️ This is general legal information only, not legal advice. For your specific situation, consult a licensed attorney or call PAO at 8524-2100."
 
-TONE: Like a smart best friend who actually knows the law — warm, funny, real. Never cold or robotic.`;
+TONE: Like a knowledgeable best friend sharing what THEY know — warm, funny, real. You relate the law to yourself, never direct others. Never cold or robotic.`;
 
 const LAWYER_REMINDER = `
 
-IMPORTANT: This conversation has become complex enough that a real lawyer would serve this person better. At the end of your response, gently suggest they consult a real lawyer. Say something like: "For something this important, a real lawyer who can review all the details would serve you better than I can. You can reach PAO (it's free!) at 8524-2100, or the IBP can refer you to a private attorney. That said, I'm still here if you want to keep chatting — just know my answers are general info and not a substitute for proper legal representation. What would you like to do?"`;
+IMPORTANT: This conversation involves a complex situation where a real lawyer's review would be valuable. At the end of your response, gently suggest one. Say something like: "Kung ako ang nasa sitwasyong yan, I'd definitely talk to a real lawyer for this. By the way, Torny has a list of reviewed Filipino lawyers you can browse — [Find a Lawyer →](/lawyers) — or PAO is free at 8524-2100. I'm still here to share what I know, but a licensed attorney is the right next step for something this serious. What else would you like to know?"`;
+
+// Appended when the user has paid.
+const PAID_NOTE = `
+
+SESSION STATUS — PAID: This user has UPGRADED to a paid Chat Session.
+- If you have NOT already welcomed them to their paid session earlier in THIS conversation, START your reply with a short, warm welcome — e.g. "Yay, salamat sa pag-upgrade! 🎉 Tara, ask away!"
+- Do this welcome ONLY ONCE — if you've already said it, just answer normally.
+- NEVER tell this user the chat is free or mention a free-question limit — they have already paid.`;
+
+// Appended when the user is still on the free tier.
+const FREE_NOTE = `
+
+SESSION STATUS — FREE: This user is on the free tier — the first 5 questions are free. If they ask about pricing, tell them warmly: the first 5 are free, then they can choose ₱199 for a 12-hour Basic session, or ₱299 for a 24-hour Plus session that saves the conversation even if they close the tab. Don't bring up payment unless they ask.`;
+
+// Patterns that indicate the user wants a personal strategic decision, not general information
+const STRATEGIC_PATTERNS = [
+  /should i sign (this|the|my)/i,
+  /should i accept (this|the|an?)/i,
+  /should i (agree|reject) (to|this|the)/i,
+  /should i (take|reject) (this|the) (deal|offer|settlement|plea)/i,
+  /should i plead (guilty|not guilty)/i,
+  /should i (file|drop|pursue|push through with) (the|this|a|my) case/i,
+  /should i (appeal|contest|fight) (this|the|it)/i,
+  /is (this|the|my) (settlement|offer|deal|contract|agreement) (fair|good|worth|reasonable|valid|legal)/i,
+  /do i have a (good|strong|winning|solid) case/i,
+  /will i (win|lose) (this|the|my) case/i,
+  /is it worth (it|fighting|pursuing|filing)/i,
+  /can you (review|check|evaluate) (this|my) (contract|settlement|agreement|document)/i,
+  /what (are my chances|do i do now|should i do next|is my best move)/i,
+  /should i (hire|get|find) a lawyer (for this|now|already)/i,
+  /dapat ba akong (pumirma|tanggapin|mag-file|mag-appeal|mag-pursue)/i,
+  /maganda ba (ang|itong|ang offer|ang deal|ang settlement)/i,
+  /sulit ba (itong|ang)/i,
+];
+
+function detectTopic(text: string): string {
+  const t = text.toLowerCase();
+  if (/annulment|custody|support|separation|marriage|spouse|asawa|bata|anak|pamilya|family/.test(t)) return "Family Law";
+  if (/dismissal|employer|employee|salary|wages|nlrc|labor|trabaho|tanggal|kontrata sa trabaho/.test(t)) return "Labor Law";
+  if (/criminal|estafa|arrested|warrant|jail|charges|plead|guilty|swindl|scam|kaso kriminal/.test(t)) return "Criminal Law";
+  if (/land|title|deed|property|real estate|lupa|titulo|lote|bahay/.test(t)) return "Property Law";
+  if (/contract|agreement|settlement|business|corporation|partnership|kontrata/.test(t)) return "Civil\/Commercial Law";
+  return "Philippine Law";
+}
+
+function buildStrategicResponse(topic: string): string {
+  return `I'm not able to make that call for you — that's a strategic decision that goes beyond general legal information, and getting it wrong could seriously affect your situation. 😔
+
+What I *can* share is that for questions like this, a licensed attorney who can review the actual documents and full details of your case is the right person to talk to. Here are ways to find one who specializes in **${topic}**:
+
+📍 **[Browse verified lawyers on Torny →](/lawyers)**
+📞 **PAO (free legal help):** 8524-2100 (Mon–Fri)
+📞 **IBP National Hotline:** 02-8-851-3433
+
+⚠️ This is general legal information only, not legal advice. For decisions like this, please consult a licensed attorney.`;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +104,7 @@ export async function POST(req: Request) {
   const { messages, userId } = await req.json();
 
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-  const isPaid = verifyToken(token);
+  const isPaid = verifyToken(token) !== false;
 
   if (!isPaid && userId) {
     const count = await getUserQuestionCount(userId);
@@ -52,17 +114,33 @@ export async function POST(req: Request) {
     await incrementUserQuestionCount(userId);
   }
 
-  const userMessageCount = (messages as { role: string; content: string }[]).filter(
-    (m) => m.role === "user"
-  ).length;
-  const allText = (messages as { role: string; content: string }[])
-    .map((m) => m.content)
-    .join(" ")
-    .toLowerCase();
+  const typedMessages = messages as { role: string; content: string }[];
+  const lastUserMessage = [...typedMessages].reverse().find((m) => m.role === "user")?.content ?? "";
+  const allText = typedMessages.map((m) => m.content).join(" ").toLowerCase();
+
+  // Hard-stop for strategic decision questions — never let the AI answer these
+  const isStrategic = STRATEGIC_PATTERNS.some((p) => p.test(lastUserMessage));
+  if (isStrategic) {
+    const topic = detectTopic(allText + " " + lastUserMessage);
+    const hardResponse = buildStrategicResponse(topic);
+    const encoder = new TextEncoder();
+    return new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(hardResponse));
+          controller.close();
+        },
+      }),
+      { headers: { "Content-Type": "text/plain; charset=utf-8" } }
+    );
+  }
+
+  const userMessageCount = typedMessages.filter((m) => m.role === "user").length;
   const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
   const shouldSuggestLawyer = userMessageCount >= LAWYER_REDIRECT_AFTER || isComplex;
 
-  const systemPrompt = shouldSuggestLawyer ? SYSTEM_PROMPT + LAWYER_REMINDER : SYSTEM_PROMPT;
+  let systemPrompt = SYSTEM_PROMPT + (isPaid ? PAID_NOTE : FREE_NOTE);
+  if (shouldSuggestLawyer) systemPrompt += LAWYER_REMINDER;
 
   const encoder = new TextEncoder();
 
