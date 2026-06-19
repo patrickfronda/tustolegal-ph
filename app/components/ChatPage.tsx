@@ -145,7 +145,6 @@ const THINKING_PHRASES = [
   "Hmm, let me think on this... 🤔",
   "Checking Philippine law... 📚",
   "One sec, I've got this!",
-  "Consulting my inner abogado... ⚖️",
   "Almost ready for you!",
   "Reading the fine print... 🔍",
 ];
