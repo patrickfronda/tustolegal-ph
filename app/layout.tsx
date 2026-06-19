@@ -14,9 +14,49 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Torny AI — Your 24/7 Legal Assistant",
+  metadataBase: new URL("https://torny.online"),
+  title: {
+    default: "Torny AI — Free Philippine Legal Information",
+    template: "%s | Torny AI",
+  },
   description:
-    "Get instant legal guidance rooted in Philippine law. Ask about family law, labor rights, criminal defense, property, and more — anytime, 24/7.",
+    "Get free, instant legal information based on Philippine law — family, labor, criminal, property, and more. Ask Torny AI 24/7. Not a substitute for a licensed attorney.",
+  keywords: [
+    "Philippine legal information",
+    "Philippines law AI",
+    "free legal help Philippines",
+    "legal advice Philippines free",
+    "batas Pilipinas",
+    "family law Philippines",
+    "labor rights Philippines",
+    "annulment Philippines",
+    "illegal dismissal Philippines",
+    "criminal law Philippines",
+    "PAO alternative",
+    "Filipino legal assistant",
+    "VAWC Philippines",
+    "land title Philippines",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_PH",
+    url: "https://torny.online",
+    siteName: "Torny AI",
+    title: "Torny AI — Free Philippine Legal Information",
+    description:
+      "Ask about family law, labor rights, criminal defense, property, and more. Free to start. 24/7.",
+    images: [
+      { url: "/IMG_0461.jpeg", width: 600, height: 600, alt: "Torny AI — Philippine Legal Assistant" },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Torny AI — Free Philippine Legal Information",
+    description: "Ask about Philippine law — family, labor, criminal, property. Free to start. 24/7.",
+    images: ["/IMG_0461.jpeg"],
+  },
+  robots: { index: true, follow: true },
+  alternates: { canonical: "https://torny.online" },
 };
 
 export default function RootLayout({
