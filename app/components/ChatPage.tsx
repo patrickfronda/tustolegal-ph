@@ -5,12 +5,14 @@ import {
   Send, Loader2, ChevronRight, AlertCircle,
   Phone, Copy, Check, Plus, MessageSquare, X, Menu, CreditCard, Home,
 } from "lucide-react";
-import TornyAvatar from "@/app/components/TornyAvatar";
 
-const QUESTION_LIMIT = 5;
+const FREE_LIMIT = 5;
 const ACCESS_TOKEN_KEY = "tustolegal_access";
 const USER_ID_KEY = "torny_uid";
 const SESSION_KEY = "torny_qs";
+const DISCLAIMER_KEY = "torny_disclaimer_accepted";
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+const TORNY_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCABAAEADASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAABQYABAcCAwj/xAAwEAACAQQABQMEAQIHAAAAAAABAgMABAURBhIhMVETIkEyYXGBsaHRFBUWI0JSwf/EABgBAAMBAQAAAAAAAAAAAAAAAAABBAMC/8QAHBEAAwADAQEBAAAAAAAAAAAAAAECAxExIRJB/9oADAMBAAIRAxEAPwDSKlSgXFeeXB40uhU3MvtiB+PLH8UAe+a4hx+FQf4qXcrfTCnV2/VLNzxvePGZLe0ihT49Ulm/eqQZbqe9u3mYs0jnZdurNXV1OiRiNy0j/Oz0H6BpDQwNxzmVk368RH/X0hqmTAcdw306W2QjW3kY6WRT7CfBB7fxWUswY+32/g16wNttHuKaEz6FqUM4duTd4Kyldw8hhXmO9nevmidAErF+Mcg95mrh+c8u9KCewHxW0ViWSxbycTnH9SDMYl+w3/brQ3pDS29FLHYy4yDBIlbTHv5prtuAdxgzS6J7jZNE1FzjyYMLjlkEfteeZuVd+B5opi7++mVkyEEUbjsYz0NSVkb92VrGl4kAv9CY5U00kxbzzaoVkuCxDG8lpcOSATysO/7pxymTWwh5zFJMT2VB1oRb8QWuRcwcskE5GxHKNb/B+aU1fUdOI40JeJyt1ibqGW2cqyfUN9GHyGHyK22zuUvLOG5j+iVA4+2xWG5KMpmZUQdnPT89a2XhqF4OHrGOQEMIwdH79R/SrE9rZE1p6CZIAJPQCs6zywyZw3dkrepL7jKG16agBToeTzA7+1aHKvPE6D/kpFKhsA7yF+h9JowNdtkf2FY5bctL8KMOOaTb6CcoqQWjzlkgtlcQo7jmaV9bO2O9KB86OzQ/D5iU2KXUSM/+76Lw83Q7GwRvt2/FMN6ltkMYbHIRyRjmDbRCw5vIIBryxWKtLQwLChS3gLOGlGjI5Gt68AfzWO5+fTX5r684BrnKT3MLztHJEVLKIk0ze0bYk67AA9hXETS39tBIZeYPtoZGAdeZe670GVh/HmrOVw8OQM8JnWAyTerE5OlJI0y78/P7q3bWEOJw0Vr6iu6uZeh6s+taFNOdedBq/rT4BcVjJM3n4bhkjWNpQsqq3VSo2eh66PbfmtaAAGgNCs09A2l+Sg1KscYDAddgdf6mtJTZReb6tDdUTW/F+E+TG5Sp/p1VO6sI5izrtZCD2PQn71cqV05T8ZnNOXtCoHYu0Llo3B0fIrq6jCwCORfWVfpfm0wq5xU1ta4uW9dQLhBqMg6LHwftSlacXQyRcs0bI47gjdR3hqfVwujMr70LW0baZPTRYD1YSHm5q8ktonulS2hRGY69i6ofaZyHJ5KK0iZoxI3LzlfaKe8fi4LEbXbynu7f+eK6jFTe34hXnlc6CrHAP/mBubvlAVthQd82u36pjqVKpmVPCO7d9P/Z";
 
 const NAME_PARTS = {
   adjectives: ["Happy", "Sunny", "Brave", "Clever", "Jolly", "Mighty", "Cozy", "Lucky", "Speedy", "Gentle"],
@@ -44,7 +46,7 @@ const SUGGESTED_EN = [
   "How do I file for annulment in the Philippines?",
   "What are my rights when arrested by the police?",
   "How do I file an illegal dismissal complaint?",
-  "How can I get a lawyer from PAO?",
+  "How can I get a free lawyer from PAO?",
   "How do I file a VAWC complaint?",
   "What is small claims court and how do I use it?",
 ];
@@ -123,11 +125,41 @@ function TypingDots() {
   );
 }
 
+function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
+          </div>
+        </div>
+        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Before we start 👋</h2>
+        <p className="text-center text-gray-500 text-sm mb-4">Please read this carefully.</p>
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 space-y-2 text-sm text-gray-700">
+          <p>⚖️ <strong>Torny AI is not a lawyer</strong> and cannot give legal advice.</p>
+          <p>📚 Everything I share is <strong>general legal information</strong> based on Philippine law — not a substitute for professional legal counsel.</p>
+          <p>🔒 For serious cases (criminal, custody, land disputes), please consult a licensed attorney or call <strong>PAO at 8524-2100</strong> for free legal help.</p>
+          <p>✅ By continuing, you confirm you understand these limitations.</p>
+        </div>
+        <label className="flex items-start gap-2.5 mb-5 cursor-pointer">
+          <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-gray-300 flex-shrink-0 accent-[#1e3a7b]" />
+          <span className="text-xs text-gray-600">I understand that Torny AI provides general legal information only, not legal advice, and is not a substitute for a licensed attorney. I have read the <a href="/terms" target="_blank" className="text-[#1e3a7b] underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-[#1e3a7b] underline">Privacy Policy</a>.</span>
+        </label>
+        <button onClick={onAccept} disabled={!checked} className="w-full bg-[#1e3a7b] text-white font-bold py-3.5 rounded-2xl hover:bg-[#162d60] transition-colors text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+          I Understand — Let&apos;s Chat! 🤝
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function PaymentModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
-
+  const [agreed, setAgreed] = useState(false);
   async function handlePay() {
     setLoading(true); setErr("");
     try {
@@ -140,10 +172,13 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
-        <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#fcd116]"><TornyAvatar /></div></div>
-        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 questions</h2>
+        <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" /></div></div>
+        <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 free questions</h2>
         <p className="text-center text-gray-500 text-sm mb-4">Upgrade for unlimited questions for <strong>24 hours</strong>.</p>
-
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-xs text-amber-800">
+          <p className="font-semibold mb-1">⚠️ Keep this tab open after paying</p>
+          <p>If you close this browser tab or window, your conversation history will be lost. Your 24-hour access will still be active, but you will need to start a new chat session.</p>
+        </div>
         <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-4">
           <div className="flex items-center justify-between mb-3"><span className="text-sm font-bold text-gray-700">TustoLegal Pro Session</span><span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span></div>
           <div className="space-y-1.5 text-sm text-gray-600">
@@ -152,20 +187,12 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
             <p>✅ Based on Philippine law</p>
           </div>
         </div>
-
-        <div className="flex gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 text-xs text-amber-800 mb-4">
-          <span className="flex-shrink-0 mt-0.5">⚠️</span>
-          <span><strong>Important:</strong> If you close this browser tab or window, your conversation history will be lost. Your 24-hour access will still be active, but you will need to start a new chat session.</span>
-        </div>
-
-        <label className="flex items-start gap-2.5 cursor-pointer mb-4">
-          <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#1e3a7b] flex-shrink-0" />
+        <label className="flex items-start gap-2.5 mb-4 cursor-pointer">
+          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-gray-300 flex-shrink-0 accent-[#1e3a7b]" />
           <span className="text-xs text-gray-600">I understand that closing this tab will end my current conversation.</span>
         </label>
-
         {err && <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-3 py-2 text-xs mb-3"><AlertCircle className="w-4 h-4 flex-shrink-0" />{err}</div>}
-
-        <button onClick={handlePay} disabled={loading || !confirmed} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed mb-2">
+        <button onClick={handlePay} disabled={loading || !agreed} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
           {loading ? "Processing..." : "Pay with GCash — ₱99"}
         </button>
@@ -210,8 +237,10 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
   const [showPayModal, setShowPayModal] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState<string>("");
+  const [sessionTs, setSessionTs] = useState<number>(0);
   const [senderName] = useState(randomAdviserName);
   const [lang, setLang] = useState<"en" | "fil">("en");
   const isFil = lang === "fil";
@@ -222,26 +251,41 @@ export default function ChatPage() {
     const stored = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (stored) setAccessToken(stored);
 
+    // Show disclaimer on first visit
+    if (!localStorage.getItem(DISCLAIMER_KEY)) {
+      setShowDisclaimer(true);
+    }
+
+    // Get or create persistent user ID
     let uid = localStorage.getItem(USER_ID_KEY);
     if (!uid) {
-      uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
       localStorage.setItem(USER_ID_KEY, uid);
     }
     setUserId(uid);
 
+    // Restore question count with 24h expiry
     try {
       const raw = localStorage.getItem(SESSION_KEY);
       if (raw) {
-        const { count, since } = JSON.parse(raw);
-        if (Date.now() - since < 86400000) {
+        const { count, ts } = JSON.parse(raw) as { count: number; ts: number };
+        if (Date.now() - ts < SESSION_TTL_MS) {
           setQuestionCount(count);
-          if (count >= QUESTION_LIMIT && !stored) setShowPayModal(true);
+          setSessionTs(ts);
+          if (count >= FREE_LIMIT && !stored) setShowPayModal(true);
         } else {
           localStorage.removeItem(SESSION_KEY);
         }
       }
-    } catch { localStorage.removeItem(SESSION_KEY); }
+    } catch {
+      localStorage.removeItem(SESSION_KEY);
+    }
 
+    let sid = sessionStorage.getItem("torny_session_id");
+    if (!sid) {
+      sid = `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      sessionStorage.setItem("torny_session_id", sid);
+    }
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -250,6 +294,11 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  function handleDisclaimerAccept() {
+    localStorage.setItem(DISCLAIMER_KEY, "1");
+    setShowDisclaimer(false);
+  }
 
   function autoResize() {
     const el = textareaRef.current;
@@ -263,16 +312,15 @@ export default function ChatPage() {
     setError(null);
     setSidebarOpen(false);
     const newCount = questionCount + 1;
-    if (newCount > QUESTION_LIMIT && !accessToken) { setShowPayModal(true); return; }
+    if (newCount > FREE_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
 
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      const existing = raw ? JSON.parse(raw) : null;
-      const since = existing?.since ?? Date.now();
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ count: newCount, since }));
-    } catch { /* ignore */ }
+    // Persist count to localStorage with 24h window timestamp
+    const ts = sessionTs || Date.now();
+    if (!sessionTs) setSessionTs(ts);
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ count: newCount, ts }));
 
+    const sid = sessionStorage.getItem("torny_session_id") ?? "";
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -324,16 +372,23 @@ export default function ChatPage() {
 
   return (
     <div className={`flex flex-col h-screen ${isEmpty ? "bg-[#0e1f44]" : "bg-gray-50"} overflow-hidden`}>
+      {showDisclaimer && <DisclaimerModal onAccept={handleDisclaimerAccept} />}
       {showPayModal && <PaymentModal onClose={() => setShowPayModal(false)} />}
+      {accessToken && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs text-amber-800 text-center flex-shrink-0 z-10">
+          ⚠️ Keep this tab open — closing it will lose your conversation history. Your 24-hour access stays active but you&apos;ll need to start a new chat.
+        </div>
+      )}
       <header className="bg-[#0e1f44] text-white px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0 z-10">
         <button onClick={() => setSidebarOpen((v) => !v)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"><Menu className="w-5 h-5" /></button>
         <Link href="/home" className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-blue-300 hover:text-white" title="Home"><Home className="w-5 h-5" /></Link>
         <div className="w-9 h-9 rounded-full overflow-hidden bg-[#fcd116] flex-shrink-0">
-          <TornyAvatar />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-base leading-tight">Torny <span className="text-[#fcd116]">AI</span></h1>
-          <p className="text-blue-300 text-xs">Your 24/7 Legal Assistant · Philippine Law</p>
+          <p className="text-blue-300 text-xs">Your 24/7 Legal Info Guide · Philippine Law</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setLang((l) => l === "en" ? "fil" : "en")} className="flex items-center gap-1 bg-white/10 hover:bg-white/20 rounded-full px-3 py-1 text-xs font-bold transition-colors">
@@ -347,7 +402,7 @@ export default function ChatPage() {
           {accessToken ? (
             <div className="hidden sm:flex items-center gap-1.5 bg-[#fcd116]/20 rounded-full px-3 py-1 text-xs text-[#fcd116] font-semibold">✓ Pro</div>
           ) : questionCount > 0 && (
-            <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">{questionCount}/{QUESTION_LIMIT}</div>
+            <div className="hidden sm:flex items-center gap-1 bg-white/10 rounded-full px-3 py-1 text-xs text-blue-200">{questionCount}/{FREE_LIMIT}</div>
           )}
           {!isEmpty && (
             <button onClick={() => setMessages([])} title={isFil ? "Bagong usapan" : "New chat"} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white rounded-full px-3 py-1.5 text-xs font-medium transition-colors">
@@ -356,13 +411,6 @@ export default function ChatPage() {
           )}
         </div>
       </header>
-
-      {accessToken && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center gap-2 text-xs text-amber-800">
-          <span className="flex-shrink-0">⚠️</span>
-          <span><strong>Reminder:</strong> Keep this tab open. If you close it, your conversation history will be lost. Your 24-hour access remains active but you will need to start a new chat.</span>
-        </div>
-      )}
 
       <div className="flex flex-1 overflow-hidden relative">
         {sidebarOpen && <div className="fixed inset-0 bg-black/40 z-20" onClick={() => setSidebarOpen(false)} />}
@@ -375,8 +423,9 @@ export default function ChatPage() {
             {isEmpty ? (
               <div className="max-w-2xl mx-auto px-4 py-10 text-center">
                 <div className="relative inline-block mb-6">
-                  <div className="w-20 h-20 rounded-full overflow-hidden bg-[#fcd116] shadow-lg">
-                    <TornyAvatar />
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-[#1e3a7b] shadow-lg">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-400 border-2 border-white flex items-center justify-center">
                     <span className="text-white text-xs font-bold">AI</span>
@@ -386,18 +435,17 @@ export default function ChatPage() {
                   {isFil ? <>Kamusta! Ako si <span className="text-[#fcd116]">Torny AI</span>.</> : <>Hi! I&apos;m <span className="text-[#fcd116]">Torny AI</span>.</>}
                 </h2>
                 <p className="text-blue-200 text-sm sm:text-base leading-relaxed mb-1 max-w-lg mx-auto">
-                  {isFil ? "Your 24/7 legal assistant — espesyalista sa batas ng Pilipinas. Tanungin mo ako anumang oras, kumpidensyal at mabilis." : "Your 24/7 AI legal assistant specialized in Philippine law. Ask me anything — fast, confidential, always available."}
+                  {isFil ? "Your 24/7 legal info guide — nagbibigay ng pangkalahatang impormasyon tungkol sa batas ng Pilipinas. Hindi abogado si Torny, pero lagi siyang nandito para tumulong." : "Your 24/7 guide to Philippine legal information. I'm not a lawyer, but I'll help you understand your rights and options — fast, confidential, always available."}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 my-5 text-xs">
                   {["⚡ 24/7 Available", "🔒 Confidential", "📚 Philippine Law", isFil ? "💬 Sa Filipino" : "💬 In English"].map((f) => (
                     <span key={f} className="bg-white/10 text-blue-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row sm:items-end gap-2 mb-6">
+                <form onSubmit={handleSubmit} className="flex items-end gap-2 mb-6">
                   <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
-                  <button type="submit" disabled={isStreaming || !input.trim()} className="w-full sm:w-11 h-11 flex-shrink-0 bg-[#1e3a7b] text-white rounded-2xl sm:rounded-full flex items-center justify-center gap-2 hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                  <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
                     {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                    <span className="sm:hidden font-semibold text-sm">{isFil ? "Ipadala" : "Send"}</span>
                   </button>
                 </form>
                 <div className="h-1 w-24 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126] rounded-full mx-auto mb-8" />
@@ -420,8 +468,9 @@ export default function ChatPage() {
                   <div key={i}>
                     {msg.role === "assistant" && msg.content === "" && isStreaming ? (
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#fcd116] mt-1 shadow-sm">
-                          <TornyAvatar />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
                         </div>
                         <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"><TypingDots /></div>
                       </div>
@@ -436,8 +485,9 @@ export default function ChatPage() {
                       </div>
                     ) : (
                       <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#fcd116] mt-1 shadow-sm">
-                          <TornyAvatar />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 ml-1">
@@ -452,25 +502,29 @@ export default function ChatPage() {
                     )}
                   </div>
                 ))}
-                {error && (
-                  <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-2xl px-4 py-3 text-sm">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />{error}
-                  </div>
-                )}
                 <div ref={bottomRef} />
               </div>
             )}
           </div>
 
+          {error && (
+            <div className="mx-4 mb-2 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-2.5 text-sm">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />{error}
+            </div>
+          )}
+
           {!isEmpty && (
-            <div className="flex-shrink-0 border-t border-gray-200 bg-white px-4 py-3">
-              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex flex-col sm:flex-row sm:items-end gap-2">
-                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask a follow-up question..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400" />
-                <button type="submit" disabled={isStreaming || !input.trim()} className="w-full sm:w-11 h-11 flex-shrink-0 bg-[#1e3a7b] text-white rounded-2xl sm:rounded-full flex items-center justify-center gap-2 hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+            <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
+              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex items-end gap-2">
+                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
+                <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
                   {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  <span className="sm:hidden font-semibold text-sm">{isFil ? "Ipadala" : "Send"}</span>
                 </button>
               </form>
+              <p className="text-center text-xs text-gray-400 mt-2 max-w-3xl mx-auto">
+                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
+                <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Shift+Enter</kbd> {isFil ? "bagong linya" : "new line"}
+              </p>
             </div>
           )}
         </div>
