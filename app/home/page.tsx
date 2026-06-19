@@ -52,6 +52,17 @@ export default function HomePage() {
       <section className="relative bg-gradient-to-br from-[#0e1f44] via-[#1e3a7b] to-[#162d60] text-white overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126]" />
         <div className="max-w-6xl mx-auto px-4 py-20 flex flex-col md:flex-row items-center gap-12">
+          <div className="flex-shrink-0 md:order-last">
+            <div className="relative">
+              <div className="w-48 h-48 rounded-full overflow-hidden bg-white/10 shadow-2xl border-4 border-[#fcd116]/30">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={TORNY_SRC} alt="Torny AI" className="w-full h-full object-cover" style={TORNY_STYLE} />
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-green-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                Online 24/7
+              </div>
+            </div>
+          </div>
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm text-blue-200 mb-6">
               <span className="w-2 h-2 rounded-full bg-[#fcd116] animate-pulse" />
@@ -65,29 +76,15 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/" className="flex items-center justify-center gap-2 bg-[#fcd116] text-[#0e1f44] px-6 py-3.5 rounded-full font-bold text-base hover:bg-yellow-300 transition shadow-lg">
-                Ask Torny AI Free* <ArrowRight className="w-5 h-5" />
+                Ask Torny AI — It&apos;s Free to Try <ArrowRight className="w-5 h-5" />
               </Link>
               <a href="#why-torny" className="flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-full font-semibold text-base hover:bg-white/20 transition">
                 <Smile className="w-5 h-5 text-[#fcd116]" /> Why Torny AI?
               </a>
-              <Link href="/lawyers" className="flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-full font-semibold text-base hover:bg-white/20 transition">
-                Find a Lawyer
-              </Link>
             </div>
             <p className="text-blue-200/80 text-xs mt-4 max-w-lg">
               *Free for your first 5 questions. After that: ₱199 for a 12-hour session, or ₱299 for 24 hours with your conversation saved.
             </p>
-          </div>
-          <div className="flex-shrink-0">
-            <div className="relative">
-              <div className="w-48 h-48 rounded-full overflow-hidden bg-white/10 shadow-2xl border-4 border-[#fcd116]/30">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={TORNY_SRC} alt="Torny AI" className="w-full h-full object-cover" style={TORNY_STYLE} />
-              </div>
-              <div className="absolute -bottom-2 -right-2 bg-green-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                Online 24/7
-              </div>
-            </div>
           </div>
         </div>
       </section>
