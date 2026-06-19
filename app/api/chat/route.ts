@@ -42,6 +42,49 @@ const LAWYER_REMINDER = `
 
 IMPORTANT: This conversation involves a complex situation where a real lawyer's review would be valuable. At the end of your response, gently let them know. Say something like: "Kung ako ang nasa sitwasyong yan, I'd definitely want to talk to a real lawyer who can look at the full picture. PAO is free and their hotline is 8524-2100 — or IBP can refer you to a private attorney. I'm still here to share what I know about the law, but a licensed lawyer would be the right next step for something this serious. What else would you like to know?"`;
 
+// Patterns that indicate the user wants a personal strategic decision, not general information
+const STRATEGIC_PATTERNS = [
+  /should i sign (this|the|my)/i,
+  /should i accept (this|the|an?)/i,
+  /should i (agree|reject) (to|this|the)/i,
+  /should i (take|reject) (this|the) (deal|offer|settlement|plea)/i,
+  /should i plead (guilty|not guilty)/i,
+  /should i (file|drop|pursue|push through with) (the|this|a|my) case/i,
+  /should i (appeal|contest|fight) (this|the|it)/i,
+  /is (this|the|my) (settlement|offer|deal|contract|agreement) (fair|good|worth|reasonable|valid|legal)/i,
+  /do i have a (good|strong|winning|solid) case/i,
+  /will i (win|lose) (this|the|my) case/i,
+  /is it worth (it|fighting|pursuing|filing)/i,
+  /can you (review|check|evaluate) (this|my) (contract|settlement|agreement|document)/i,
+  /what (are my chances|do i do now|should i do next|is my best move)/i,
+  /should i (hire|get|find) a lawyer (for this|now|already)/i,
+  /dapat ba akong (pumirma|tanggapin|mag-file|mag-appeal|mag-pursue)/i,
+  /maganda ba (ang|itong|ang offer|ang deal|ang settlement)/i,
+  /sulit ba (itong|ang)/i,
+];
+
+function detectTopic(text: string): string {
+  const t = text.toLowerCase();
+  if (/annulment|custody|support|separation|marriage|spouse|asawa|bata|anak|pamilya|family/.test(t)) return "Family Law";
+  if (/dismissal|employer|employee|salary|wages|nlrc|labor|trabaho|tanggal|kontrata sa trabaho/.test(t)) return "Labor Law";
+  if (/criminal|estafa|arrested|warrant|jail|charges|plead|guilty|swindl|scam|kaso kriminal/.test(t)) return "Criminal Law";
+  if (/land|title|deed|property|real estate|lupa|titulo|lote|bahay/.test(t)) return "Property Law";
+  if (/contract|agreement|settlement|business|corporation|partnership|kontrata/.test(t)) return "Civil\/Commercial Law";
+  return "Philippine Law";
+}
+
+function buildStrategicResponse(topic: string): string {
+  return `I'm not able to make that call for you — that's a strategic decision that goes beyond general legal information, and getting it wrong could seriously affect your situation. 😔
+
+What I *can* share is that for questions like this, a licensed attorney who can review the actual documents and full details of your case is the right person to talk to. Here are ways to find one who specializes in **${topic}**:
+
+📍 **[Browse verified lawyers on Torny →](/lawyers)**
+📞 **PAO (free legal help):** 8524-2100 (Mon–Fri)
+📞 **IBP National Hotline:** 02-8-851-3433
+
+⚠️ This is general legal information only, not legal advice. For decisions like this, please consult a licensed attorney.`;
+}
+
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
@@ -58,13 +101,28 @@ export async function POST(req: Request) {
     await incrementUserQuestionCount(userId);
   }
 
-  const userMessageCount = (messages as { role: string; content: string }[]).filter(
-    (m) => m.role === "user"
-  ).length;
-  const allText = (messages as { role: string; content: string }[])
-    .map((m) => m.content)
-    .join(" ")
-    .toLowerCase();
+  const typedMessages = messages as { role: string; content: string }[];
+  const lastUserMessage = [...typedMessages].reverse().find((m) => m.role === "user")?.content ?? "";
+  const allText = typedMessages.map((m) => m.content).join(" ").toLowerCase();
+
+  // Hard-stop for strategic decision questions — never let the AI answer these
+  const isStrategic = STRATEGIC_PATTERNS.some((p) => p.test(lastUserMessage));
+  if (isStrategic) {
+    const topic = detectTopic(allText + " " + lastUserMessage);
+    const hardResponse = buildStrategicResponse(topic);
+    const encoder = new TextEncoder();
+    return new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(hardResponse));
+          controller.close();
+        },
+      }),
+      { headers: { "Content-Type": "text/plain; charset=utf-8" } }
+    );
+  }
+
+  const userMessageCount = typedMessages.filter((m) => m.role === "user").length;
   const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
   const shouldSuggestLawyer = userMessageCount >= LAWYER_REDIRECT_AFTER || isComplex;
 
