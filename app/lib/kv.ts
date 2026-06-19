@@ -212,3 +212,17 @@ export async function updateApplication(id: string, status: "approved" | "reject
 export async function getApprovedLawyers(): Promise<LawyerAppData[]> {
   return getApplicationsByStatus("approved");
 }
+
+export async function getUserQuestionCount(userId: string): Promise<number> {
+  const count = await cmd<string>(["GET", `user:${userId}:qcount`]);
+  return toNumber(count);
+}
+
+export async function incrementUserQuestionCount(userId: string): Promise<number> {
+  const newCount = await cmd<number>(["INCR", `user:${userId}:qcount`]);
+  // Set 24h TTL only on first question so the window starts from then
+  if (toNumber(newCount) === 1) {
+    await cmd(["EXPIRE", `user:${userId}:qcount`, 86400]);
+  }
+  return toNumber(newCount);
+}
