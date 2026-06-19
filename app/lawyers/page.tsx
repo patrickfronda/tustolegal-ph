@@ -105,7 +105,7 @@ export default function LawyersPage() {
         {dynamicFiltered.length > 0 && (
           <div className="mb-6">
             <h2 className="text-xs font-bold uppercase tracking-widest text-[#1e3a7b] mb-3 flex items-center gap-2">
-              <BadgeCheck className="w-4 h-4" /> Verified Listings
+              <BadgeCheck className="w-4 h-4" /> Reviewed Listings
             </h2>
             <div className="grid gap-4">
               {dynamicFiltered.map((l, i) => (
@@ -119,7 +119,7 @@ export default function LawyersPage() {
                         <p className="font-bold text-[#0e1f44] text-sm">{l.name}</p>
                         <p className="text-xs text-gray-500">IBP Roll #{l.rollNumber}</p>
                       </div>
-                      <span className="flex-shrink-0 text-xs bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded-full font-semibold">Verified</span>
+                      <span className="flex-shrink-0 text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-semibold">Reviewed</span>
                     </div>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {l.specialties.map((s) => (
@@ -142,7 +142,7 @@ export default function LawyersPage() {
 
         <div className="mb-6">
           {dynamicFiltered.length > 0 && (
-            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Our Lawyer Directory</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">General Lawyer Directory</h2>
           )}
           {staticFiltered.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
@@ -179,13 +179,21 @@ export default function LawyersPage() {
 
         <div className="bg-[#0e1f44] rounded-2xl p-6 text-center text-white">
           <p className="font-bold text-lg mb-1">Are you a lawyer?</p>
-          <p className="text-blue-300 text-sm mb-4">List your services and reach clients who need your expertise.</p>
-          <Link
-            href="/lawyers/apply"
-            className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] font-bold px-6 py-2.5 rounded-full text-sm hover:bg-yellow-300 transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Apply to List Your Services
-          </Link>
+          <p className="text-blue-300 text-sm mb-4">Nationwide exposure, per region. Free listing, no commissions.</p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <Link
+              href="/lawyers/invite"
+              className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white font-semibold px-6 py-2.5 rounded-full text-sm hover:bg-white/20 transition-colors"
+            >
+              Why list with us?
+            </Link>
+            <Link
+              href="/lawyers/apply"
+              className="inline-flex items-center justify-center gap-2 bg-[#fcd116] text-[#0e1f44] font-bold px-6 py-2.5 rounded-full text-sm hover:bg-yellow-300 transition-colors"
+            >
+              <Plus className="w-4 h-4" /> Apply to List Your Services
+            </Link>
+          </div>
         </div>
       </div>
     </div>
