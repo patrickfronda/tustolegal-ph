@@ -4,9 +4,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const checkoutSessionId = searchParams.get("id");
+  const paymentIntentId = searchParams.get("id");
 
-  if (!checkoutSessionId) {
+  if (!paymentIntentId) {
     return Response.json({ error: "Missing id" }, { status: 400 });
   }
 
@@ -17,22 +17,33 @@ export async function GET(req: Request) {
 
   const auth = Buffer.from(`${secretKey}:`).toString("base64");
 
-  const res = await fetch(
-    `https://api.paymongo.com/v1/checkout_sessions/${checkoutSessionId}`,
-    { headers: { Authorization: `Basic ${auth}` } }
-  );
+  // GCash can briefly report "processing" right after redirect, so poll a few times.
+  let status = "";
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const res = await fetch(
+      `https://api.paymongo.com/v1/payment_intents/${paymentIntentId}`,
+      { headers: { Authorization: `Basic ${auth}` }, cache: "no-store" }
+    );
 
-  if (!res.ok) {
-    return Response.json({ error: "Could not retrieve session" }, { status: 502 });
+    if (!res.ok) {
+      return Response.json({ error: "Could not retrieve payment" }, { status: 502 });
+    }
+
+    const data = await res.json();
+    status = data.data?.attributes?.status ?? "";
+
+    if (status === "succeeded") {
+      const token = signToken(paymentIntentId);
+      return Response.json({ token });
+    }
+
+    if (status === "awaiting_payment_method" || status === "awaiting_next_action") {
+      // Payment failed or was cancelled — no point retrying.
+      break;
+    }
+
+    await new Promise((r) => setTimeout(r, 1500));
   }
 
-  const data = await res.json();
-  const status: string = data.data.attributes.payment_intent?.attributes?.status ?? "";
-
-  if (status !== "succeeded") {
-    return Response.json({ error: "Payment not completed" }, { status: 402 });
-  }
-
-  const token = signToken(checkoutSessionId);
-  return Response.json({ token });
+  return Response.json({ error: "Payment not completed", status }, { status: 402 });
 }
