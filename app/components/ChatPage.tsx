@@ -290,7 +290,6 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
             <p className="text-center text-gray-500 text-sm mb-4">Choose a plan to keep chatting with Torny.</p>
 
             <div className="space-y-3 mb-4">
-              {/* Basic plan */}
               <button
                 onClick={() => setSelectedPlan("basic")}
                 className={`w-full text-left border-2 rounded-2xl p-4 transition-colors ${selectedPlan === "basic" ? "border-[#1e3a7b] bg-[#1e3a7b]/5" : "border-gray-200 hover:border-gray-300"}`}
@@ -302,7 +301,6 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
                 <p className="text-xs text-gray-500">12-hour session · Conversation resets if you close the tab</p>
               </button>
 
-              {/* Plus plan */}
               <button
                 onClick={() => setSelectedPlan("plus")}
                 className={`w-full text-left border-2 rounded-2xl p-4 transition-colors relative ${selectedPlan === "plus" ? "border-[#fcd116] bg-amber-50" : "border-gray-200 hover:border-amber-200"}`}
@@ -398,7 +396,6 @@ export default function ChatPage() {
       setAccessToken(stored);
       const p = getPlanFromToken(stored);
       setPlan(p);
-      // Restore saved messages for Plus plan users
       if (p === "plus") {
         try {
           const savedMsgs = localStorage.getItem(MESSAGES_KEY);
@@ -412,12 +409,10 @@ export default function ChatPage() {
       }
     }
 
-    // Show disclaimer on first visit
     if (!localStorage.getItem(DISCLAIMER_KEY)) {
       setShowDisclaimer(true);
     }
 
-    // Get or create persistent user ID
     let uid = localStorage.getItem(USER_ID_KEY);
     if (!uid) {
       uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -425,7 +420,6 @@ export default function ChatPage() {
     }
     setUserId(uid);
 
-    // Restore question count with 24h expiry
     try {
       const raw = localStorage.getItem(SESSION_KEY);
       if (raw) {
@@ -456,7 +450,6 @@ export default function ChatPage() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  // Persist conversation for Plus plan
   useEffect(() => {
     if (plan === "plus" && messages.length > 0) {
       localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
@@ -483,12 +476,10 @@ export default function ChatPage() {
     if (newCount > FREE_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
 
-    // Persist count to localStorage with 24h window timestamp
     const ts = sessionTs || Date.now();
     if (!sessionTs) setSessionTs(ts);
     localStorage.setItem(SESSION_KEY, JSON.stringify({ count: newCount, ts }));
 
-    const sid = sessionStorage.getItem("torny_session_id") ?? "";
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -504,8 +495,8 @@ export default function ChatPage() {
     setIsThinking(true);
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-    // Brief thinking delay so the animation is always visible
-    await new Promise((resolve) => setTimeout(resolve, 700 + Math.random() * 500));
+    // Thinking delay — long enough to feel like real consideration
+    await new Promise((resolve) => setTimeout(resolve, 1800 + Math.random() * 1200));
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
