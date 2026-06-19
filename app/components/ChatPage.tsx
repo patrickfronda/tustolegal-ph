@@ -141,6 +141,35 @@ function TypingDots() {
   );
 }
 
+const THINKING_PHRASES = [
+  "Hmm, let me think on this... 🤔",
+  "Checking Philippine law... 📚",
+  "One sec, I've got this!",
+  "Consulting my inner abogado... ⚖️",
+  "Almost ready for you!",
+  "Reading the fine print... 🔍",
+];
+
+function ThinkingBubble() {
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setPhraseIdx((i) => (i + 1) % THINKING_PHRASES.length), 1400);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div className="flex gap-3">
+      <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
+      </div>
+      <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+        <TypingDots />
+        <p className="text-[11px] text-gray-400 italic mt-1">{THINKING_PHRASES[phraseIdx]}</p>
+      </div>
+    </div>
+  );
+}
+
 function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
   const [checked, setChecked] = useState(false);
   return (
@@ -348,6 +377,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
@@ -472,7 +502,12 @@ export default function ChatPage() {
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setIsStreaming(true);
+    setIsThinking(true);
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+
+    // Brief thinking delay so the animation is always visible
+    await new Promise((resolve) => setTimeout(resolve, 700 + Math.random() * 500));
+
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
     try {
@@ -483,6 +518,7 @@ export default function ChatPage() {
         setMessages((prev) => prev.slice(0, -1));
         setShowPayModal(true);
         setIsStreaming(false);
+        setIsThinking(false);
         return;
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -490,9 +526,11 @@ export default function ChatPage() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let accumulated = "";
+      let firstChunk = true;
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
+        if (firstChunk) { setIsThinking(false); firstChunk = false; }
         accumulated += decoder.decode(value, { stream: true });
         setMessages((prev) => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", content: accumulated }; return updated; });
       }
@@ -500,6 +538,7 @@ export default function ChatPage() {
       setMessages((prev) => prev.slice(0, -1));
       setError(isFil ? "May problema sa koneksyon. Subukan ulit." : "Connection error. Please try again.");
     } finally {
+      setIsThinking(false);
       setIsStreaming(false);
     }
   }
@@ -621,13 +660,7 @@ export default function ChatPage() {
                 {messages.map((msg, i) => (
                   <div key={i}>
                     {msg.role === "assistant" && msg.content === "" && isStreaming ? (
-                      <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
-                        </div>
-                        <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"><TypingDots /></div>
-                      </div>
+                      <ThinkingBubble />
                     ) : msg.role === "user" ? (
                       <div className="flex justify-end">
                         <div className="flex flex-col items-end gap-1">
