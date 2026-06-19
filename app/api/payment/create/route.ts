@@ -1,10 +1,11 @@
 export const dynamic = "force-dynamic";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://torny.online";
 const AMOUNT_CENTAVOS = 9900; // ₱99
 
-// Direct GCash flow (Payment Intent + Payment Method) — sends the user straight
-// to GCash with no hosted checkout page, so we never ask for name/email.
+// QR Ph flow (Payment Intent + Payment Method). Instead of redirecting the user
+// off-site, PayMongo returns a QR code we display on our own page; the customer
+// scans it with GCash / Maya / any bank app, and we poll the intent until it
+// succeeds. No name/email is ever collected.
 export async function POST() {
   const secretKey = process.env.PAYMONGO_SECRET_KEY;
   if (!secretKey) {
@@ -17,7 +18,7 @@ export async function POST() {
     Authorization: `Basic ${auth}`,
   };
 
-  // 1. Create a Payment Intent for ₱99 payable via GCash
+  // 1. Create a Payment Intent for ₱99 payable via QR Ph
   const intentRes = await fetch("https://api.paymongo.com/v1/payment_intents", {
     method: "POST",
     headers,
@@ -26,7 +27,7 @@ export async function POST() {
         attributes: {
           amount: AMOUNT_CENTAVOS,
           currency: "PHP",
-          payment_method_allowed: ["gcash"],
+          payment_method_allowed: ["qrph"],
           capture_type: "automatic",
           description: "Torny AI — Chat Session (24 hrs)",
           statement_descriptor: "TORNY AI",
@@ -43,12 +44,12 @@ export async function POST() {
   const intent = await intentRes.json();
   const intentId: string = intent.data.id;
 
-  // 2. Create a GCash payment method — no billing/personal details collected
+  // 2. Create a QR Ph payment method — no billing/personal details collected
   const methodRes = await fetch("https://api.paymongo.com/v1/payment_methods", {
     method: "POST",
     headers,
     body: JSON.stringify({
-      data: { attributes: { type: "gcash" } },
+      data: { attributes: { type: "qrph" } },
     }),
   });
 
@@ -60,19 +61,14 @@ export async function POST() {
   const method = await methodRes.json();
   const methodId: string = method.data.id;
 
-  // 3. Attach the method to the intent to get the GCash redirect URL
+  // 3. Attach the method to the intent — the response carries the QR image
   const attachRes = await fetch(
     `https://api.paymongo.com/v1/payment_intents/${intentId}/attach`,
     {
       method: "POST",
       headers,
       body: JSON.stringify({
-        data: {
-          attributes: {
-            payment_method: methodId,
-            return_url: `${SITE_URL}/payment/success?pi=${intentId}`,
-          },
-        },
+        data: { attributes: { payment_method: methodId } },
       }),
     }
   );
@@ -83,13 +79,13 @@ export async function POST() {
   }
 
   const attached = await attachRes.json();
-  const redirectUrl: string | undefined =
-    attached.data?.attributes?.next_action?.redirect?.url;
+  const qrImage: string | undefined =
+    attached.data?.attributes?.next_action?.code?.image_url;
 
-  if (!redirectUrl) {
-    console.error("PayMongo: no redirect URL", JSON.stringify(attached));
-    return Response.json({ error: "Could not start GCash payment" }, { status: 502 });
+  if (!qrImage) {
+    console.error("PayMongo: no QR image", JSON.stringify(attached));
+    return Response.json({ error: "Could not start QR Ph payment" }, { status: 502 });
   }
 
-  return Response.json({ url: redirectUrl });
+  return Response.json({ qr: qrImage, intentId });
 }
