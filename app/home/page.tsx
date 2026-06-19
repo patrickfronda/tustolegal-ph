@@ -11,12 +11,12 @@ const STEPS = [
 ];
 
 const WHY_TORNY = [
-  { icon: Smile, title: "Friendly & fun to talk to", desc: "Walang kaba, walang hiya — kausapin mo si Torny parang barkada na may alam sa batas. No cold, robotic replies." },
-  { icon: Languages, title: "English AT Filipino", desc: "Sumasagot siya sa style mo — pumili ka, magta-Tagalog, mag-English, o Taglish. Bahala ka!" },
-  { icon: BookOpen, title: "Built for Philippine law", desc: "Hindi US law, hindi panggeneral. Family, Labor, Criminal, Property — at cini-cite pa ang aktwal na batas (Family Code, RA 9262)." },
-  { icon: Handshake, title: "Knows when to call a pro", desc: "Para sa seryosong usapin, kinokonekta ka niya sa tunay na abogado — PAO at IBP lawyers." },
-  { icon: Shield, title: "Confidential & 24/7", desc: "Kahit 3AM, gising si Torny. Pribado, ligtas, at laging available." },
-  { icon: Sparkles, title: "Free to start", desc: "First 5 questions FREE. Then ₱199 for 12 hrs, or ₱299 for 24 hrs with your conversation saved — kahit isara mo ang tab." },
+  { icon: Smile, title: "Friendly & fun to talk to", desc: "No awkwardness, no judgment — chat with Torny like a knowledgeable friend who gets the law. No cold, robotic replies." },
+  { icon: Languages, title: "English AND Filipino", desc: "Torny responds in your style — choose English, Filipino, or Taglish. Whatever works for you!" },
+  { icon: BookOpen, title: "Built for Philippine law", desc: "Not US law, not generic. Family, Labor, Criminal, Property — with actual law citations (Family Code, RA 9262)." },
+  { icon: Handshake, title: "Knows when to call a pro", desc: "For serious cases, Torny connects you to real lawyers — PAO and IBP-accredited attorneys." },
+  { icon: Shield, title: "Confidential & 24/7", desc: "Even at 3AM, Torny is awake. Private, safe, and always available." },
+  { icon: Sparkles, title: "Free to start", desc: "First 5 questions FREE. Then ₱199 for 12 hrs, or ₱299 for 24 hrs with your conversation saved — even if you close the tab." },
 ];
 
 export default function HomePage() {
@@ -107,9 +107,9 @@ export default function HomePage() {
               <Smile className="w-4 h-4" /> Why Torny AI?
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0e1f44] text-center mb-2">Parang kaibigan mong marunong sa batas 💙</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0e1f44] text-center mb-2">Like a friend who knows the law 💙</h2>
           <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto">
-            Google makes you dig through 10 links. ChatGPT might give you US law. Si Torny? Iba siya.
+            Google makes you dig through 10 links. ChatGPT might give you US law. Torny? He&apos;s different.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {WHY_TORNY.map((w) => (
@@ -123,7 +123,7 @@ export default function HomePage() {
             ))}
           </div>
           <p className="text-center text-gray-400 text-sm mt-8 max-w-2xl mx-auto">
-            Hindi siya kapalit ng abogado — pero lagi siyang nandiyan para maintindihan mo ang iyong karapatan.
+            Not a replacement for a lawyer — but always there to help you understand your rights.
           </p>
           <div className="text-center mt-6">
             <Link href="/" className="inline-flex items-center gap-2 bg-[#fcd116] text-[#0e1f44] px-6 py-3.5 rounded-full font-bold hover:bg-yellow-300 transition shadow-lg">
