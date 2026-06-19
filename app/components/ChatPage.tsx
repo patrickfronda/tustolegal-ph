@@ -174,15 +174,15 @@ function PaymentModal({ onClose }: { onClose: () => void }) {
       <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6">
         <div className="flex justify-center mb-4"><div className="w-16 h-16 rounded-full overflow-hidden bg-[#1e3a7b]">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" /></div></div>
         <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You have reached your 5 free questions</h2>
-        <p className="text-center text-gray-500 text-sm mb-4">Upgrade for unlimited questions for <strong>24 hours</strong>.</p>
+        <p className="text-center text-gray-500 text-sm mb-4">Upgrade to a full Chat Session for <strong>24 hours</strong>.</p>
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-xs text-amber-800">
           <p className="font-semibold mb-1">⚠️ Keep this tab open after paying</p>
           <p>If you close this browser tab or window, your conversation history will be lost. Your 24-hour access will still be active, but you will need to start a new chat session.</p>
         </div>
         <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl p-4 mb-4">
-          <div className="flex items-center justify-between mb-3"><span className="text-sm font-bold text-gray-700">TustoLegal Pro Session</span><span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span></div>
+          <div className="flex items-center justify-between mb-3"><span className="text-sm font-bold text-gray-700">Torny AI Chat Session</span><span className="text-xl font-extrabold text-[#1e3a7b]">₱99</span></div>
           <div className="space-y-1.5 text-sm text-gray-600">
-            <p>✅ Unlimited questions (24 hrs)</p>
+            <p>✅ 24-hour Chat Session</p>
             <p>✅ Fast AI legal responses</p>
             <p>✅ Based on Philippine law</p>
           </div>
