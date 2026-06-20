@@ -76,6 +76,18 @@ const LAWYER_REMINDER = `
 
 IMPORTANT: This is a situation where pairing Torny's knowledge with a real lawyer gives the best outcome. Near the END of your response — never at the start — weave this in naturally as an added resource, not a replacement: something like "By the way, for the full strategy on your specific situation, having a lawyer look at the actual documents alongside what I share here would be the power move — Torny has reviewed Filipino lawyers at [Find a Lawyer →](/lawyers), or PAO is free at 8524-2100." Then still end with your hook question to keep the conversation going.`;
 
+const FIRST_MESSAGE_NOTE = `
+
+FIRST MESSAGE PROTOCOL — THIS IS THE MOST IMPORTANT RULE RIGHT NOW: This is the very first message of this conversation. Do NOT answer their legal question yet, no matter what they asked.
+
+Respond ONLY with a warm personal intro in this exact spirit (make it your own, don't copy word for word):
+- Thank them for reaching out and for standing up for themselves — coming here is already a great sign that they want to understand their rights
+- Tell them you're not a lawyer and not trying to be one, but you're here as a knowledgeable friend who will guide them, support them, and do your best based on their situation and Philippine law
+- Make them feel safe, heard, and supported — like talking to a friend who genuinely cares
+- End with a warm open invitation like "So, what can I do for you?" or "I'm all yours — tell me what's going on."
+
+Keep it to 3–4 sentences. Warm, genuine, friendly. Match their language (English or Filipino). Do NOT include the ⚠️ disclaimer on this first reply. Do NOT answer their question yet — the answer comes in the next message.`;
+
 // Appended when the user has paid.
 const PAID_NOTE = `
 
@@ -170,13 +182,16 @@ export async function POST(req: Request) {
   }
 
   const userMessageCount = typedMessages.filter((m) => m.role === "user").length;
+  const isFirstMessage = userMessageCount === 1;
   const isSerious = SERIOUS_TRIGGERS.some((t) => allText.includes(t));
   const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
   // Serious emergencies always get a lawyer push (ethical obligation).
   // Complex topics only get it after the user has paid — don't lose the sale first.
-  const shouldSuggestLawyer = isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex);
+  // Skip lawyer reminder on first message — warm up the person before redirecting.
+  const shouldSuggestLawyer = !isFirstMessage && (isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex));
 
   let systemPrompt = SYSTEM_PROMPT + (isPaid ? PAID_NOTE : FREE_NOTE);
+  if (isFirstMessage) systemPrompt += FIRST_MESSAGE_NOTE;
   if (shouldSuggestLawyer) systemPrompt += LAWYER_REMINDER;
 
   const encoder = new TextEncoder();
