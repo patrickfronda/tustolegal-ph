@@ -133,6 +133,43 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
+function splitBubbles(text: string, streaming: boolean): string[] {
+  if (streaming || !text.trim()) return [text];
+  const trimmed = text.trim();
+
+  // Separate ⚠️ disclaimer — stays in bubble 1
+  const dIdx = trimmed.indexOf('\n⚠️');
+  const mainText = dIdx >= 0 ? trimmed.slice(0, dIdx).trim() : trimmed;
+  const disclaimer = dIdx >= 0 ? trimmed.slice(dIdx).trim() : '';
+
+  if (!mainText) return [trimmed];
+
+  // Find the last ? (the hook question)
+  const lastQ = mainText.lastIndexOf('?');
+  if (lastQ < 10) return [trimmed];
+
+  // Search the text before the last ? for the last sentence boundary.
+  // Use lastIndexOf for each boundary type and pick the rightmost one.
+  const region = mainText.slice(0, lastQ);
+  const candidates: [number, number][] = [
+    [region.lastIndexOf('. '), 2],   // period + space
+    [region.lastIndexOf('! '), 2],   // exclamation + space
+    [region.lastIndexOf('? '), 2],   // mid-text question + space
+    [region.lastIndexOf('\n'), 1],   // newline
+    [region.lastIndexOf('— '), 2],   // em-dash + space
+    [region.lastIndexOf('— '), 2], // explicit em-dash codepoint
+  ];
+  const [boundary, markerLen] = candidates.reduce((a, b) => b[0] > a[0] ? b : a, [-1, 0]);
+
+  if (boundary < 0) return [trimmed];
+
+  const body = mainText.slice(0, boundary + markerLen).trim();
+  const question = mainText.slice(boundary + markerLen).trim();
+
+  if (!body || question.length < 5) return [trimmed];
+  return disclaimer ? [`${body}\n\n${disclaimer}`, question] : [body, question];
+}
+
 function TypingDots() {
   return (
     <div className="flex items-center gap-1.5 px-1 py-1">
@@ -156,12 +193,12 @@ function ThinkingBubble() {
     return () => clearInterval(t);
   }, []);
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-2">
       <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
       </div>
-      <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+      <div className="flex-1 bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-3 shadow-sm">
         <TypingDots />
         <p className="text-[11px] text-gray-400 italic mt-1">{THINKING_PHRASES[phraseIdx]}</p>
       </div>
@@ -290,6 +327,7 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
             <p className="text-center text-gray-500 text-sm mb-4">Choose a plan to keep chatting with Torny.</p>
 
             <div className="space-y-3 mb-4">
+              {/* Basic plan */}
               <button
                 onClick={() => setSelectedPlan("basic")}
                 className={`w-full text-left border-2 rounded-2xl p-4 transition-colors ${selectedPlan === "basic" ? "border-[#1e3a7b] bg-[#1e3a7b]/5" : "border-gray-200 hover:border-gray-300"}`}
@@ -301,6 +339,7 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
                 <p className="text-xs text-gray-500">12-hour session · Conversation resets if you close the tab</p>
               </button>
 
+              {/* Plus plan */}
               <button
                 onClick={() => setSelectedPlan("plus")}
                 className={`w-full text-left border-2 rounded-2xl p-4 transition-colors relative ${selectedPlan === "plus" ? "border-[#fcd116] bg-amber-50" : "border-gray-200 hover:border-amber-200"}`}
@@ -396,6 +435,7 @@ export default function ChatPage() {
       setAccessToken(stored);
       const p = getPlanFromToken(stored);
       setPlan(p);
+      // Restore saved messages for Plus plan users
       if (p === "plus") {
         try {
           const savedMsgs = localStorage.getItem(MESSAGES_KEY);
@@ -409,10 +449,12 @@ export default function ChatPage() {
       }
     }
 
+    // Show disclaimer on first visit
     if (!localStorage.getItem(DISCLAIMER_KEY)) {
       setShowDisclaimer(true);
     }
 
+    // Get or create persistent user ID
     let uid = localStorage.getItem(USER_ID_KEY);
     if (!uid) {
       uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -420,6 +462,7 @@ export default function ChatPage() {
     }
     setUserId(uid);
 
+    // Restore question count with 24h expiry
     try {
       const raw = localStorage.getItem(SESSION_KEY);
       if (raw) {
@@ -450,6 +493,7 @@ export default function ChatPage() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
+  // Persist conversation for Plus plan
   useEffect(() => {
     if (plan === "plus" && messages.length > 0) {
       localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
@@ -476,10 +520,12 @@ export default function ChatPage() {
     if (newCount > FREE_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
 
+    // Persist count to localStorage with 24h window timestamp
     const ts = sessionTs || Date.now();
     if (!sessionTs) setSessionTs(ts);
     localStorage.setItem(SESSION_KEY, JSON.stringify({ count: newCount, ts }));
 
+    const sid = sessionStorage.getItem("torny_session_id") ?? "";
     fetch("/api/analytics/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -625,19 +671,20 @@ export default function ChatPage() {
                     <span key={f} className="bg-white/10 text-blue-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
-                <form onSubmit={handleSubmit} className="flex items-end gap-2 mb-6">
-                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
-                  <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
-                    {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  </button>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
+                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
+                  <div className="flex justify-center">
+                    <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                      {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </form>
                 <div className="h-1 w-24 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126] rounded-full mx-auto mb-8" />
                 <p className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-3 text-left">{isFil ? "Mga madalas na tanong" : "Frequently asked questions"}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-left mb-8">
                   {(isFil ? SUGGESTED_FIL : SUGGESTED_EN).map((q) => (
-                    <button key={q} onClick={() => sendMessage(q)} className="flex items-start gap-2.5 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm text-white hover:border-[#fcd116] hover:shadow-md hover:bg-white/20 transition-all text-left group">
-                      <MessageSquare className="w-4 h-4 text-[#fcd116] flex-shrink-0 mt-0.5" />
-                      <span className="flex-1 leading-snug">{q}</span>
+                    <button key={q} onClick={() => sendMessage(q)} className="text-sm text-blue-200 hover:text-white text-left py-1.5 leading-snug transition-colors hover:underline underline-offset-2">
+                      {q}
                     </button>
                   ))}
                 </div>
@@ -661,18 +708,22 @@ export default function ChatPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex gap-3">
+                      <div className="flex gap-2">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#1e3a7b] mt-1 shadow-sm">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={TORNY_SRC} alt="Torny" className="w-full h-full object-cover" style={TORNY_STYLE} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 ml-1">
+                          <div className="flex items-center gap-2 mb-1 ml-0.5">
                             <span className="text-xs font-bold text-[#1e3a7b]">Torny</span>
                             <CopyBtn text={msg.content} />
                           </div>
-                          <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm space-y-1">
-                            <MarkdownBody text={msg.content} />
+                          <div className="space-y-1.5">
+                            {splitBubbles(msg.content, isStreaming && i === messages.length - 1).map((bubble, bi) => (
+                              <div key={bi} className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-3 shadow-sm space-y-1">
+                                <MarkdownBody text={bubble} />
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -692,11 +743,13 @@ export default function ChatPage() {
 
           {!isEmpty && (
             <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
-              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex items-end gap-2">
-                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
-                <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
-                  {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </button>
+              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex flex-col gap-2">
+                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
+                <div className="flex justify-center">
+                  <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                    {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  </button>
+                </div>
               </form>
               <p className="text-center text-xs text-gray-400 mt-2 max-w-3xl mx-auto">
                 <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
