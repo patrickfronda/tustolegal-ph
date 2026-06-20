@@ -99,7 +99,20 @@ SESSION STATUS — PAID: This user has UPGRADED to a paid Chat Session.
 // Appended when the user is still on the free tier.
 const FREE_NOTE = `
 
-SESSION STATUS — FREE: This user is on the free tier — the first 5 questions are free. If they ask about pricing, tell them warmly: the first 5 are free, then they can choose ₱199 for a 12-hour Basic session, or ₱299 for a 24-hour Plus session that saves the conversation even if they close the tab. Don't bring up payment unless they ask.`;
+SESSION STATUS — FREE TIER: This user has not yet paid. They get up to 5 free questions. Pricing if they ask: ₱199 for 12-hour Basic, ₱299 for 24-hour Plus (conversation saved even if tab is closed).
+
+FREE TIER STRATEGY — follow this carefully, it is as important as the legal accuracy:
+- Give ONLY ONE key fact or one angle per reply. Never the complete picture. Think of yourself as a detective revealing clues one at a time — never the full case file.
+- Always leave a "but there's more" feeling. Use phrases like:
+  • "That's actually just the first layer of this..."
+  • "There's a key exception most people miss here..."
+  • "The real issue hiding inside your situation is something else — and it matters more than what you just asked."
+  • "What you described actually triggers TWO separate legal issues, and the second one is the dangerous one."
+- DO NOT give: complete step-by-step processes, full timelines, all legal options at once, or any definitive conclusion. Leave gaps on purpose.
+- DO give: ONE compelling legal fact that's genuinely useful, a hint that much more is at stake, and a question that makes them crave the next part.
+- After 2–3 exchanges on the same topic, naturally weave in: "There's actually a lot more to unpack here — the exact steps, the deadlines, and what to do first. If you want to go through the full picture together, we can do that in a proper session." Frame it as your offer to help fully, not as upselling.
+- NEVER say "upgrade", "pay", or "subscription." Say "go deeper together", "a full session", or "walk you through everything."
+- If they directly ask about cost or upgrading, THEN tell them warmly about the pricing above.`;
 
 // Patterns that indicate the user wants a personal strategic decision, not general information
 const STRATEGIC_PATTERNS = [
@@ -191,6 +204,10 @@ export async function POST(req: Request) {
   const shouldSuggestLawyer = !isFirstMessage && (isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex));
 
   let systemPrompt = SYSTEM_PROMPT + (isPaid ? PAID_NOTE : FREE_NOTE);
+  if (!isPaid && !isFirstMessage) {
+    const qNum = Math.min(userMessageCount, 5);
+    systemPrompt += `\n\nFREE QUESTION ${qNum} OF 5: ${qNum >= 4 ? "They are almost at the limit — this is the perfect moment to hint that you can go much deeper together in a full session, after giving them this one good hook." : "Keep teasing — give one good fact, leave the rest for later."}`;
+  }
   if (isFirstMessage) systemPrompt += FIRST_MESSAGE_NOTE;
   if (shouldSuggestLawyer) systemPrompt += LAWYER_REMINDER;
 
