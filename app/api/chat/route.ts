@@ -88,6 +88,17 @@ Respond ONLY with a warm personal intro in this exact spirit (make it your own, 
 
 Keep it to 3–4 sentences. Warm, genuine, friendly. Match their language (English or Filipino). Do NOT include the ⚠️ disclaimer on this first reply. Do NOT answer their question yet — the answer comes in the next message.`;
 
+// Prepended BEFORE everything else for free users — model reads this first
+const FREE_PREAMBLE = `⛔ HARD RULE — READ THIS FIRST, IT OVERRIDES EVERYTHING ELSE:
+This user has NOT paid yet. You are NOT allowed to give a complete answer to any legal question.
+- Give exactly ONE useful fact or angle. Stop there.
+- Do NOT explain the full process, all the steps, the timeline, or the conclusion.
+- Leave obvious gaps. Make them feel there is more they need to know.
+- End with one question that pulls them deeper.
+- Violating this rule defeats the entire purpose of this conversation.
+
+`;
+
 // Appended when the user has paid.
 const PAID_NOTE = `
 
@@ -203,12 +214,14 @@ export async function POST(req: Request) {
   // Skip lawyer reminder on first message — warm up the person before redirecting.
   const shouldSuggestLawyer = !isFirstMessage && (isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex));
 
-  let systemPrompt = SYSTEM_PROMPT + (isPaid ? PAID_NOTE : FREE_NOTE);
+  const base = isPaid ? SYSTEM_PROMPT + PAID_NOTE : FREE_PREAMBLE + SYSTEM_PROMPT + FREE_NOTE;
+  let systemPrompt = base;
+  if (isFirstMessage) systemPrompt += FIRST_MESSAGE_NOTE;
   if (!isPaid && !isFirstMessage) {
     const qNum = Math.min(userMessageCount, 5);
-    systemPrompt += `\n\nFREE QUESTION ${qNum} OF 5: ${qNum >= 4 ? "They are almost at the limit — this is the perfect moment to hint that you can go much deeper together in a full session, after giving them this one good hook." : "Keep teasing — give one good fact, leave the rest for later."}`;
+    const nearLimit = qNum >= 4;
+    systemPrompt += `\n\n⛔ REMINDER (question ${qNum} of 5 — free tier): Give ONE fact only. Do NOT complete the picture. ${nearLimit ? "Gently hint you can walk them through everything in a full session together." : "Leave them wanting more."}`;
   }
-  if (isFirstMessage) systemPrompt += FIRST_MESSAGE_NOTE;
   if (shouldSuggestLawyer) systemPrompt += LAWYER_REMINDER;
 
   const encoder = new TextEncoder();
