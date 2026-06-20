@@ -133,6 +133,38 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
+function splitBubbles(text: string, streaming: boolean): string[] {
+  if (streaming || !text.trim()) return [text];
+  const trimmed = text.trim();
+  const lines = trimmed.split('\n');
+
+  // Pull ⚠️ disclaimer lines off the end — they stay in bubble 1
+  const disclaimerIdx = lines.findIndex((l) => l.trim().startsWith('⚠️'));
+  const mainLines = disclaimerIdx >= 0 ? lines.slice(0, disclaimerIdx) : lines;
+  const disclaimerLines = disclaimerIdx >= 0 ? lines.slice(disclaimerIdx) : [];
+
+  // Find the last line that is a standalone question
+  let qIdx = -1;
+  for (let i = mainLines.length - 1; i >= 0; i--) {
+    const l = mainLines[i].trim();
+    if (l.endsWith('?') && l.length > 8 && !l.startsWith('-') && !l.startsWith('•')) {
+      qIdx = i;
+      break;
+    }
+  }
+
+  if (qIdx <= 0) return [trimmed];
+
+  const rawBodyLines = mainLines.slice(0, qIdx);
+  while (rawBodyLines.length > 0 && !rawBodyLines[rawBodyLines.length - 1].trim()) rawBodyLines.pop();
+
+  const bodyPart = [...rawBodyLines, ...disclaimerLines].join('\n').trim();
+  const questionPart = mainLines.slice(qIdx).join('\n').trim();
+
+  if (!bodyPart) return [trimmed];
+  return [bodyPart, questionPart];
+}
+
 function TypingDots() {
   return (
     <div className="flex items-center gap-1.5 px-1 py-1">
@@ -680,8 +712,12 @@ export default function ChatPage() {
                             <span className="text-xs font-bold text-[#1e3a7b]">Torny</span>
                             <CopyBtn text={msg.content} />
                           </div>
-                          <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-3 shadow-sm space-y-1">
-                            <MarkdownBody text={msg.content} />
+                          <div className="space-y-1.5">
+                            {splitBubbles(msg.content, isStreaming && i === messages.length - 1).map((bubble, bi) => (
+                              <div key={bi} className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-3 shadow-sm space-y-1">
+                                <MarkdownBody text={bubble} />
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
