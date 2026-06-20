@@ -133,41 +133,33 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
+function sanitize(text: string): string {
+  return text
+    .replace(/\*\*([^*]*)\*\*/g, '$1')
+    .replace(/ ?[–—―] ?/g, ' ')
+    .replace(/  +/g, ' ')
+    .replace(/\n*⚠️ This is general legal information[^\n]*/gi, '')
+    .trim();
+}
+
 function splitBubbles(text: string, streaming: boolean): string[] {
   if (streaming || !text.trim()) return [text];
   const trimmed = text.trim();
-
-  // Separate ⚠️ disclaimer — stays in bubble 1
-  const dIdx = trimmed.indexOf('\n⚠️');
-  const mainText = dIdx >= 0 ? trimmed.slice(0, dIdx).trim() : trimmed;
-  const disclaimer = dIdx >= 0 ? trimmed.slice(dIdx).trim() : '';
-
-  if (!mainText) return [trimmed];
-
-  // Find the last ? (the hook question)
-  const lastQ = mainText.lastIndexOf('?');
+  const lastQ = trimmed.lastIndexOf('?');
   if (lastQ < 10) return [trimmed];
-
-  // Search the text before the last ? for the last sentence boundary.
-  // Use lastIndexOf for each boundary type and pick the rightmost one.
-  const region = mainText.slice(0, lastQ);
+  const region = trimmed.slice(0, lastQ);
   const candidates: [number, number][] = [
-    [region.lastIndexOf('. '), 2],   // period + space
-    [region.lastIndexOf('! '), 2],   // exclamation + space
-    [region.lastIndexOf('? '), 2],   // mid-text question + space
-    [region.lastIndexOf('\n'), 1],   // newline
-    [region.lastIndexOf('— '), 2],   // em-dash + space
-    [region.lastIndexOf('— '), 2], // explicit em-dash codepoint
+    [region.lastIndexOf('. '), 2],
+    [region.lastIndexOf('! '), 2],
+    [region.lastIndexOf('? '), 2],
+    [region.lastIndexOf('\n'), 1],
   ];
   const [boundary, markerLen] = candidates.reduce((a, b) => b[0] > a[0] ? b : a, [-1, 0]);
-
   if (boundary < 0) return [trimmed];
-
-  const body = mainText.slice(0, boundary + markerLen).trim();
-  const question = mainText.slice(boundary + markerLen).trim();
-
+  const body = trimmed.slice(0, boundary + markerLen).trim();
+  const question = trimmed.slice(boundary + markerLen).trim();
   if (!body || question.length < 5) return [trimmed];
-  return disclaimer ? [`${body}\n\n${disclaimer}`, question] : [body, question];
+  return [body, question];
 }
 
 function TypingDots() {
@@ -568,7 +560,8 @@ export default function ChatPage() {
         if (done) break;
         if (firstChunk) { setIsThinking(false); firstChunk = false; }
         accumulated += decoder.decode(value, { stream: true });
-        setMessages((prev) => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", content: accumulated }; return updated; });
+        const display = sanitize(accumulated);
+        setMessages((prev) => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", content: display }; return updated; });
       }
     } catch {
       setMessages((prev) => prev.slice(0, -1));
@@ -699,12 +692,10 @@ export default function ChatPage() {
                     {msg.role === "assistant" && msg.content === "" && isStreaming ? (
                       <ThinkingBubble />
                     ) : msg.role === "user" ? (
-                      <div className="flex justify-end">
-                        <div className="flex flex-col items-end gap-1">
-                          <span className="text-xs font-semibold text-gray-400 mr-1">{senderName}</span>
-                          <div className="max-w-[80%] sm:max-w-[70%] bg-[#1e3a7b] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
-                            <p className="text-sm leading-relaxed">{msg.content}</p>
-                          </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-xs font-semibold text-gray-400">{senderName}</span>
+                        <div className="w-fit max-w-[80%] sm:max-w-[70%] bg-[#1e3a7b] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
+                          <p className="text-sm leading-relaxed break-words">{msg.content}</p>
                         </div>
                       </div>
                     ) : (
@@ -743,17 +734,18 @@ export default function ChatPage() {
 
           {!isEmpty && (
             <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
-              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex flex-col gap-2">
-                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
-                <div className="flex justify-center">
-                  <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
-                    {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  </button>
-                </div>
+              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex items-end gap-2">
+                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
+                <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                  {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </button>
               </form>
               <p className="text-center text-xs text-gray-400 mt-2 max-w-3xl mx-auto">
                 <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
                 <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Shift+Enter</kbd> {isFil ? "bagong linya" : "new line"}
+              </p>
+              <p className="text-center text-[10px] text-gray-400 mt-1.5 leading-snug max-w-3xl mx-auto">
+                ⚠️ General legal information only, not legal advice. Consult a licensed attorney or call PAO at 8524-2100.
               </p>
             </div>
           )}
