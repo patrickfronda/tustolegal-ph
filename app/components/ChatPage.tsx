@@ -133,6 +133,12 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
+function sanitize(text: string): string {
+  return text
+    .replace(/\*\*([^*]*)\*\*/g, '$1')
+    .replace(/ ?— ?/g, ' ');
+}
+
 function splitBubbles(text: string, streaming: boolean): string[] {
   if (streaming || !text.trim()) return [text];
   const trimmed = text.trim();
@@ -152,12 +158,10 @@ function splitBubbles(text: string, streaming: boolean): string[] {
   // Use lastIndexOf for each boundary type and pick the rightmost one.
   const region = mainText.slice(0, lastQ);
   const candidates: [number, number][] = [
-    [region.lastIndexOf('. '), 2],   // period + space
-    [region.lastIndexOf('! '), 2],   // exclamation + space
-    [region.lastIndexOf('? '), 2],   // mid-text question + space
-    [region.lastIndexOf('\n'), 1],   // newline
-    [region.lastIndexOf('— '), 2],   // em-dash + space
-    [region.lastIndexOf('— '), 2], // explicit em-dash codepoint
+    [region.lastIndexOf('. '), 2],
+    [region.lastIndexOf('! '), 2],
+    [region.lastIndexOf('? '), 2],
+    [region.lastIndexOf('\n'), 1],
   ];
   const [boundary, markerLen] = candidates.reduce((a, b) => b[0] > a[0] ? b : a, [-1, 0]);
 
@@ -568,7 +572,8 @@ export default function ChatPage() {
         if (done) break;
         if (firstChunk) { setIsThinking(false); firstChunk = false; }
         accumulated += decoder.decode(value, { stream: true });
-        setMessages((prev) => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", content: accumulated }; return updated; });
+        const display = sanitize(accumulated);
+        setMessages((prev) => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", content: display }; return updated; });
       }
     } catch {
       setMessages((prev) => prev.slice(0, -1));
