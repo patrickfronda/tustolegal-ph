@@ -137,32 +137,36 @@ function splitBubbles(text: string, streaming: boolean): string[] {
   if (streaming || !text.trim()) return [text];
   const trimmed = text.trim();
 
-  // Separate ⚠️ disclaimer — it stays in bubble 1 with the body
+  // Separate ⚠️ disclaimer — stays in bubble 1
   const dIdx = trimmed.indexOf('\n⚠️');
   const mainText = dIdx >= 0 ? trimmed.slice(0, dIdx).trim() : trimmed;
   const disclaimer = dIdx >= 0 ? trimmed.slice(dIdx).trim() : '';
 
-  // Find the last ? in the main text (the hook question)
+  if (!mainText) return [trimmed];
+
+  // Find the last ? (the hook question)
   const lastQ = mainText.lastIndexOf('?');
   if (lastQ < 10) return [trimmed];
 
-  // Walk backward from lastQ to find where this sentence begins.
-  // A sentence boundary is: ". ", "! ", "? ", or a newline character.
-  let sentenceStart = 0;
-  for (let i = lastQ - 1; i >= 0; i--) {
-    const ch = mainText[i];
-    if (ch === '\n') { sentenceStart = i + 1; break; }
-    if ((ch === '.' || ch === '!' || ch === '?') && mainText[i + 1] === ' ') {
-      sentenceStart = i + 2;
-      break;
-    }
-  }
+  // Search the text before the last ? for the last sentence boundary.
+  // Use lastIndexOf for each boundary type and pick the rightmost one.
+  const region = mainText.slice(0, lastQ);
+  const candidates: [number, number][] = [
+    [region.lastIndexOf('. '), 2],   // period + space
+    [region.lastIndexOf('! '), 2],   // exclamation + space
+    [region.lastIndexOf('? '), 2],   // mid-text question + space
+    [region.lastIndexOf('\n'), 1],   // newline
+    [region.lastIndexOf('— '), 2],   // em-dash + space
+    [region.lastIndexOf('— '), 2], // explicit em-dash codepoint
+  ];
+  const [boundary, markerLen] = candidates.reduce((a, b) => b[0] > a[0] ? b : a, [-1, 0]);
 
-  const body = mainText.slice(0, sentenceStart).trim();
-  const question = mainText.slice(sentenceStart).trim();
+  if (boundary < 0) return [trimmed];
+
+  const body = mainText.slice(0, boundary + markerLen).trim();
+  const question = mainText.slice(boundary + markerLen).trim();
 
   if (!body || question.length < 5) return [trimmed];
-
   return disclaimer ? [`${body}\n\n${disclaimer}`, question] : [body, question];
 }
 
