@@ -12,95 +12,103 @@ const SECTIONS = [
   {
     h: "1. Acceptance of These Terms",
     p: [
-      "Welcome to Torny AI (“Torny,” “we,” “us,” or “our”), a service operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS. By accessing or using torny.online (the “Service”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, please do not use the Service.",
+      "Welcome to Torny AI (“Torny,” “we,” “us,” or “our”), a service operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS, a Filipino AI company. By accessing or using torny.online (the “Service”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, please do not use the Service.",
       "These Terms form a binding agreement between you and TORNY INFORMATION TECHNOLOGY SOLUTIONS.",
     ],
   },
   {
-    h: "2. Torny AI Is Not a Lawyer — No Legal Advice",
+    h: "2. What Torny AI Is",
     p: [
-      "Torny AI provides general legal information based on publicly available Philippine laws. It is NOT a law firm and is NOT a licensed attorney. Nothing on the Service constitutes legal advice.",
-      "Using the Service does NOT create an attorney-client relationship between you and Torny AI or TORNY INFORMATION TECHNOLOGY SOLUTIONS. Information provided is for general educational purposes only and may not apply to your specific situation.",
-      "For advice about your particular circumstances, always consult a licensed Filipino attorney. For free legal assistance, you may contact the Public Attorney's Office (PAO) at 8524-2100 or the Integrated Bar of the Philippines (IBP).",
+      "Torny AI is an artificial intelligence assistant created and operated by TORNY INFORMATION TECHNOLOGY SOLUTIONS. Torny is designed to act as a knowledgeable friend who can share general information about Philippine law in a warm, conversational way.",
+      "Torny’s knowledge comes from AI training conducted by TORNY INFORMATION TECHNOLOGY SOLUTIONS. Torny is not affiliated with, sourced from, or endorsed by any external legal database, law publisher, or government institution, including but not limited to LawPhil, Chan Robles Virtual Law Library, or the Supreme Court E-Library.",
+      "Torny is NOT a law firm and is NOT a licensed attorney. Nothing on the Service constitutes legal advice.",
     ],
   },
   {
-    h: "3. No Reliance; Accuracy",
+    h: "3. No Legal Advice; Friendly Opinion Only",
+    p: [
+      "Using the Service does NOT create an attorney-client relationship between you and Torny AI or TORNY INFORMATION TECHNOLOGY SOLUTIONS. All information provided is for general educational purposes only.",
+      "Torny may sometimes share what it would personally do in a situation, or offer a friendly perspective on a legal matter. Any such opinion is the view of an AI designed to be a helpful friend — it is not professional legal advice, and you should treat it accordingly.",
+      "For advice specific to your circumstances, always consult a licensed Filipino attorney. For free legal assistance, you may contact the Public Attorney’s Office (PAO) at 8524-2100 or the Integrated Bar of the Philippines (IBP) at 02-8-851-3433.",
+    ],
+  },
+  {
+    h: "4. No Reliance; Accuracy",
     p: [
       "While we strive for accuracy, laws change and AI-generated responses may contain errors, omissions, or outdated information. You should not act or refrain from acting based solely on information from the Service.",
       "We make no warranty that the information is complete, accurate, current, or suitable for any particular purpose.",
     ],
   },
   {
-    h: "4. Eligibility",
+    h: "5. Eligibility",
     p: [
       "You must be at least 18 years old, or have the consent of a parent or guardian, to use the Service. By using Torny AI you represent that you meet this requirement.",
     ],
   },
   {
-    h: "5. Free Questions and Paid Chat Sessions",
+    h: "6. Free Questions and Paid Chat Sessions",
     p: [
       "The Service offers a limited number of free questions (currently the first 5). After the free questions are used, continued use requires a one-time payment. Two plans are available: a Basic plan (₱199) which unlocks a 12-hour Chat Session, and a Plus plan (₱299) which unlocks a 24-hour Chat Session with conversation history saved in your browser. Pricing is subject to change; the price shown at the time of purchase applies.",
       "Payments are processed by our third-party payment provider, PayMongo, via QR Ph (GCash, Maya, and participating banks). We do not store your full payment details.",
-      "For the Basic plan, if you close or refresh your browser tab your conversation history will be lost, though your 12-hour access remains active. For the Plus plan, your conversation history is saved in your browser's local storage and can be restored when you return within the 24-hour access window.",
+      "For the Basic plan, if you close or refresh your browser tab your conversation history will be lost, though your 12-hour access remains active. For the Plus plan, your conversation history is saved in your browser’s local storage and can be restored when you return within the 24-hour access window.",
     ],
   },
   {
-    h: "6. Refunds",
+    h: "7. Refunds",
     p: [
       "Because the Chat Session grants immediate digital access, payments are generally non-refundable once the session has been activated. If you experience a technical problem that prevented you from accessing a paid session, contact us and we will review your request in good faith.",
     ],
   },
   {
-    h: "7. Acceptable Use",
+    h: "8. Acceptable Use",
     p: [
       "You agree not to misuse the Service. In particular, you will not: (a) use the Service for any unlawful purpose; (b) attempt to gain unauthorized access to our systems; (c) submit content that is abusive, fraudulent, or infringing; (d) use the Service to provide legal advice to third parties as if you were a licensed professional; or (e) scrape, copy, or resell the Service without our written permission.",
     ],
   },
   {
-    h: "8. Lawyer Directory",
+    h: "9. Lawyer Directory",
     p: [
       "The Service may list licensed attorneys for informational purposes. We do not endorse, guarantee, or take responsibility for the services of any listed lawyer. Any engagement you enter into with a lawyer is solely between you and that lawyer.",
     ],
   },
   {
-    h: "9. Intellectual Property",
+    h: "10. Intellectual Property",
     p: [
       "The Service, including its design, text, logos, and the Torny AI persona, is owned by TORNY INFORMATION TECHNOLOGY SOLUTIONS and protected by applicable intellectual property laws. You may use the Service for your personal, non-commercial use only.",
     ],
   },
   {
-    h: "10. Disclaimer of Warranties",
+    h: "11. Disclaimer of Warranties",
     p: [
       "The Service is provided “as is” and “as available” without warranties of any kind, whether express or implied, including merchantability, fitness for a particular purpose, and non-infringement.",
     ],
   },
   {
-    h: "11. Limitation of Liability",
+    h: "12. Limitation of Liability",
     p: [
       "To the maximum extent permitted by law, TORNY INFORMATION TECHNOLOGY SOLUTIONS shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss arising from your reliance on information obtained through the Service. Our total liability for any claim shall not exceed the amount you paid us in the 30 days preceding the claim.",
     ],
   },
   {
-    h: "12. Privacy",
+    h: "13. Privacy",
     p: [
       "Your use of the Service is also governed by our Privacy Policy, which explains how we handle your information.",
     ],
   },
   {
-    h: "13. Changes to These Terms",
+    h: "14. Changes to These Terms",
     p: [
       "We may update these Terms from time to time. Changes take effect when posted on this page. Your continued use of the Service after changes are posted constitutes acceptance of the revised Terms.",
     ],
   },
   {
-    h: "14. Governing Law",
+    h: "15. Governing Law",
     p: [
       "These Terms are governed by the laws of the Republic of the Philippines. Any disputes shall be subject to the exclusive jurisdiction of the proper courts of the Philippines.",
     ],
   },
   {
-    h: "15. Contact Us",
+    h: "16. Contact Us",
     p: [
       "Questions about these Terms? Reach us through the Torny AI website at torny.online.",
     ],
@@ -131,7 +139,7 @@ export default function TermsPage() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126]" />
         <div className="max-w-3xl mx-auto px-4 py-12">
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">Terms of Service</h1>
-          <p className="text-blue-200 text-sm">Last updated: June 19, 2026</p>
+          <p className="text-blue-200 text-sm">Last updated: June 20, 2026</p>
         </div>
       </section>
 
