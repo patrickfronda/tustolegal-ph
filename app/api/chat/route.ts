@@ -265,7 +265,7 @@ export async function POST(req: Request) {
       try {
         const anthropicStream = client.messages.stream({
           model: "claude-haiku-4-5",
-          max_tokens: 280,
+          max_tokens: 500,
           system: systemPrompt,
           messages,
         });
