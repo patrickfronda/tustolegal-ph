@@ -136,33 +136,34 @@ function CopyBtn({ text }: { text: string }) {
 function splitBubbles(text: string, streaming: boolean): string[] {
   if (streaming || !text.trim()) return [text];
   const trimmed = text.trim();
-  const lines = trimmed.split('\n');
 
-  // Pull ⚠️ disclaimer lines off the end — they stay in bubble 1
-  const disclaimerIdx = lines.findIndex((l) => l.trim().startsWith('⚠️'));
-  const mainLines = disclaimerIdx >= 0 ? lines.slice(0, disclaimerIdx) : lines;
-  const disclaimerLines = disclaimerIdx >= 0 ? lines.slice(disclaimerIdx) : [];
+  // Separate ⚠️ disclaimer — it stays in bubble 1 with the body
+  const dIdx = trimmed.indexOf('\n⚠️');
+  const mainText = dIdx >= 0 ? trimmed.slice(0, dIdx).trim() : trimmed;
+  const disclaimer = dIdx >= 0 ? trimmed.slice(dIdx).trim() : '';
 
-  // Find the last line that is a standalone question
-  let qIdx = -1;
-  for (let i = mainLines.length - 1; i >= 0; i--) {
-    const l = mainLines[i].trim();
-    if (l.endsWith('?') && l.length > 8 && !l.startsWith('-') && !l.startsWith('•')) {
-      qIdx = i;
+  // Find the last ? in the main text (the hook question)
+  const lastQ = mainText.lastIndexOf('?');
+  if (lastQ < 10) return [trimmed];
+
+  // Walk backward from lastQ to find where this sentence begins.
+  // A sentence boundary is: ". ", "! ", "? ", or a newline character.
+  let sentenceStart = 0;
+  for (let i = lastQ - 1; i >= 0; i--) {
+    const ch = mainText[i];
+    if (ch === '\n') { sentenceStart = i + 1; break; }
+    if ((ch === '.' || ch === '!' || ch === '?') && mainText[i + 1] === ' ') {
+      sentenceStart = i + 2;
       break;
     }
   }
 
-  if (qIdx <= 0) return [trimmed];
+  const body = mainText.slice(0, sentenceStart).trim();
+  const question = mainText.slice(sentenceStart).trim();
 
-  const rawBodyLines = mainLines.slice(0, qIdx);
-  while (rawBodyLines.length > 0 && !rawBodyLines[rawBodyLines.length - 1].trim()) rawBodyLines.pop();
+  if (!body || question.length < 5) return [trimmed];
 
-  const bodyPart = [...rawBodyLines, ...disclaimerLines].join('\n').trim();
-  const questionPart = mainLines.slice(qIdx).join('\n').trim();
-
-  if (!bodyPart) return [trimmed];
-  return [bodyPart, questionPart];
+  return disclaimer ? [`${body}\n\n${disclaimer}`, question] : [body, question];
 }
 
 function TypingDots() {
