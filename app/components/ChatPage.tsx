@@ -136,7 +136,9 @@ function CopyBtn({ text }: { text: string }) {
 function sanitize(text: string): string {
   return text
     .replace(/\*\*([^*]*)\*\*/g, '$1')
-    .replace(/ ?— ?/g, ' ');
+    .replace(/ ?[–—―‒‐﹘﹣－] ?/g, ' ')
+    .replace(/\s*--\s*/g, ' ')
+    .replace(/  +/g, ' ');
 }
 
 function splitBubbles(text: string, streaming: boolean): string[] {
