@@ -671,19 +671,20 @@ export default function ChatPage() {
                     <span key={f} className="bg-white/10 text-blue-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
-                <form onSubmit={handleSubmit} className="flex items-end gap-2 mb-6">
-                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
-                  <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
-                    {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  </button>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
+                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
+                  <div className="flex justify-center">
+                    <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                      {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </form>
                 <div className="h-1 w-24 bg-gradient-to-r from-[#0038a8] via-[#fcd116] to-[#ce1126] rounded-full mx-auto mb-8" />
                 <p className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-3 text-left">{isFil ? "Mga madalas na tanong" : "Frequently asked questions"}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-left mb-8">
                   {(isFil ? SUGGESTED_FIL : SUGGESTED_EN).map((q) => (
-                    <button key={q} onClick={() => sendMessage(q)} className="flex items-start gap-2.5 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm text-white hover:border-[#fcd116] hover:shadow-md hover:bg-white/20 transition-all text-left group">
-                      <MessageSquare className="w-4 h-4 text-[#fcd116] flex-shrink-0 mt-0.5" />
-                      <span className="flex-1 leading-snug">{q}</span>
+                    <button key={q} onClick={() => sendMessage(q)} className="text-sm text-blue-200 hover:text-white text-left py-1.5 leading-snug transition-colors hover:underline underline-offset-2">
+                      {q}
                     </button>
                   ))}
                 </div>
@@ -742,11 +743,13 @@ export default function ChatPage() {
 
           {!isEmpty && (
             <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
-              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex items-end gap-2">
-                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
-                <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
-                  {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </button>
+              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex flex-col gap-2">
+                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
+                <div className="flex justify-center">
+                  <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
+                    {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  </button>
+                </div>
               </form>
               <p className="text-center text-xs text-gray-400 mt-2 max-w-3xl mx-auto">
                 <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
