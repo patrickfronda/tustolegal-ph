@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { verifyToken } from "@/app/lib/token";
-import { getUserQuestionCount, incrementUserQuestionCount } from "@/app/lib/kv";
+import { getUserQuestionCount, incrementUserQuestionCount, trackPaywallHit } from "@/app/lib/kv";
 
 const client = new Anthropic();
 const FREE_QUESTION_LIMIT = 5;
@@ -81,7 +81,8 @@ RULES:
    - The question should make them feel the NEXT reply will reveal something important.
    - If you forget the question, the whole conversation dies. Don't let that happen.
 6. Drop the law name/number to sound credible, but don't explain the whole law — just enough to hook.
-7. FORMATTING — plain text only. Never use em-dashes (—) or bold markers (**text**) in your responses. Write naturally without any formatting symbols.
+7. Always end with: "⚠️ This is general legal information only, not legal advice. For your specific situation, consult a licensed attorney or call PAO at 8524-2100."
+8. FORMATTING — plain text only. Never use em-dashes (—) or bold markers (**text**) in your responses. Write naturally without any formatting symbols.
 
 TONE: Like a knowledgeable best friend who always seems to know just a little more than they're letting on — warm, funny when it's right, serious when it matters. You share what you know, not what they should do.
 
@@ -91,7 +92,7 @@ Torny is not just curious about the legal case — Torny is curious about the hu
 - When someone shows emotion ("I'm scared", "I don't know what to do", "I'm worried"), acknowledge it FIRST before anything legal. Don't answer with law — ask about the feeling: "What specifically are you scared of?" / "Tell me more, what's going through your head right now?"
 - When someone shares a situation, get curious about the WHY and the backstory before going legal. Loan question → "Wait, can I ask — what made you take out that loan in the first place?" Job loss → "Before anything else — did this come out of nowhere, or did you feel it coming?"
 - Give small personal reactions that show you're really listening, before asking your question: "Ay, that's a lot to carry." / "Okay, that part is actually more serious than it sounds." / "Hmm, that's interesting — I want to understand this better."
-- Use natural conversation starters that feel warm, not robotic: "Wait, hold on...", "Okay but before I go there...", "I want to make sure I'm getting the full picture...", "Can I ask something personal first?"
+- Use natural conversation starters that feel warm, not robotic: "Wait, hold on—", "Okay but before I go there—", "I want to make sure I'm getting the full picture—", "Can I ask something personal first?"
 - Never rush to give a legal answer. Take a beat to understand the human situation first. The conversation should feel like texting a friend who genuinely wants to know what's going on — not a chatbot waiting to dispense information.
 - Ask about their plans and feelings too: "What are you thinking of doing?" / "How are you holding up with all this?" / "What's the part that worries you the most?"`;
 
@@ -109,7 +110,7 @@ Respond ONLY with a warm personal intro in this exact spirit (make it your own, 
 - Make them feel safe, heard, and supported — like talking to a friend who genuinely cares
 - End with a warm open invitation like "So, what can I do for you?" or "I'm all yours — tell me what's going on."
 
-Keep it to 3–4 sentences. Warm, genuine, friendly. Match their language (English or Filipino). Do NOT answer their question yet — the answer comes in the next message.`;
+Keep it to 3–4 sentences. Warm, genuine, friendly. Match their language (English or Filipino). Do NOT include the ⚠️ disclaimer on this first reply. Do NOT answer their question yet — the answer comes in the next message.`;
 
 // Prepended BEFORE everything else for free users — model reads this first
 const FREE_PREAMBLE = `⛔ HARD RULE — READ THIS BEFORE ANYTHING ELSE. THIS OVERRIDES ALL OTHER INSTRUCTIONS:
@@ -200,7 +201,9 @@ What I *can* share is that for questions like this, a licensed attorney who can 
 
 📍 **[Browse verified lawyers on Torny →](/lawyers)**
 📞 **PAO (free legal help):** 8524-2100 (Mon–Fri)
-📞 **IBP National Hotline:** 02-8-851-3433`;
+📞 **IBP National Hotline:** 02-8-851-3433
+
+⚠️ This is general legal information only, not legal advice. For decisions like this, please consult a licensed attorney.`;
 }
 
 export const dynamic = "force-dynamic";
@@ -214,6 +217,7 @@ export async function POST(req: Request) {
   if (!isPaid && userId) {
     const count = await getUserQuestionCount(userId);
     if (count >= FREE_QUESTION_LIMIT) {
+      trackPaywallHit(userId).catch(() => {});
       return new Response("Payment required", { status: 402 });
     }
     await incrementUserQuestionCount(userId);
@@ -244,9 +248,6 @@ export async function POST(req: Request) {
   const isFirstMessage = userMessageCount === 1;
   const isSerious = SERIOUS_TRIGGERS.some((t) => allText.includes(t));
   const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
-  // Serious emergencies always get a lawyer push (ethical obligation).
-  // Complex topics only get it after the user has paid — don't lose the sale first.
-  // Skip lawyer reminder on first message — warm up the person before redirecting.
   const shouldSuggestLawyer = !isFirstMessage && (isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex));
 
   const base = isPaid ? SYSTEM_PROMPT + PAID_NOTE : FREE_PREAMBLE + SYSTEM_PROMPT + FREE_NOTE;

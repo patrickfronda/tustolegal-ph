@@ -1,4 +1,5 @@
 import { signToken } from "@/app/lib/token";
+import { trackPayment } from "@/app/lib/kv";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,7 @@ export async function GET(req: Request) {
 
     if (status === "succeeded") {
       const token = signToken(paymentIntentId, plan);
+      trackPayment(plan).catch(() => {});
       return Response.json({ token });
     }
 

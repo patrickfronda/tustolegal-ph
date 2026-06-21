@@ -150,7 +150,8 @@ export async function trackQuestion(sessionId: string, country: string, city: st
 
 export async function getAnalytics() {
   const d = today();
-  const [totalVisits, todayVisits, totalQuestions, todayQuestions, countries, cities, sessionIds] =
+  const [totalVisits, todayVisits, totalQuestions, todayQuestions, countries, cities, sessionIds,
+    paymentsTotal, paymentsBasic, paymentsPlus, paymentsToday, paywallTotal, paywallToday] =
     await pipeline([
       ["GET", "visits:total"],
       ["GET", `visits:${d}`],
@@ -159,6 +160,12 @@ export async function getAnalytics() {
       ["HGETALL", "locations:countries"],
       ["HGETALL", "locations:cities"],
       ["LRANGE", "sessions:recent", 0, 19],
+      ["GET", "payments:total"],
+      ["GET", "payments:basic"],
+      ["GET", "payments:plus"],
+      ["GET", `payments:${d}`],
+      ["GET", "paywall:total"],
+      ["GET", `paywall:${d}`],
     ]);
 
   let recentSessions: SessionData[] = [];
@@ -178,6 +185,14 @@ export async function getAnalytics() {
     countries: flatArrayToObject(countries),
     cities: flatArrayToObject(cities),
     recentSessions,
+    paymentStats: {
+      total: toNumber(paymentsTotal),
+      basic: toNumber(paymentsBasic),
+      plus: toNumber(paymentsPlus),
+      today: toNumber(paymentsToday),
+      paywallTotal: toNumber(paywallTotal),
+      paywallToday: toNumber(paywallToday),
+    },
   };
 }
 
@@ -225,4 +240,25 @@ export async function incrementUserQuestionCount(userId: string): Promise<number
     await cmd(["EXPIRE", `user:${userId}:qcount`, 86400]);
   }
   return toNumber(newCount);
+}
+
+export async function trackPayment(plan: "basic" | "plus"): Promise<void> {
+  const d = today();
+  await pipeline([
+    ["INCR", "payments:total"],
+    ["INCR", `payments:${plan}`],
+    ["INCR", `payments:${d}`],
+  ]);
+}
+
+export async function trackPaywallHit(userId: string): Promise<void> {
+  const flagKey = `user:${userId}:paywallHit`;
+  const already = await cmd<string>(["GET", flagKey]);
+  if (already) return;
+  const d = today();
+  await pipeline([
+    ["SET", flagKey, "1", "EX", 86400 * 30],
+    ["INCR", "paywall:total"],
+    ["INCR", `paywall:${d}`],
+  ]);
 }

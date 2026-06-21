@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import {
   Users, MessageSquare, Globe, MapPin, Clock, CheckCircle, XCircle,
-  Loader2, LogOut, RefreshCw, BadgeCheck, AlertCircle,
+  Loader2, LogOut, RefreshCw, BadgeCheck, AlertCircle, CreditCard,
 } from "lucide-react";
 
 interface Analytics {
@@ -17,6 +17,14 @@ interface Analytics {
   countries: Record<string, number>;
   cities: Record<string, number>;
   recentSessions: Array<{ id: string; questions: number; country: string; city: string; startTime: string }>;
+  paymentStats: {
+    total: number;
+    basic: number;
+    plus: number;
+    today: number;
+    paywallTotal: number;
+    paywallToday: number;
+  };
 }
 
 interface LawyerApp {
@@ -113,6 +121,15 @@ export default function AdminDashboard() {
     ? Object.entries(analytics.countries).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([name, count]) => ({ name, count }))
     : [];
 
+  const ps = analytics?.paymentStats;
+  const paidCount = ps?.total ?? 0;
+  const paywallCount = ps?.paywallTotal ?? 0;
+  const droppedCount = Math.max(0, paywallCount - paidCount);
+  const vsTotal = paidCount + droppedCount;
+  const paidPct = vsTotal > 0 ? Math.round((paidCount / vsTotal) * 100) : 0;
+  const droppedPct = 100 - paidPct;
+  const estimatedRevenue = (ps?.basic ?? 0) * 199 + (ps?.plus ?? 0) * 299;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -160,6 +177,79 @@ export default function AdminDashboard() {
               <StatCard icon={<Globe className="w-4 h-4" />} label="Today Visits" value={analytics.todayVisits} sub="Since midnight" />
               <StatCard icon={<MessageSquare className="w-4 h-4" />} label="Total Questions" value={analytics.totalQuestions} sub="All time" />
               <StatCard icon={<MessageSquare className="w-4 h-4" />} label="Today Questions" value={analytics.todayQuestions} sub="Since midnight" />
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+              <h2 className="text-sm font-bold text-[#0e1f44] mb-4 flex items-center gap-2">
+                <CreditCard className="w-4 h-4" /> Revenue &amp; Conversions
+              </h2>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div className="bg-green-50 rounded-xl p-3 text-center">
+                  <p className="text-2xl font-extrabold text-green-700">{paidCount}</p>
+                  <p className="text-[11px] text-green-600 font-semibold mt-0.5">Total Paid</p>
+                </div>
+                <div className="bg-blue-50 rounded-xl p-3 text-center">
+                  <p className="text-2xl font-extrabold text-blue-700">{ps?.basic ?? 0}</p>
+                  <p className="text-[11px] text-blue-600 font-semibold mt-0.5">Basic (₱199)</p>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3 text-center">
+                  <p className="text-2xl font-extrabold text-amber-700">{ps?.plus ?? 0}</p>
+                  <p className="text-[11px] text-amber-600 font-semibold mt-0.5">Plus (₱299)</p>
+                </div>
+                <div className="bg-purple-50 rounded-xl p-3 text-center">
+                  <p className="text-2xl font-extrabold text-purple-700">{ps?.today ?? 0}</p>
+                  <p className="text-[11px] text-purple-600 font-semibold mt-0.5">Paid Today</p>
+                </div>
+              </div>
+
+              <div className="bg-[#0e1f44]/5 rounded-xl px-4 py-3 mb-4 flex items-center justify-between">
+                <span className="text-xs text-gray-500 font-semibold">Estimated Revenue</span>
+                <span className="text-xl font-extrabold text-[#0e1f44]">₱{estimatedRevenue.toLocaleString()}</span>
+              </div>
+
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Paid vs Dropped</span>
+                {vsTotal > 0 && (
+                  <span className="text-xs font-bold text-green-600">{paidPct}% conversion rate</span>
+                )}
+              </div>
+              {vsTotal > 0 ? (
+                <>
+                  <div className="h-9 rounded-xl overflow-hidden flex bg-gray-100">
+                    {paidPct > 0 && (
+                      <div
+                        className="bg-green-500 flex items-center justify-center transition-all duration-500"
+                        style={{ width: `${paidPct}%` }}
+                      >
+                        {paidPct >= 15 && <span className="text-white text-[11px] font-bold">{paidCount}</span>}
+                      </div>
+                    )}
+                    {droppedPct > 0 && (
+                      <div
+                        className="bg-amber-200 flex items-center justify-center flex-1 transition-all duration-500"
+                      >
+                        {droppedPct >= 15 && <span className="text-amber-800 text-[11px] font-bold">{droppedCount}</span>}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-4 mt-2.5 text-xs text-gray-500">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block flex-shrink-0" />
+                      {paidCount} paid ({paidPct}%)
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-200 inline-block flex-shrink-0" />
+                      {droppedCount} dropped ({droppedPct}%)
+                    </span>
+                    <span className="ml-auto text-gray-400">{paywallCount} hit paywall · {ps?.paywallToday ?? 0} today</span>
+                  </div>
+                </>
+              ) : (
+                <div className="h-9 rounded-xl bg-gray-100 flex items-center justify-center">
+                  <span className="text-xs text-gray-400">No paywall data yet</span>
+                </div>
+              )}
             </div>
 
             {countriesData.length > 0 && (

@@ -138,7 +138,9 @@ function sanitize(text: string): string {
     .replace(/\*\*([^*]*)\*\*/g, '$1')
     .replace(/ ?[–—―] ?/g, ' ')
     .replace(/  +/g, ' ')
-    .replace(/\n*⚠️ This is general legal information[^\n]*/gi, '')
+    .replace(/\n*⚠️\s*This is general legal information[^]*/gi, '')
+    .replace(/\n*⚠️\s*General legal information[^]*/gi, '')
+    .replace(/\n*⚠️[^\n]*(not legal advice|consult a licensed|PAO)[^\n]*/gi, '')
     .trim();
 }
 
@@ -427,7 +429,6 @@ export default function ChatPage() {
       setAccessToken(stored);
       const p = getPlanFromToken(stored);
       setPlan(p);
-      // Restore saved messages for Plus plan users
       if (p === "plus") {
         try {
           const savedMsgs = localStorage.getItem(MESSAGES_KEY);
@@ -441,12 +442,10 @@ export default function ChatPage() {
       }
     }
 
-    // Show disclaimer on first visit
     if (!localStorage.getItem(DISCLAIMER_KEY)) {
       setShowDisclaimer(true);
     }
 
-    // Get or create persistent user ID
     let uid = localStorage.getItem(USER_ID_KEY);
     if (!uid) {
       uid = `u_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -454,7 +453,6 @@ export default function ChatPage() {
     }
     setUserId(uid);
 
-    // Restore question count with 24h expiry
     try {
       const raw = localStorage.getItem(SESSION_KEY);
       if (raw) {
@@ -485,7 +483,6 @@ export default function ChatPage() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  // Persist conversation for Plus plan
   useEffect(() => {
     if (plan === "plus" && messages.length > 0) {
       localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
@@ -512,7 +509,6 @@ export default function ChatPage() {
     if (newCount > FREE_LIMIT && !accessToken) { setShowPayModal(true); return; }
     setQuestionCount(newCount);
 
-    // Persist count to localStorage with 24h window timestamp
     const ts = sessionTs || Date.now();
     if (!sessionTs) setSessionTs(ts);
     localStorage.setItem(SESSION_KEY, JSON.stringify({ count: newCount, ts }));
@@ -533,7 +529,6 @@ export default function ChatPage() {
     setIsThinking(true);
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-    // Thinking delay — long enough to feel like real consideration
     await new Promise((resolve) => setTimeout(resolve, 1800 + Math.random() * 1200));
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -744,7 +739,7 @@ export default function ChatPage() {
                 <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Enter</kbd> {isFil ? "ipadala" : "send"} ·{" "}
                 <kbd className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 text-[10px]">Shift+Enter</kbd> {isFil ? "bagong linya" : "new line"}
               </p>
-              <p className="text-center text-[10px] text-gray-400 mt-1.5 leading-snug max-w-3xl mx-auto">
+              <p className="text-center text-xs text-gray-500 mt-1.5 leading-snug max-w-3xl mx-auto">
                 ⚠️ General legal information only, not legal advice. Consult a licensed attorney or call PAO at 8524-2100.
               </p>
             </div>
