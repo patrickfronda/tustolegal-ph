@@ -418,7 +418,7 @@ export default function ChatPage() {
   const [sessionTs, setSessionTs] = useState<number>(0);
   const [plan, setPlan] = useState<"basic" | "plus" | null>(null);
   const [senderName] = useState(randomAdviserName);
-  const [lang, setLang] = useState<"en" | "fil">("en");
+  const [lang, setLang] = useState<"en" | "fil">("fil");
   const isFil = lang === "fil";
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
