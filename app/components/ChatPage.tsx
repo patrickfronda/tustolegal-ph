@@ -99,26 +99,26 @@ function MarkdownBody({ text }: { text: string }) {
     if (line.startsWith("## ") || line.startsWith("### ")) {
       const level = line.startsWith("### ") ? 4 : 3;
       const content = line.replace(/^#{2,3}\s/, "");
-      nodes.push(<p key={i} className={`font-bold text-[#1e3a7b] ${level === 3 ? "text-lg mt-3 mb-1" : "text-base mt-2"}`}>{parseInline(content)}</p>);
+      nodes.push(<p key={i} className={`font-bold text-[#1e3a7b] ${level === 3 ? "text-xl mt-3 mb-1" : "text-lg mt-2"}`}>{parseInline(content)}</p>);
       i++; continue;
     }
     if (/^\d+\.\s/.test(line)) {
       const items: string[] = [];
       while (i < lines.length && /^\d+\.\s/.test(lines[i])) { items.push(lines[i].replace(/^\d+\.\s/, "")); i++; }
-      nodes.push(<ol key={i} className="list-decimal list-outside ml-4 space-y-1 my-1.5">{items.map((it, j) => <li key={j} className="text-lg leading-relaxed">{parseInline(it)}</li>)}</ol>);
+      nodes.push(<ol key={i} className="list-decimal list-outside ml-4 space-y-1 my-1.5">{items.map((it, j) => <li key={j} className="text-xl leading-relaxed">{parseInline(it)}</li>)}</ol>);
       continue;
     }
     if (line.startsWith("- ") || line.startsWith("• ")) {
       const items: string[] = [];
       while (i < lines.length && (lines[i].startsWith("- ") || lines[i].startsWith("• "))) { items.push(lines[i].slice(2)); i++; }
-      nodes.push(<ul key={i} className="list-disc list-outside ml-4 space-y-1 my-1.5">{items.map((it, j) => <li key={j} className="text-lg leading-relaxed">{parseInline(it)}</li>)}</ul>);
+      nodes.push(<ul key={i} className="list-disc list-outside ml-4 space-y-1 my-1.5">{items.map((it, j) => <li key={j} className="text-xl leading-relaxed">{parseInline(it)}</li>)}</ul>);
       continue;
     }
     if (line.startsWith("⚠️")) {
       nodes.push(<div key={i} className="flex gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-3 text-sm text-amber-800 leading-relaxed"><span className="flex-shrink-0">⚠️</span><span>{parseInline(line.slice(2).trim())}</span></div>);
       i++; continue;
     }
-    nodes.push(<p key={i} className="text-lg leading-relaxed">{parseInline(line)}</p>);
+    nodes.push(<p key={i} className="text-xl leading-relaxed">{parseInline(line)}</p>);
     i++;
   }
   return <>{nodes}</>;
@@ -666,7 +666,7 @@ export default function ChatPage() {
                   ))}
                 </div>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
-                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
+                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
                   <div className="flex justify-center">
                     <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
                       {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -696,7 +696,7 @@ export default function ChatPage() {
                       <div className="flex flex-col items-end gap-1">
                         <span className="text-xs font-semibold text-gray-400">{senderName}</span>
                         <div className="w-fit max-w-[80%] sm:max-w-[70%] bg-[#1e3a7b] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
-                          <p className="text-lg leading-relaxed break-words">{msg.content}</p>
+                          <p className="text-xl leading-relaxed break-words">{msg.content}</p>
                         </div>
                       </div>
                     ) : (
@@ -736,7 +736,7 @@ export default function ChatPage() {
           {!isEmpty && (
             <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
               <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex items-end gap-2">
-                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
+                <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan sa Filipino o English..." : "Ask your legal question in English or Filipino..."} rows={1} disabled={isStreaming} className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-gray-50 placeholder:text-gray-400" />
                 <button type="submit" disabled={isStreaming || !input.trim()} className="flex-shrink-0 w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
                   {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </button>
