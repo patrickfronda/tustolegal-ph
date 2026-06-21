@@ -231,11 +231,10 @@ function DisclaimerModal({ onAccept }: { onAccept: () => void }) {
   );
 }
 
-function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (token: string) => void }) {
-  const [selectedPlan, setSelectedPlan] = useState<"basic" | "plus" | null>(null);
+function PaymentModal({ onClose, onSuccess, lastQuestion }: { onClose: () => void; onSuccess: (token: string) => void; lastQuestion?: string }) {
+  const [selectedPlan, setSelectedPlan] = useState<"basic" | "plus" | null>("plus");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [agreed, setAgreed] = useState(false);
   const [qr, setQr] = useState<string | null>(null);
   const [waiting, setWaiting] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -317,8 +316,14 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
           </>
         ) : (
           <>
-            <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">You&apos;ve used your 5 free questions</h2>
-            <p className="text-center text-gray-500 text-sm mb-4">Choose a plan to keep chatting with Torny.</p>
+            <h2 className="text-xl font-extrabold text-center text-[#1e3a7b] mb-1">Torny is ready to answer 💬</h2>
+            <p className="text-center text-gray-500 text-sm mb-3">You&apos;ve used your 5 free questions. Unlock more to keep going.</p>
+
+            {lastQuestion && (
+              <div className="bg-[#1e3a7b]/5 border border-[#1e3a7b]/15 rounded-2xl px-4 py-3 mb-4 text-sm text-[#1e3a7b] italic leading-relaxed">
+                &ldquo;{lastQuestion}&rdquo;
+              </div>
+            )}
 
             <div className="space-y-3 mb-4">
               {/* Basic plan */}
@@ -330,7 +335,7 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
                   <span className="font-bold text-[#0e1f44]">Basic</span>
                   <span className="text-lg font-extrabold text-[#1e3a7b]">₱199</span>
                 </div>
-                <p className="text-xs text-gray-500">12-hour session · Conversation resets if you close the tab</p>
+                <p className="text-xs text-gray-500">Unlimited questions · 12-hour access · Ask everything today</p>
               </button>
 
               {/* Plus plan */}
@@ -343,10 +348,11 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
                   <span className="font-bold text-[#0e1f44]">Plus</span>
                   <span className="text-lg font-extrabold text-[#1e3a7b]">₱299</span>
                 </div>
-                <p className="text-xs text-gray-500">24-hour session · Conversation saved — continue even after closing the tab</p>
+                <p className="text-xs text-gray-500">Unlimited questions · 24-hour access · Chat history saved</p>
                 <div className="flex gap-1.5 mt-2 flex-wrap">
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">✅ 24 hrs</span>
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">✅ History saved</span>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">✅ Close &amp; return</span>
                 </div>
               </button>
             </div>
@@ -358,16 +364,13 @@ function PaymentModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
               </div>
             )}
 
-            <label className="flex items-start gap-2.5 mb-4 cursor-pointer">
-              <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-gray-300 flex-shrink-0 accent-[#1e3a7b]" />
-              <span className="text-xs text-gray-600">I understand the session terms for my selected plan.</span>
-            </label>
-
             {err && <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-3 py-2 text-xs mb-3"><AlertCircle className="w-4 h-4 flex-shrink-0" />{err}</div>}
-            <button onClick={handlePay} disabled={loading || !agreed || waiting || !selectedPlan} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2">
+            <button onClick={handlePay} disabled={loading || waiting || !selectedPlan} className="w-full flex items-center justify-center gap-2 bg-[#00a8e0] text-white font-bold py-3.5 rounded-2xl hover:bg-[#0090c0] transition-colors text-sm disabled:opacity-60 mb-2">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
               {loading ? "Processing..." : selectedPlan ? `Pay with QR Ph — ${price}` : "Select a plan above"}
             </button>
+            <p className="text-center text-xs text-gray-400 mb-2">🔒 Secure GCash / Maya payment · Instant access after scanning</p>
+            <p className="text-center text-xs text-gray-400 mb-1">By paying you agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-600">session terms</a> for your selected plan.</p>
             <button onClick={onClose} className="w-full text-center text-xs text-gray-400 hover:text-gray-600 py-2 transition-colors">Back to chat</button>
           </>
         )}
@@ -419,6 +422,7 @@ export default function ChatPage() {
   const [plan, setPlan] = useState<"basic" | "plus" | null>(null);
   const [senderName] = useState(randomAdviserName);
   const [lang, setLang] = useState<"en" | "fil">("fil");
+  const [paywallQuestion, setPaywallQuestion] = useState("");
   const isFil = lang === "fil";
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -506,7 +510,7 @@ export default function ChatPage() {
     setError(null);
     setSidebarOpen(false);
     const newCount = questionCount + 1;
-    if (newCount > FREE_LIMIT && !accessToken) { setShowPayModal(true); return; }
+    if (newCount > FREE_LIMIT && !accessToken) { setPaywallQuestion(text.trim()); setShowPayModal(true); return; }
     setQuestionCount(newCount);
 
     const ts = sessionTs || Date.now();
@@ -539,6 +543,7 @@ export default function ChatPage() {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
         setAccessToken(null);
         setMessages((prev) => prev.slice(0, -1));
+        setPaywallQuestion(text.trim());
         setShowPayModal(true);
         setIsStreaming(false);
         setIsThinking(false);
@@ -577,6 +582,7 @@ export default function ChatPage() {
       {showDisclaimer && <DisclaimerModal onAccept={handleDisclaimerAccept} />}
       {showPayModal && (
         <PaymentModal
+          lastQuestion={paywallQuestion}
           onClose={() => setShowPayModal(false)}
           onSuccess={(token) => {
             localStorage.setItem(ACCESS_TOKEN_KEY, token);
