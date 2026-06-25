@@ -57,6 +57,7 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://torny.online" },
+  verification: { google: "iPXbO2uALY22FmX3VkKfPI1DxcgDKYv3b0a3grIhqP8" },
 };
 
 export default function RootLayout({
