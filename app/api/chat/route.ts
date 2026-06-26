@@ -211,16 +211,13 @@ export async function POST(req: Request) {
   const isFirstMessage = userMessageCount === 1;
   const isSerious = SERIOUS_TRIGGERS.some((t) => allText.includes(t));
   const isComplex = COMPLEX_TRIGGERS.some((t) => allText.includes(t));
-  // Serious emergencies always get a lawyer push (ethical obligation).
-  // Complex topics only get it after the user has paid — don't lose the sale first.
-  // Skip lawyer reminder on first message — warm up the person before redirecting.
   const shouldSuggestLawyer = !isFirstMessage && (isSerious || userMessageCount >= LAWYER_REDIRECT_AFTER || (isPaid && isComplex));
 
   const base = isPaid ? SYSTEM_PROMPT + PAID_NOTE : SYSTEM_PROMPT + FREE_NOTE;
   let systemPrompt = base;
   if (isFirstMessage) systemPrompt += FIRST_MESSAGE_NOTE;
-  if (!isPaid && !isFirstMessage && userMessageCount >= 4) {
-    systemPrompt += `\n\nNOTE: This user is near their 5-question limit. If it comes up naturally, you may warmly mention they can continue in a full session — but only if it fits the flow. Keep being helpful.`;
+  if (!isPaid && userMessageCount === 5) {
+    systemPrompt += `\n\nFINAL FREE QUESTION — IMPORTANT: Answer this question fully and helpfully as always. Then at the very end, after your answer and disclaimer, add a warm natural closing like this (make it your own, don't copy exactly):\n\n"By the way — if you're serious about this and want to go deeper, I can walk you through the full details, next steps, and what to watch out for in your specific situation. I have a limit on free questions, but you can unlock a full session anytime if you want to continue. Just letting you know 😊"\n\nKeep it warm, zero pressure. It should feel like a friend genuinely offering more help — not a sales pitch.`;
   }
   if (shouldSuggestLawyer) systemPrompt += LAWYER_REMINDER;
 
