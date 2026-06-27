@@ -663,11 +663,12 @@ export default function ChatPage() {
                     <span key={f} className="bg-white/10 text-blue-100 rounded-full px-3 py-1">{f}</span>
                   ))}
                 </div>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
-                  <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={1} disabled={isStreaming} className="w-full resize-none border border-gray-200 rounded-2xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1e3a7b]/20 focus:border-[#1e3a7b] disabled:opacity-60 overflow-hidden bg-white placeholder:text-gray-400 shadow-sm" />
-                  <div className="flex justify-center">
-                    <button type="submit" disabled={isStreaming || !input.trim()} className="w-11 h-11 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm">
-                      {isStreaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                <p className="text-lg sm:text-xl font-bold text-white mb-3">{isFil ? "Tanungin si Torny AI" : "Ask Torny AI"}</p>
+                <form onSubmit={handleSubmit} className="mb-6">
+                  <div className="relative bg-white rounded-3xl shadow-xl border border-gray-200 focus-within:ring-2 focus-within:ring-[#fcd116]/40 transition-shadow">
+                    <textarea ref={textareaRef} value={input} onChange={(e) => { setInput(e.target.value); autoResize(); }} onKeyDown={handleKeyDown} placeholder={isFil ? "Itanong ang iyong legal na katanungan..." : "Ask your legal question..."} rows={3} disabled={isStreaming} className="w-full resize-none rounded-3xl px-5 py-4 pr-16 text-base min-h-[120px] focus:outline-none disabled:opacity-60 overflow-hidden bg-transparent placeholder:text-gray-400" />
+                    <button type="submit" disabled={isStreaming || !input.trim()} className="absolute bottom-3 right-3 w-12 h-12 bg-[#1e3a7b] text-white rounded-full flex items-center justify-center hover:bg-[#162d60] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-md">
+                      {isStreaming ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                     </button>
                   </div>
                 </form>
